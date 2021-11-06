@@ -1,4 +1,4 @@
-support multiple mc versions
+Add 1.18 support as beta
 support custom maps
 backup worlds
 reset worlds
