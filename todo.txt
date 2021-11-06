@@ -1,0 +1,5 @@
+support multiple mc versions
+support custom maps
+backup worlds
+reset worlds
+eventually support modded servers as well
