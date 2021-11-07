@@ -1,5 +1,7 @@
-Add 1.18 support as beta
+Add experimental 1.18 support
 support custom maps
-backup worlds
 reset worlds
 eventually support modded servers as well
+GUI
+server properties editor
+add logging
