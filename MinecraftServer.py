@@ -3,6 +3,7 @@ import sys
 import webbrowser
 import time
 import requests
+import urllib
 import pyautogui as kbm
 from threading import Thread
 from tkinter import *
@@ -25,7 +26,7 @@ def ngrok():
 
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.2.0")
+print("EasyMinecraftServer Version: 1.3.0")
 print(f"Current Working Directory: {cwd}")
 root = Tk()
 root.withdraw()
@@ -33,9 +34,37 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.2.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.3.0":
+        new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
+        print(f"Updated Version Available: {new_version}")
+        changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
+        changelog_download = urllib.request.urlopen(changelog_url)
+        if not os.path.exists(f"{cwd}\\Temp\\"):
+            os.mkdir(f"{cwd}\\Temp\\")
+            pass
+        else:
+            pass
+        try:
+            open(f"{cwd}\\Temp\\changelog.txt", mode="w+", encoding="utf8").truncate()
+        except Exception:
+            pass
+        changelog_file = open(f"{cwd}\\Temp\\changelog.txt", mode="wb")
+        try:
+            while True:
+                changelog_data = changelog_download.read()
+                if not changelog_data:
+                    break
+                else:
+                    changelog_file.write(changelog_data)
+                    pass
+        except Exception:
+            changelog_file.write(str.encode("There Was An Error Downloading Changelog Information!"))
+            pass
+        changelog_file.close()
+        changelog = str(open(f"{cwd}\\Temp\\changelog.txt", mode="r", encoding="utf8").read())
         showwarning(title="Update Available", message="An update is available. Please update to the latest version to "
-                                                      "use this program. None of your data will be lost.")
+                                                      f"use this program. Changelog: {changelog}")
+        print(changelog)
         webbrowser.open(redirected_url)
         sys.exit(0)
     else:
@@ -59,7 +88,9 @@ else:
 print("1. Start Server")
 print("2. Create Server Backup")
 print("3. Restore Server Backup")
-print("4. Exit")
+print("4. Reset Server")
+print("5. Changelog")
+print("6. Exit")
 main_input = input("What Would You Like To Do? Enter The Corresponding Number:")
 if main_input == "1":
     pass
@@ -239,6 +270,73 @@ elif main_input == "3":
         time.sleep(1)
         sys.exit(0)
 elif main_input == "4":
+    reset_version_selection = askstring(title="Reset Server",
+                                        prompt="Please Select The Version You Would Like To Reset! '1.8.9' or '1.12.2' or '1.16.5' "
+                                                "or '1.17.1'")
+    if reset_version_selection == "1.8.9":
+        version = "1.8.9"
+        os.remove(f"{cwd}\\ServerFiles-1.8.9\\ops.json")
+        os.remove(f"{cwd}\\ServerFiles-1.8.9\\banned-ips.json")
+        os.remove(f"{cwd}\\ServerFiles-1.8.9\\banned-players.json")
+        os.remove(f"{cwd}\\ServerFiles-1.8.9\\whitelist.json")
+        os.remove(f"{cwd}\\ServerFiles-1.8.9\\usercache.json")
+        rmtree(f"{cwd}\\ServerFiles-1.8.9\\world\\")
+        rmtree(f"{cwd}\\ServerFiles-1.8.9\\logs\\")
+        showinfo(title="Reset Server", message="Reset Successful!")
+        print("Reset Successful!")
+        time.sleep(1)
+        sys.exit(0)
+    elif reset_version_selection == "1.12.2":
+        version = "1.12.2"
+        os.remove(f"{cwd}\\ServerFiles-1.12.2\\ops.json")
+        os.remove(f"{cwd}\\ServerFiles-1.12.2\\banned-ips.json")
+        os.remove(f"{cwd}\\ServerFiles-1.12.2\\banned-players.json")
+        os.remove(f"{cwd}\\ServerFiles-1.12.2\\whitelist.json")
+        os.remove(f"{cwd}\\ServerFiles-1.12.2\\usercache.json")
+        rmtree(f"{cwd}\\ServerFiles-1.12.2\\world\\")
+        rmtree(f"{cwd}\\ServerFiles-1.12.2\\logs\\")
+        showinfo(title="Reset Server", message="Reset Successful!")
+        print("Reset Successful!")
+        time.sleep(1)
+        sys.exit(0)
+    elif reset_version_selection == "1.16.5":
+        version = "1.16.5"
+        os.remove(f"{cwd}\\ServerFiles-1.16.5\\ops.json")
+        os.remove(f"{cwd}\\ServerFiles-1.16.5\\banned-ips.json")
+        os.remove(f"{cwd}\\ServerFiles-1.16.5\\banned-players.json")
+        os.remove(f"{cwd}\\ServerFiles-1.16.5\\whitelist.json")
+        os.remove(f"{cwd}\\ServerFiles-1.16.5\\usercache.json")
+        rmtree(f"{cwd}\\ServerFiles-1.16.5\\world\\")
+        rmtree(f"{cwd}\\ServerFiles-1.16.5\\logs\\")
+        showinfo(title="Reset Server", message="Reset Successful!")
+        print("Reset Successful!")
+        time.sleep(1)
+        sys.exit(0)
+    elif reset_version_selection == "1.17.1":
+        version = "1.17.1"
+        os.remove(f"{cwd}\\ServerFiles-1.17.1\\ops.json")
+        os.remove(f"{cwd}\\ServerFiles-1.17.1\\banned-ips.json")
+        os.remove(f"{cwd}\\ServerFiles-1.17.1\\banned-players.json")
+        os.remove(f"{cwd}\\ServerFiles-1.17.1\\whitelist.json")
+        os.remove(f"{cwd}\\ServerFiles-1.17.1\\usercache.json")
+        rmtree(f"{cwd}\\ServerFiles-1.17.1\\world\\")
+        rmtree(f"{cwd}\\ServerFiles-1.17.1\\logs\\")
+        showinfo(title="Reset Server", message="Reset Successful!")
+        print("Reset Successful!")
+        time.sleep(1)
+        sys.exit(0)
+    else:
+        showerror(title="Reset Server", message="Invalid Version!")
+        print("Invalid Version Selected! Please restart to use again!")
+        time.sleep(1)
+        sys.exit(0)
+elif main_input == "5":
+    changelog = str(open(f"{cwd}\\CHANGELOG.txt", "r").read())
+    showinfo(title="EasyMinecraftServer Changelog", message=changelog)
+    print(changelog)
+    time.sleep(1)
+    sys.exit(0)
+elif main_input == "6":
     print("Exiting...")
     time.sleep(1)
     sys.exit(0)

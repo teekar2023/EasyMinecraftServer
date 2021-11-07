@@ -1,7 +1,9 @@
 Add experimental 1.18 support
 support custom maps
-reset worlds
+support for multiple backups
+reset specific dimensions
 eventually support modded servers as well
 GUI
 server properties editor
 add logging
+get new version changelog when update is available

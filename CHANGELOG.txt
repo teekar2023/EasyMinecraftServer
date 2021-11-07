@@ -1,6 +1,5 @@
-New in version 1.2.0:
-Added new warning for ngrok process to be started successfully!
-Added new world backup feature!
-Added new world backup restore feature!
-Other minor additions!
-Other small changes and fixes!
+New in version 1.3.0:
+Added new server reset feature!
+Added new changelog feature!
+All servers now have command blocks enabled by default!
+Auto update check on startup now downloads new version changelog and presents it to the user!
