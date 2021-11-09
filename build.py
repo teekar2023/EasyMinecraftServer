@@ -10,3 +10,4 @@ copytree(f"{cwd}\\ServerFiles-1.17.1\\", f"{cwd}\\dist\\MinecraftServer\\ServerF
 copytree(f"{cwd}\\ngrok\\", f"{cwd}\\dist\\MinecraftServer\\ngrok\\")
 copytree(f"{cwd}\\JDK\\", f"{cwd}\\dist\\MinecraftServer\\JDK\\")
 copy(f"{cwd}\\CHANGELOG.txt", f"{cwd}\\dist\\MinecraftServer\\CHANGELOG.txt")
+copy(f"{cwd}\\LICENSE.txt", f"{cwd}\\dist\\MinecraftServer\\LICENSE.txt")

@@ -1,9 +1,10 @@
 Add experimental 1.18 support
-support custom maps
 support for multiple backups
 reset specific dimensions
 eventually support modded servers as well
 GUI
 server properties editor
 add logging
-get new version changelog when update is available
+make ServerFiles be downloaded when required instead of packaging in order to save storage space
+add builtin restart function
+create README with installation and usage instructions

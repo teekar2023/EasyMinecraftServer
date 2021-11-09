@@ -4,13 +4,22 @@ import webbrowser
 import time
 import requests
 import urllib
+import ctypes
 import pyautogui as kbm
 from threading import Thread
 from tkinter import *
 from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.messagebox import askyesno
 from tkinter.simpledialog import askinteger, askstring
+from tkinter.filedialog import askdirectory
 from shutil import copytree, rmtree
+
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
 
 
 def ngrok():
@@ -24,31 +33,43 @@ def ngrok():
     pass
 
 
+if is_admin():
+    pass
+else:
+    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    sys.exit(0)
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.3.0")
+print("EasyMinecraftServer Version: 1.4.0")
+print("Created By: @teekar2023")
+print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
 root = Tk()
 root.withdraw()
+if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\"):
+    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\")
+    pass
+else:
+    pass
+if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\"):
+    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\")
+    pass
+else:
+    pass
 try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.3.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.4.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
         changelog_download = urllib.request.urlopen(changelog_url)
-        if not os.path.exists(f"{cwd}\\Temp\\"):
-            os.mkdir(f"{cwd}\\Temp\\")
-            pass
-        else:
-            pass
         try:
-            open(f"{cwd}\\Temp\\changelog.txt", mode="w+", encoding="utf8").truncate()
+            open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="w+", encoding="utf8").truncate()
         except Exception:
             pass
-        changelog_file = open(f"{cwd}\\Temp\\changelog.txt", mode="wb")
+        changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="wb")
         try:
             while True:
                 changelog_data = changelog_download.read()
@@ -61,9 +82,9 @@ try:
             changelog_file.write(str.encode("There Was An Error Downloading Changelog Information!"))
             pass
         changelog_file.close()
-        changelog = str(open(f"{cwd}\\Temp\\changelog.txt", mode="r", encoding="utf8").read())
+        changelog = str(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="r", encoding="utf8").read())
         showwarning(title="Update Available", message="An update is available. Please update to the latest version to "
-                                                      f"use this program. Changelog: {changelog}")
+                                                      f"use this program.\nChangelog: {changelog}")
         print(changelog)
         webbrowser.open(redirected_url)
         sys.exit(0)
@@ -85,12 +106,17 @@ if not os.path.exists("C:\\Program Files\\Java\\jdk-17.0.1\\bin"):
     pass
 else:
     pass
+for i in range(3):
+    print("")
+    pass
+print("-------------------------")
 print("1. Start Server")
 print("2. Create Server Backup")
 print("3. Restore Server Backup")
 print("4. Reset Server")
-print("5. Changelog")
-print("6. Exit")
+print("5. Use A Custom Map In Server")
+print("6. Changelog")
+print("7. Exit")
 main_input = input("What Would You Like To Do? Enter The Corresponding Number:")
 if main_input == "1":
     pass
@@ -208,7 +234,8 @@ elif main_input == "2":
         sys.exit(0)
 elif main_input == "3":
     restore_version_selection = askstring(title="Restore Server",
-                                          prompt="Please Select The Version You Would Like To Restore! '1.8.9' or '1.12.2' or '1.16.5' "
+                                          prompt="Please Select The Version You Would Like To Restore! '1.8.9' or "
+                                                 "'1.12.2' or '1.16.5' "
                                                   "or '1.17.1'")
     if restore_version_selection == "1.8.9":
         if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.1.8"):
@@ -271,7 +298,8 @@ elif main_input == "3":
         sys.exit(0)
 elif main_input == "4":
     reset_version_selection = askstring(title="Reset Server",
-                                        prompt="Please Select The Version You Would Like To Reset! '1.8.9' or '1.12.2' or '1.16.5' "
+                                        prompt="Please Select The Version You Would Like To Reset! '1.8.9' or "
+                                               "'1.12.2' or '1.16.5' "
                                                 "or '1.17.1'")
     if reset_version_selection == "1.8.9":
         version = "1.8.9"
@@ -331,16 +359,80 @@ elif main_input == "4":
         time.sleep(1)
         sys.exit(0)
 elif main_input == "5":
+    version_select = askstring(title="Select Version",
+                               prompt="Please Select The Version You Would Like To Use The Custom Map In! '1.8.9' or "
+                                      "'1.12.2' or '1.16.5' "
+                                     "or '1.17.1'")
+    if version_select == "1.8.9":
+        version = "1.8.9"
+        pass
+    elif version_select == "1.12.2":
+        version = "1.12.2"
+        pass
+    elif version_select == "1.16.5":
+        version = "1.16.5"
+        pass
+    elif version_select == "1.17.1":
+        version = "1.17.1"
+        pass
+    else:
+        showerror(title="Select Version", message="Invalid Version!")
+        print("Invalid Version Selected! Please restart to use again!")
+        time.sleep(1)
+        sys.exit(0)
+    custom_map = str(askdirectory(title="Select Custom Map Folder"))
+    if custom_map == None:
+        showerror(title="Select Custom Map Folder", message="No Folder Selected!")
+        print("No Folder Selected! Please restart to use again!")
+        time.sleep(1)
+        sys.exit(0)
+    else:
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\world\\"):
+            backup_ask = askyesno(title="Backup Existing World?",
+                                  message="Would You Like To Backup The Existing World?\n"
+                                          "This Will Save The Current World To A Backup Folder!")
+            if backup_ask:
+                if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}"):
+                    confirm_replace = askyesno(title="Existing Backup Found", message="An existing backup was found! "
+                                                                                      "Would you like to replace this"
+                                                                                      " backup?")
+                    if confirm_replace:
+                        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer"
+                                                                    f"\\Backups\\{version}\\")
+                        showinfo(title="World Backup", message="Backup was successful. Please restart to use again!")
+                        print("Backup Successful!")
+                        pass
+                    else:
+                        showerror(title="World Backup", message="The existing world backup was not replaced! Please "
+                                                                "restart to use again!")
+                        print("The existing world backup was not replaced! Please restart to use again!")
+                        time.sleep(1)
+                        sys.exit(0)
+                else:
+                    copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
+                    showinfo(title="World Backup", message="Backup was successful. Please restart to use again!")
+                    print("Backup Successful!")
+                    pass
+        else:
+            pass
+        rmtree(f"{cwd}\\ServerFiles-{version}\\world\\")
+        copytree(f"{custom_map}\\", f"{cwd}\\ServerFiles-{version}\\world\\")
+        showinfo(title="Custom Map", message="Custom Map Successfully Copied!")
+        print("Custom Map Successfully Copied!")
+        time.sleep(1)
+        sys.exit(0)
+elif main_input == "6":
     changelog = str(open(f"{cwd}\\CHANGELOG.txt", "r").read())
     showinfo(title="EasyMinecraftServer Changelog", message=changelog)
     print(changelog)
     time.sleep(1)
     sys.exit(0)
-elif main_input == "6":
+elif main_input == "7":
     print("Exiting...")
     time.sleep(1)
     sys.exit(0)
 else:
+    showerror(title="EasyMinecraftServer", message="Invalid Input! Please Restart To Use Again!")
     print("Invalid Input! Please restart to use again!")
     time.sleep(1)
     sys.exit(0)
