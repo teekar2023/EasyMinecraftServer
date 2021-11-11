@@ -1,8 +1,8 @@
-New in version 1.3.0:
-Added custom map support for al currently supported version!
-Better text formatting!
-JDK installer is now run during installation!
-Program and installer are now required to be run as administrator to handle JDK installation changes!
-Program is now under the Apache License Version 2.0!
-Fixed bugs with update checking!
-Other minor changes and fixes!
+New in version 1.5.0:
+Added new experimental option to reset dimensions in a server!
+Added builtin restart function so manual restart is no longer required!
+New README with information and installation instructions on the github page!
+Improved call stack and code formatting!
+More minor text changes!
+Added small informational popup to confirm server was stopped successfully!
+Fixed a bug where program would crash when trying to reset a server!
