@@ -1,8 +1,7 @@
-New in version 1.5.0:
-Added new experimental option to reset dimensions in a server!
-Added builtin restart function so manual restart is no longer required!
-New README with information and installation instructions on the github page!
-Improved call stack and code formatting!
-More minor text changes!
-Added small informational popup to confirm server was stopped successfully!
-Fixed a bug where program would crash when trying to reset a server!
+New in version 1.6.0:
+Fixed a bug where the exit function would just restart the program!
+Restarting the program now clears the console for better usability!
+Restart function now asks use if they want to restart the program and exits if they don't!
+Added warning popup when program doesn't have admin privileges when started!
+New MinecraftServerElevator program builtin to create antivirus exception to improve performance and is run during installation!
+Installation folder is now also added to path for power users who would like to run the program from the command line!

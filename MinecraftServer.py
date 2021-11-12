@@ -23,8 +23,15 @@ def is_admin():
 
 
 def restart():
-    os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
-    sys.exit(0)
+    confirm_restart = askyesno(title="Restart", message="Restart EasyMinecraftServer?")
+    if confirm_restart:
+        os.system("clear")
+        os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
+        sys.exit(0)
+    else:
+        print("Exiting...")
+        time.sleep(1)
+        sys.exit(0)
 
 
 def ngrok():
@@ -419,11 +426,13 @@ def reset_dimension():
 if is_admin():
     pass
 else:
+    print("Admin access not granted!")
+    showwarning(title="Admin Access", message="Admin Access Not Granted! Please Allow Admin Access!")
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
     sys.exit(0)
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.5.0")
+print("EasyMinecraftServer Version: 1.6.0")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -443,7 +452,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.5.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.6.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
@@ -523,7 +532,7 @@ elif main_input == "7":
     sys.exit(0)
 elif main_input == "8":
     print("Exiting...")
-    restart()
+    time.sleep(1)
     sys.exit(0)
 else:
     showerror(title="EasyMinecraftServer", message="Invalid Input! Please Restart To Use Again!")
