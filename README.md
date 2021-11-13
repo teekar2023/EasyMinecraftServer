@@ -20,7 +20,6 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, and 1.17.
 * GUI
 * Server properties editor
 * Add logging
-* Add built-in update downloader
 * Add more error handling when performing tasks
 * Use external servers (servers that were not created using this program)
 
