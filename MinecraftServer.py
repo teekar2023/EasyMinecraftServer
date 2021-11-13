@@ -11,7 +11,7 @@ from tkinter import *
 from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.messagebox import askyesno
 from tkinter.simpledialog import askinteger, askstring
-from tkinter.filedialog import askdirectory
+from tkinter.filedialog import askdirectory, asksaveasfile
 from shutil import copytree, rmtree
 
 
@@ -151,8 +151,49 @@ def restore_server_backup():
         restart()
         sys.exit(0)
     else:
-        confirm_restore = askyesno(title="Restore Server Backup", message="Are you sure you want to restore this backup? It will replace any current data in the server!")
+        confirm_restore = askyesno(title="Restore Server Backup", message="Are you sure you want to restore this "
+                                                                          "backup? It will replace any current data "
+                                                                          "in the server!")
         if confirm_restore:
+            if os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\ops.json\\") or \
+                    os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-players.json\\") or \
+                    os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-ips.json\\"):
+                backup_current_server = askyesno(title="Restore Server Backup", message="You have current data in the server! Would you like "
+                                                                "to perform a backup?")
+                if backup_current_server:
+                    backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
+                    if not backup_name:
+                        showerror(title="Error", message="Invalid Name!")
+                        print("Invalid Name!")
+                        restart()
+                        sys.exit(0)
+                    else:
+                        pass
+                    if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\"):
+                        showerror(title="Backup Error", message="Backup with the same name already exists! Please try again!")
+                        print("Backup with the same name already exists! Please try again!")
+                        restart()
+                        sys.exit(0)
+                    else:
+                        try:
+                            copytree(f"{cwd}\\ServerFiles-{backup_version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
+                            showinfo(title="Backup Successful", message="Backup Successful!")
+                            print("Backup Successful!")
+                            pass
+                        except Exception as e:
+                            showerror(title="Backup Error", message=f"Error while performing backup: {e}")
+                            print(f"Error while performing backup: {e}")
+                            restart()
+                            sys.exit(0)
+                        pass
+                else:
+                    showwarning(title="Restore Server Backup", message="You have chosen not to backup the current "
+                                                                       "server! Current server data will be "
+                                                                       "overwritten!")
+                    pass
+                pass
+            else:
+                pass
             try:
                 rmtree(f"{cwd}\\ServerFiles-{backup_version}\\")
                 copytree(f"{backup_path}\\", f"{cwd}\\ServerFiles-{backup_version}\\")
@@ -265,33 +306,43 @@ def inject_custom_map():
         restart()
         sys.exit(0)
     else:
-        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\world\\"):
-            backup_ask = askyesno(title="Backup Existing World?",
-                                  message="Would You Like To Backup The Existing World?\n"
-                                          "This Will Save The Current World To A Backup Folder!")
-            if backup_ask:
-                if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}"):
-                    confirm_replace = askyesno(title="Existing Backup Found", message="An existing backup was found! "
-                                                                                      "Would you like to replace this"
-                                                                                      " backup?")
-                    if confirm_replace:
-                        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer"
-                                                                    f"\\Backups\\{version}\\")
-                        showinfo(title="World Backup", message="Backup was successful. Please restart to use again!")
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\ops.json\\") or \
+                    os.path.exists(f"{cwd}\\ServerFiles-{version}\\banned-players.json\\") or \
+                    os.path.exists(f"{cwd}\\ServerFiles-{version}\\banned-ips.json\\"):
+            backup_current_server = askyesno(title="Restore Server Backup", message="You have current data in the server! Would you like "
+                                                            "to perform a backup?")
+            if backup_current_server:
+                backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
+                if not backup_name:
+                    showerror(title="Error", message="Invalid Name!")
+                    print("Invalid Name!")
+                    restart()
+                    sys.exit(0)
+                else:
+                    pass
+                if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\"):
+                    showerror(title="Backup Error", message="Backup with the same name already exists! Please try again!")
+                    print("Backup with the same name already exists! Please try again!")
+                    restart()
+                    sys.exit(0)
+                else:
+                    try:
+                        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
+                        showinfo(title="Backup Successful", message="Backup Successful!")
                         print("Backup Successful!")
                         pass
-                    else:
-                        showerror(title="World Backup", message="The existing world backup was not replaced! Please "
-                                                                "restart to use again!")
-                        print("The existing world backup was not replaced! Please restart to use again!")
+                    except Exception as e:
+                        showerror(title="Backup Error", message=f"Error while performing backup: {e}")
+                        print(f"Error while performing backup: {e}")
                         restart()
                         sys.exit(0)
-                else:
-                    copytree(f"{cwd}\\ServerFiles-{version}\\",
-                             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
-                    showinfo(title="World Backup", message="Backup was successful. Please restart to use again!")
-                    print("Backup Successful!")
                     pass
+            else:
+                showwarning(title="Restore Server Backup", message="You have chosen not to backup the current "
+                                                                       "server! Current server data will be "
+                                                                       "overwritten!")
+                pass
+            pass
         else:
             pass
         rmtree(f"{cwd}\\ServerFiles-{version}\\world\\")
@@ -382,7 +433,7 @@ else:
 os.system("clear")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.7.0")
+print("EasyMinecraftServer Version: 1.8.0")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -402,7 +453,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.7.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.8.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
@@ -421,8 +472,8 @@ try:
                 else:
                     changelog_file.write(changelog_data)
                     pass
-        except Exception:
-            changelog_file.write(str.encode("There Was An Error Downloading Changelog Information!"))
+        except Exception as e:
+            changelog_file.write(str.encode(f"There Was An Error Downloading Changelog Information! Error: {e}"))
             pass
         changelog_file.close()
         changelog = str(
@@ -430,8 +481,41 @@ try:
         showwarning(title="Update Available", message="An update is available. Please update to the latest version to "
                                                       f"use this program.\nChangelog: {changelog}")
         print(changelog)
-        webbrowser.open(redirected_url)
-        sys.exit(0)
+        download_local = askyesno(title="Download Update", message="Press 'YES' to download the update from the "
+                                                                   "program or press 'NO' to download the update from"
+                                                                   " a web browser!")
+        if download_local:
+            new_url = str(redirected_url) + "/ChikkooAI-Setup.exe"
+            download_url = new_url.replace("tag", "download")
+            print("------------------------------")
+            print(f"Downloading Update From: {download_url}...")
+            print("Please do not exit the program while downloading...")
+            f = asksaveasfile(mode="wb", defaultextension=".exe", initialfile="MinecraftServerInstaller.exe")
+            f2 = urllib.request.urlopen(download_url)
+            while True:
+                data = f2.read()
+                if not data:
+                    break
+                else:
+                    pass
+                f.write(data)
+            file_string = str(f)
+            installed_file1 = file_string.replace("<_io.BufferedWriter name='", "")
+            installed_file2 = installed_file1.replace("'>", "")
+            f.close()
+            install_confirmation = askyesno(title="Update",
+                                            message=f"Update Completed! Would You Like To Install? Installer Location: {installed_file2}.exe")
+            if install_confirmation:
+                os.startfile(f"{installed_file2}.exe")
+                sys.exit(0)
+            else:
+                showinfo(title="Update Installer", message="Update Installer Downloaded To: {"
+                                                           "installed_file2}.exe\n\nPlease run this installer to "
+                                                           "update EasyMinecraftServer!")
+                sys.exit(0)
+        else:
+            webbrowser.open(redirected_url)
+            sys.exit(0)
     else:
         pass
 except Exception as e:
@@ -459,7 +543,7 @@ print("2. Create Server Backup")
 print("3. Restore Server Backup")
 print("4. Reset Server")
 print("5. Use A Custom Map In Server")
-print("6. Reset A Dimension In Server (BETA)")
+print("6. Reset A Dimension In Server")
 print("7. Changelog")
 print("8. Exit")
 print("-------------------------")

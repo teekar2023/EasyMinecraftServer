@@ -1,7 +1,10 @@
 import os
-from shutil import copytree, copy
+from shutil import copytree, copy, rmtree
 
 cwd = os.getcwd()
+rmtree(f"{cwd}\\dist\\")
+rmtree(f"{cwd}\\build\\")
+rmtree(f"{cwd}\\__pycache__\\")
 os.system("pyinstaller -i mc.ico MinecraftServer.py")
 os.system("pyinstaller --onefile MinecraftServerElevator.py")
 copytree(f"{cwd}\\ServerFiles-1.8.9\\", f"{cwd}\\dist\\MinecraftServer\\ServerFiles-1.8.9\\")

@@ -1,6 +1,5 @@
-New in version 1.7.0:
-Removed the warning popup when program is started in non-administrative mode!
-Server properties are now printed in console when starting a server!
-Support for multiple server backups!
-Added custom names for server backups!
-Other small changes and fixes!
+New in version 1.8.0:
+Added built-in update downloader!
+Added option to perform a server backup when restoring a backup!
+Updated backup during custom map injection to support multiple backups!
+Slightly reduced RAM usage of main program!
