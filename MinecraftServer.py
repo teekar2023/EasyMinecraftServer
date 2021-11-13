@@ -59,177 +59,124 @@ def create_server_backup():
         pass
     else:
         pass
-    if backup_version_selection == "1.8.9":
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\"):
-            replace_backup = askyesno(title="Backup Exists", message="A Backup For 1.8.9 Already Exists! Would You "
-                                                                     "Like To Replace It?")
-            if replace_backup:
-                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\")
-                copytree(f"{cwd}\\ServerFiles-1.8.9\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\")
-                showinfo(title="Backup Created", message="Backup Created Successfully!")
-                print("Backup Created Successfully!")
-                restart()
-                sys.exit(0)
-            else:
-                showinfo(title="Backup Exists", message="Backup Not Created!")
-                print("Backup Not Created!")
-                restart()
-                sys.exit(0)
-        else:
-            copytree(f"{cwd}\\ServerFiles-1.8.9\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\")
-            showinfo(title="Backup Created", message="Backup Created Successfully!")
-            print("Backup Created Successfully!")
-            restart()
-            sys.exit(0)
-    elif backup_version_selection == "1.12.2":
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\"):
-            replace_backup = askyesno(title="Backup Exists",
-                                      message="A Backup For 1.12.2 Already Exists! Would You Like To Replace It?")
-            if replace_backup:
-                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\")
-                copytree(f"{cwd}\\ServerFiles-1.12.2\\",
-                         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\")
-                showinfo(title="Backup Created", message="Backup Created Successfully!")
-                print("Backup Created Successfully!")
-                restart()
-                sys.exit(0)
-            else:
-                showinfo(title="Backup Exists", message="Backup Not Created!")
-                print("Backup Not Created!")
-                restart()
-                sys.exit(0)
-        else:
-            copytree(f"{cwd}\\ServerFiles-1.12.2\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\")
-            showinfo(title="Backup Created", message="Backup Created Successfully!")
-            print("Backup Created Successfully!")
-            restart()
-            sys.exit(0)
-    elif backup_version_selection == "1.16.5":
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\"):
-            replace_backup = askyesno(title="Backup Exists",
-                                      message="A Backup For 1.16.5 Already Exists! Would You Like To Replace It?")
-            if replace_backup:
-                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\")
-                copytree(f"{cwd}\\ServerFiles-1.16.5\\",
-                         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\")
-                showinfo(title="Backup Created", message="Backup Created Successfully!")
-                print("Backup Created Successfully!")
-                restart()
-                sys.exit(0)
-            else:
-                showinfo(title="Backup Exists", message="Backup Not Created!")
-                print("Backup Not Created!")
-                restart()
-                sys.exit(0)
-        else:
-            copytree(f"{cwd}\\ServerFiles-1.16.5\\",
-                     f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\")
-            showinfo(title="Backup Created", message="Backup Created Successfully!")
-            print("Backup Created Successfully!")
-            restart()
-            sys.exit(0)
-    elif backup_version_selection == "1.17.1":
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\"):
-            replace_backup = askyesno(title="Backup Exists",
-                                      message="A Backup For 1.17.1 Already Exists! Would You Like To Replace It?")
-            if replace_backup:
-                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\")
-                copytree(f"{cwd}\\ServerFiles-1.17.1\\",
-                         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\")
-                showinfo(title="Backup Created", message="Backup Created Successfully!")
-                print("Backup Created Successfully!")
-                restart()
-                sys.exit(0)
-            else:
-                showinfo(title="Backup Exists", message="Backup Not Created!")
-                print("Backup Not Created!")
-                restart()
-                sys.exit(0)
-        else:
-            copytree(f"{cwd}\\ServerFiles-1.17.1\\",
-                     f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\")
-            showinfo(title="Backup Created", message="Backup Created Successfully!")
-            print("Backup Created Successfully!")
-            restart()
-            sys.exit(0)
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\")
+        pass
     else:
-        showerror(title="Backup Server", message="Invalid Version!")
-        print("Invalid Version Selected! Please restart to use again!")
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\")
+        pass
+    else:
+        pass
+    if backup_version_selection == "1.8.9":
+        backup_version = "1.8.9"
+        pass
+    elif backup_version_selection == "1.12.2":
+        backup_version = "1.12.2"
+        pass
+    elif backup_version_selection == "1.16.5":
+        backup_version = "1.16.5"
+        pass
+    elif backup_version_selection == "1.17.1":
+        backup_version = "1.17.1"
+        pass
+    else:
+        showerror(title="Error", message="Invalid Version!")
+        print("Invalid Version!")
         restart()
         sys.exit(0)
+    backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
+    if not backup_name:
+        showerror(title="Error", message="Invalid Name!")
+        print("Invalid Name!")
+        restart()
+        sys.exit(0)
+    else:
+        pass
+    if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\"):
+        showerror(title="Backup Error", message="Backup with the same name already exists! Please try again!")
+        print("Backup with the same name already exists! Please try again!")
+        restart()
+        sys.exit(0)
+    else:
+        try:
+            copytree(f"{cwd}\\ServerFiles-{backup_version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
+            showinfo(title="Backup Successful", message="Backup Successful!")
+            print("Backup Successful!")
+            restart()
+            sys.exit(0)
+        except Exception as e:
+            showerror(title="Backup Error", message=f"Error while performing backup: {e}")
+            print(f"Error while performing backup: {e}")
+            restart()
+            sys.exit(0)
 
 
 def restore_server_backup():
-    restore_version_selection = askstring(title="Restore Server",
-                                          prompt="Please Select The Version You Would Like To Restore! '1.8.9' or "
-                                                 "'1.12.2' or '1.16.5' "
-                                                  "or '1.17.1'")
-    if restore_version_selection == "1.8.9":
-        if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.1.8"):
-            showinfo(title="Backup Not Found", message="Backup Not Found!")
-            print("Backup Not Found!")
-            restart()
-            sys.exit(0)
-        else:
-            rmtree(f"{cwd}\\ServerFiles-1.8.9\\")
-            copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.8.9\\", f"{cwd}\\ServerFiles-1.8.9\\")
-            showinfo(title="Restore Server", message="Restore Successful!")
-            print("Restore Successful!")
-            restart()
-            sys.exit(0)
-    elif restore_version_selection == "1.12.2":
-        if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2"):
-            showinfo(title="Backup Not Found", message="Backup Not Found!")
-            print("Backup Not Found!")
-            restart()
-            sys.exit(0)
-        else:
-            rmtree(f"{cwd}\\ServerFiles-1.12.2\\")
-            copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.12.2\\", f"{cwd}\\ServerFiles-1.12.2\\")
-            showinfo(title="Restore Server", message="Restore Successful!")
-            print("Restore Successful!")
-            restart()
-            sys.exit(0)
-    elif restore_version_selection == "1.16.5":
-        if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5"):
-            showinfo(title="Backup Not Found", message="Backup Not Found!")
-            print("Backup Not Found!")
-            restart()
-            sys.exit(0)
-        else:
-            rmtree(f"{cwd}\\ServerFiles-1.16.5\\")
-            copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.16.5\\",
-                     f"{cwd}\\ServerFiles-1.16.5\\")
-            showinfo(title="Restore Server", message="Restore Successful!")
-            print("Restore Successful!")
-            restart()
-            sys.exit(0)
-    elif restore_version_selection == "1.17.1":
-        if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1"):
-            showinfo(title="Backup Not Found", message="Backup Not Found!")
-            print("Backup Not Found!")
-            restart()
-            sys.exit(0)
-        else:
-            rmtree(f"{cwd}\\ServerFiles-1.17.1\\")
-            copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\1.17.1\\",
-                     f"{cwd}\\ServerFiles-1.17.1\\")
-            showinfo(title="Restore Server", message="Restore Successful!")
-            print("Restore Successful!")
-            restart()
-            sys.exit(0)
+    backup_version_selection = askstring(title="Create Server Backup", prompt="Enter the version you want to backup! "
+                                                                              "'1.8.9' or '1.12.2' or '1.16.5' "
+                                                                              "or '1.17.1'")
+    if backup_version_selection == "1.8.9":
+        backup_version = "1.8.9"
+        pass
+    elif backup_version_selection == "1.12.2":
+        backup_version = "1.12.2"
+        pass
+    elif backup_version_selection == "1.16.5":
+        backup_version = "1.16.5"
+        pass
+    elif backup_version_selection == "1.17.1":
+        backup_version = "1.17.1"
+        pass
     else:
-        showerror(title="Restore Server", message="Invalid Version!")
-        print("Invalid Version Selected! Please restart to use again!")
+        showerror(title="Error", message="Invalid Version!")
+        print("Invalid Version!")
         restart()
         sys.exit(0)
+    backup_path = str(askdirectory(title="Restore Server Backup", initialdir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\"))
+    if not os.path.exists(f"{backup_path}\\server.jar"):
+        showerror(title="Backup Restore Error", message="This backup is invalid and wont work!")
+        print("This backup is invalid and wont work!")
+        restart()
+        sys.exit(0)
+    else:
+        confirm_restore = askyesno(title="Restore Server Backup", message="Are you sure you want to restore this backup? It will replace any current data in the server!")
+        if confirm_restore:
+            try:
+                rmtree(f"{cwd}\\ServerFiles-{backup_version}\\")
+                copytree(f"{backup_path}\\", f"{cwd}\\ServerFiles-{backup_version}\\")
+                showinfo(title="Restore Successful", message="Restore Successful!")
+                print("Restore Successful!")
+                restart()
+                sys.exit(0)
+            except Exception as e:
+                showerror(title="Backup Restore Error", message=f"Error while restoring backup: {e}")
+                print(f"Error while restoring backup: {e}")
+                restart()
+                sys.exit(0)
+        else:
+            showinfo(title="Restore Cancelled", message="Restore Cancelled!")
+            print("Restore Cancelled!")
+            restart()
+            sys.exit(0)
 
 
 def reset_server():
     reset_version_selection = askstring(title="Reset Server",
                                         prompt="Please Select The Version You Would Like To Reset! '1.8.9' or "
                                                "'1.12.2' or '1.16.5' "
-                                                "or '1.17.1'")
+                                               "or '1.17.1'")
     if reset_version_selection == "1.8.9":
         version = "1.8.9"
         os.remove(f"{cwd}\\ServerFiles-1.8.9\\ops.json")
@@ -293,7 +240,7 @@ def inject_custom_map():
     version_select = askstring(title="Select Version",
                                prompt="Please Select The Version You Would Like To Use The Custom Map In! '1.8.9' or "
                                       "'1.12.2' or '1.16.5' "
-                                     "or '1.17.1'")
+                                      "or '1.17.1'")
     if version_select == "1.8.9":
         version = "1.8.9"
         pass
@@ -340,7 +287,8 @@ def inject_custom_map():
                         restart()
                         sys.exit(0)
                 else:
-                    copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
+                    copytree(f"{cwd}\\ServerFiles-{version}\\",
+                             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
                     showinfo(title="World Backup", message="Backup was successful. Please restart to use again!")
                     print("Backup Successful!")
                     pass
@@ -387,7 +335,8 @@ def reset_dimension():
             restart()
             sys.exit(0)
         except Exception as e:
-            showerror(title="Reset Dimension", message=f"Error While Resetting {dimension_reset} On Server Version {version}! Error: {e}")
+            showerror(title="Reset Dimension",
+                      message=f"Error While Resetting {dimension_reset} On Server Version {version}! Error: {e}")
             print(f"Error While Resetting {dimension_reset} On Server Version{version}! Error: {e}")
             restart()
             sys.exit(0)
@@ -399,7 +348,8 @@ def reset_dimension():
             restart()
             sys.exit(0)
         except Exception as e:
-            showerror(title="Reset Dimension", message=f"Error While Resetting {dimension_reset} On Server Version {version}! Error: {e}")
+            showerror(title="Reset Dimension",
+                      message=f"Error While Resetting {dimension_reset} On Server Version {version}! Error: {e}")
             print(f"Error While Resetting {dimension_reset} On Server Version{version}! Error: {e}")
             restart()
             sys.exit(0)
@@ -411,7 +361,8 @@ def reset_dimension():
             restart()
             sys.exit(0)
         except Exception as e:
-            showerror(title="Reset Dimension", message=f"Error While Resetting {dimension_reset} On Server Version {version}! Error: {e}")
+            showerror(title="Reset Dimension",
+                      message=f"Error While Resetting {dimension_reset} On Server Version {version}! Error: {e}")
             print(f"Error While Resetting {dimension_reset} On Server Version{version}! Error: {e}")
             restart()
             sys.exit(0)
@@ -422,17 +373,16 @@ def reset_dimension():
         sys.exit(0)
 
 
-
 if is_admin():
     pass
 else:
     print("Admin access not granted!")
-    showwarning(title="Admin Access", message="Admin Access Not Granted! Please Allow Admin Access!")
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
     sys.exit(0)
+os.system("clear")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.6.0")
+print("EasyMinecraftServer Version: 1.7.0")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -452,13 +402,14 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.6.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.7.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
         changelog_download = urllib.request.urlopen(changelog_url)
         try:
-            open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="w+", encoding="utf8").truncate()
+            open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="w+",
+                 encoding="utf8").truncate()
         except Exception:
             pass
         changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="wb")
@@ -474,7 +425,8 @@ try:
             changelog_file.write(str.encode("There Was An Error Downloading Changelog Information!"))
             pass
         changelog_file.close()
-        changelog = str(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="r", encoding="utf8").read())
+        changelog = str(
+            open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\changelog.txt", mode="r", encoding="utf8").read())
         showwarning(title="Update Available", message="An update is available. Please update to the latest version to "
                                                       f"use this program.\nChangelog: {changelog}")
         print(changelog)
@@ -578,13 +530,14 @@ else:
     else:
         authtoken = str(open(f"{cwd}\\Data\\authtoken.txt", "r").read())
         pass
-    showwarning(title="WARNING", message="DO NOT TOUCH ANYTHING FOR 3 SECONDS AFTER CLOSING THIS POPUP!")
+    showwarning(title="WARNING", message="DO NOT TOUCH ANYTHING FOR AT LEAST 3 SECONDS AFTER CLOSING THIS POPUP!")
     ngrok_process = Thread(target=ngrok)
     ngrok_process.start()
     time.sleep(3)
     pass
-ram_input = askinteger(title="Server RAM", prompt="How many mb of ram would you like in the server? Please enter an "
-                                                  "integer number! Minimum Recommended: 2000")
+ram_input = askinteger(title="Minecraft Server RAM", prompt="How many mb of ram would you like in the server? Please "
+                                                            "enter an "
+                                                            "integer number! Minimum Recommended: 2000")
 os.chdir(f"{cwd}\\ServerFiles-{version}\\")
 showinfo(title="Minecraft Server", message="Server will be created/started after closing this popup! Type "
                                            "'STOP' and press 'ENTER' in the console window to shutdown the "
@@ -595,6 +548,9 @@ showinfo(title="Minecraft Server", message="Server will be created/started after
                                            "and are port forwarded, the server ip will be your computer's ip with the "
                                            "port '25565'! Have Fun!")
 print(f"Starting Minecraft Server On {version}")
+server_properties = str(open(f"{cwd}\\ServerFiles-{version}\\server.properties", "r").read())
+print("---SERVER PROPERTIES---")
+print(server_properties)
 os.system(f"java -Xmx{ram_input}M -Xms{ram_input}M -jar server.jar nogui")
 time.sleep(1)
 print("Server Stopped...")

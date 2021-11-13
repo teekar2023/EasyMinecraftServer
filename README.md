@@ -11,7 +11,7 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, and 1.17.
 3. When running the installer, windows smartscreen might block it as well. If it does, click on "learn more" and then click "run anyway".
 4. Follow the instructions in the installer and install EasyMinecraftServer.
 5. During installation, you will be prompted to install JDK 17. When this happens, install it and if it detects you already have it installed, you can choose to reinstall it or cancel.
-6. That is all. Just run the application and you are good to go!
+6. That is all. Just run the application, and you are good to go!
 
 # TODO
 * Add experimental 1.18 support
@@ -21,7 +21,6 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, and 1.17.
 * Server properties editor
 * Add logging
 * Add built-in update downloader
-* Add check to see if all server files exist before backup or anything else
 * Add more error handling when performing tasks
 * Use external servers (servers that were not created using this program)
 
