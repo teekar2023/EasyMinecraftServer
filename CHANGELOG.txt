@@ -1,5 +1,7 @@
-New in version 1.8.0:
-Added built-in update downloader!
-Added option to perform a server backup when restoring a backup!
-Updated backup during custom map injection to support multiple backups!
-Slightly reduced RAM usage of main program!
+New in version 1.9.0:
+Added new server properties editor!
+Fixed bug with downloading update installer in-program!
+Reset function now resets eula and server properties to default from recovery files!
+Fixed a problem where server backups could be restored into the wrong versions!
+Fixed a bug with the console screen clearing!
+Other small changes and fixes!
