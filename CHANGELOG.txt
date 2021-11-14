@@ -1,7 +1,2 @@
-New in version 1.9.0:
-Added new server properties editor!
-Fixed bug with downloading update installer in-program!
-Reset function now resets eula and server properties to default from recovery files!
-Fixed a problem where server backups could be restored into the wrong versions!
-Fixed a bug with the console screen clearing!
-Other small changes and fixes!
+New in version 1.9.1:
+Hotfix for server not starting!

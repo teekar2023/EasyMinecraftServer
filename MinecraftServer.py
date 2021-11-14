@@ -828,7 +828,7 @@ else:
 os.system("clear")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.9.0")
+print("EasyMinecraftServer Version: 1.9.1")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -848,7 +848,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.9.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.9.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
@@ -1028,8 +1028,6 @@ ram_input = askinteger(title="Minecraft Server RAM", prompt="How many mb of ram 
                                                             "integer number! Minimum Recommended: 2000")
 os.chdir(f"{cwd}\\ServerFiles-{version}\\")
 p = Properties()
-with open(f"{cwd}\\ServerFiles-{version}\\server.properties", "w") as f:
-    p.load(open(f"{cwd}\\ServerFiles-{version}\\server.properties"))
 showinfo(title="Minecraft Server", message="Server will be created/started in a moment after closing this popup! Type "
                                            "'STOP' and press 'ENTER' in the console window to shutdown the "
                                            "server! Also, if you are using ngrok, your server's ip can be found in "
@@ -1037,7 +1035,7 @@ showinfo(title="Minecraft Server", message="Server will be created/started in a 
                                            "next to 'Forwarding' and should follow the format: '("
                                            "numbers).tcp.ngrok.io:(more_numbers)! If you are not using ngrok "
                                            "and are port forwarded, the server ip will be your computer's ip with the "
-                                           f"port '{str(p.get('server-port').data)}'! Have Fun!")
+                                           f"port '25565'! Have Fun!")
 server_properties = str(open(f"{cwd}\\ServerFiles-{version}\\server.properties", "r").read())
 print("---SERVER PROPERTIES---")
 print(server_properties)
