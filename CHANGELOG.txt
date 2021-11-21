@@ -1,2 +1,6 @@
-New in version 1.9.1:
-Hotfix for server not starting!
+New in version 1.10.0:
+Fixed 'clear' bug!
+Fixed some bugs with server properties editor window!
+Port forwarding via ngrok now uses port set in server properties!
+Updated some text to reflect changes to server properties!
+Added some more warnings and information text!

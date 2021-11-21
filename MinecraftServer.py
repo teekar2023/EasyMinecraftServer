@@ -42,7 +42,7 @@ def ngrok():
     time.sleep(1)
     kbm.typewrite(f"cd {cwd}\n")
     kbm.typewrite(f"cd ngrok\n")
-    kbm.typewrite("ngrok tcp 25565\n")
+    kbm.typewrite(f"ngrok tcp {port}\n")
     pass
 
 
@@ -239,8 +239,8 @@ def reset_server():
         os.remove(f"{cwd}\\ServerFiles-1.8.9\\eula.txt")
         copy(f"{cwd}\\1.8.9-recovery\\server.properties", f"{cwd}\\ServerFiles-1.8.9\\server.properties")
         copy(f"{cwd}\\1.8.9-recovery\\eula.txt", f"{cwd}\\ServerFiles-1.8.9\\eula.txt")
-        showinfo(title="Reset Server", message="Reset Successful!")
-        print("Reset Successful!")
+        showinfo(title="Reset Server", message="Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
+        print("Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
         restart()
         sys.exit(0)
     elif reset_version_selection == "1.12.2":
@@ -255,8 +255,8 @@ def reset_server():
         os.remove(f"{cwd}\\ServerFiles-1.12.2\\eula.txt")
         copy(f"{cwd}\\1.12.2-recovery\\server.properties", f"{cwd}\\ServerFiles-1.12.2\\server.properties")
         copy(f"{cwd}\\1.12.2-recovery\\eula.txt", f"{cwd}\\ServerFiles-1.12.2\\eula.txt")
-        showinfo(title="Reset Server", message="Reset Successful!")
-        print("Reset Successful!")
+        showinfo(title="Reset Server", message="Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
+        print("Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
         restart()
         sys.exit(0)
     elif reset_version_selection == "1.16.5":
@@ -271,8 +271,8 @@ def reset_server():
         os.remove(f"{cwd}\\ServerFiles-1.16.5\\eula.txt")
         copy(f"{cwd}\\1.16.5-recovery\\server.properties", f"{cwd}\\ServerFiles-1.16.5\\server.properties")
         copy(f"{cwd}\\1.16.5-recovery\\eula.txt", f"{cwd}\\ServerFiles-1.16.5\\eula.txt")
-        showinfo(title="Reset Server", message="Reset Successful!")
-        print("Reset Successful!")
+        showinfo(title="Reset Server", message="Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
+        print("Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
         restart()
         sys.exit(0)
     elif reset_version_selection == "1.17.1":
@@ -287,8 +287,8 @@ def reset_server():
         os.remove(f"{cwd}\\ServerFiles-1.17.1\\eula.txt")
         copy(f"{cwd}\\1.17.1-recovery\\server.properties", f"{cwd}\\ServerFiles-1.17.1\\server.properties")
         copy(f"{cwd}\\1.17.1-recovery\\eula.txt", f"{cwd}\\ServerFiles-1.17.1\\eula.txt")
-        showinfo(title="Reset Server", message="Reset Successful!")
-        print("Reset Successful!")
+        showinfo(title="Reset Server", message="Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
+        print("Reset Successful! However, If Your Server Jar File Is Corrupted, You Will Have To Uninstall This Program And Reinstall It!")
         restart()
         sys.exit(0)
     else:
@@ -825,10 +825,10 @@ else:
     print("Admin access not granted!")
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
     sys.exit(0)
-os.system("clear")
+os.system("cls")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.9.1")
+print("EasyMinecraftServer Version: 1.10.0")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -848,7 +848,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.9.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.10.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
@@ -958,12 +958,12 @@ elif main_input == "5":
 elif main_input == "6":
     reset_dimension()
 elif main_input == "7":
+    showwarning(title="BETA Feature", message="This Feature Is Still In Development! Please Use It At Your Own Risk And Please Excuse/Report Any Bugs That Appear!")
     properties_version = askstring(title="Select Version",
                                    prompt="Please Select The Version You Would Like To Edit Server Properties For! '1.8.9' or "
                                           "'1.12.2' or '1.16.5' "
                                           "or '1.17.1'")
     change_server_properties(properties_version=properties_version)
-    root.mainloop()
 elif main_input == "8":
     changelog = str(open(f"{cwd}\\CHANGELOG.txt", "r").read())
     showinfo(title="EasyMinecraftServer Changelog", message=changelog)
@@ -996,7 +996,11 @@ elif version_selection == "1.17.1":
 else:
     showerror("Minecraft Server", "You have entered an invalid version!")
     sys.exit(0)
-port_forward_prompt = askyesno(title="Port Forwarded?", message="Is port 25565 port forwarded on your network? Press "
+p = Properties()
+with open(f"{cwd}\\ServerFiles-{version}\\server.properties", "rb") as f:
+    p.load(f)
+port = str(p.get("server-port").data)
+port_forward_prompt = askyesno(title="Port Forwarded?", message=f"Is port number {port} port forwarded on your network? Press "
                                                                 "'NO' if you are not sure!")
 if port_forward_prompt:
     pass
@@ -1027,7 +1031,6 @@ ram_input = askinteger(title="Minecraft Server RAM", prompt="How many mb of ram 
                                                             "enter an "
                                                             "integer number! Minimum Recommended: 2000")
 os.chdir(f"{cwd}\\ServerFiles-{version}\\")
-p = Properties()
 showinfo(title="Minecraft Server", message="Server will be created/started in a moment after closing this popup! Type "
                                            "'STOP' and press 'ENTER' in the console window to shutdown the "
                                            "server! Also, if you are using ngrok, your server's ip can be found in "
@@ -1035,7 +1038,7 @@ showinfo(title="Minecraft Server", message="Server will be created/started in a 
                                            "next to 'Forwarding' and should follow the format: '("
                                            "numbers).tcp.ngrok.io:(more_numbers)! If you are not using ngrok "
                                            "and are port forwarded, the server ip will be your computer's ip with the "
-                                           f"port '25565'! Have Fun!")
+                                           f"port '{port}'! Have Fun!")
 server_properties = str(open(f"{cwd}\\ServerFiles-{version}\\server.properties", "r").read())
 print("---SERVER PROPERTIES---")
 print(server_properties)
