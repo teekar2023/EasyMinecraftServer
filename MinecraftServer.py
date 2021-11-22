@@ -819,6 +819,103 @@ def change_server_properties(properties_version):
     sys.exit(0)
 
 
+def import_external_server():
+    version_select = askstring(title="Select Version",
+                               prompt="Please Select The Version You Would Like To Use The Custom Map In! '1.8.9' or "
+                                      "'1.12.2' or '1.16.5' "
+                                      "or '1.17.1'")
+    if version_select == "1.8.9":
+        version = "1.8.9"
+        pass
+    elif version_select == "1.12.2":
+        version = "1.12.2"
+        pass
+    elif version_select == "1.16.5":
+        version = "1.16.5"
+        pass
+    elif version_select == "1.17.1":
+        version = "1.17.1"
+        pass
+    else:
+        showerror(title="Error", message="Invalid Version Selected!")
+        print("Invalid Version Selected!")
+        restart()
+        sys.exit(0)
+    import_files = str(askdirectory(title="Select Folder To Import"))
+    if not os.path.exists(f"{import_files}\\world\\") or not os.path.exists(f"{import_files}\\server.properties") or not os.path.exists(
+            f"{import_files}\\eula.txt") or not os.path.exists(f"{import_files}\\ops.json") or not os.path.exists(
+        f"{import_files}\\banned-ips.json") or not os.path.exists(f"{import_files}\\banned-players.json") or not os.path.exists(
+        f"{import_files}\\whitelist.json"):
+        showerror(title="Error", message="Invalid Folder Selected!")
+        print("Invalid File Selected!")
+        restart()
+        sys.exit(0)
+    else:
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\ops.json\\") or \
+                    os.path.exists(f"{cwd}\\ServerFiles-{version}\\banned-players.json\\") or \
+                    os.path.exists(f"{cwd}\\ServerFiles-{version}\\banned-ips.json\\"):
+            backup_current_server = askyesno(title="Restore Server Backup", message="You have current data in the server! Would you like "
+                                                            "to perform a backup?")
+            if backup_current_server:
+                backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
+                if not backup_name:
+                    showerror(title="Error", message="Invalid Name!")
+                    print("Invalid Name!")
+                    restart()
+                    sys.exit(0)
+                else:
+                    pass
+                if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\"):
+                    showerror(title="Backup Error", message="Backup with the same name already exists! Please try again!")
+                    print("Backup with the same name already exists! Please try again!")
+                    restart()
+                    sys.exit(0)
+                else:
+                    try:
+                        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
+                        showinfo(title="Backup Successful", message="Backup Successful!")
+                        print("Backup Successful!")
+                        pass
+                    except Exception as e:
+                        showerror(title="Backup Error", message=f"Error while performing backup: {e}")
+                        print(f"Error while performing backup: {e}")
+                        restart()
+                        sys.exit(0)
+                    pass
+            else:
+                showwarning(title="Restore Server Backup", message="You have chosen not to backup the current "
+                                                                       "server! Current server data will be "
+                                                                       "overwritten!")
+                pass
+            pass
+        else:
+            pass
+        try:
+            rmtree(f"{cwd}\\ServerFiles-{version}\\world\\")
+            os.remove(f"{cwd}\\ServerFiles-{version}\\server.properties")
+            os.remove(f"{cwd}\\ServerFiles-{version}\\eula.txt")
+            os.remove(f"{cwd}\\ServerFiles-{version}\\ops.json")
+            os.remove(f"{cwd}\\ServerFiles-{version}\\banned-ips.json")
+            os.remove(f"{cwd}\\ServerFiles-{version}\\banned-players.json")
+            os.remove(f"{cwd}\\ServerFiles-{version}\\whitelist.json")
+            copy(f"{import_files}\\world\\", f"{cwd}\\ServerFiles-{version}\\world\\")
+            copy(f"{import_files}\\server.properties", f"{cwd}\\ServerFiles-{version}\\server.properties")
+            copy(f"{import_files}\\eula.txt", f"{cwd}\\ServerFiles-{version}\\eula.txt")
+            copy(f"{import_files}\\ops.json", f"{cwd}\\ServerFiles-{version}\\ops.json")
+            copy(f"{import_files}\\banned-ips.json", f"{cwd}\\ServerFiles-{version}\\banned-ips.json")
+            copy(f"{import_files}\\banned-players.json", f"{cwd}\\ServerFiles-{version}\\banned-players.json")
+            copy(f"{import_files}\\whitelist.json", f"{cwd}\\ServerFiles-{version}\\whitelist.json")
+            showinfo(title="Custom Map", message="Server Successfully Imported!")
+            print("Server Successfully Imported!")
+            restart()
+            sys.exit(0)
+        except Exception as e:
+            showerror(title="Import Error", message=f"Error while performing import: {e}")
+            print(f"Error while performing import: {e}")
+            restart()
+            sys.exit(0)
+
+
 if is_admin():
     pass
 else:
@@ -828,7 +925,7 @@ else:
 os.system("cls")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.10.0")
+print("EasyMinecraftServer Version: 1.11.0")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -848,7 +945,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.10.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.11.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
@@ -941,8 +1038,9 @@ print("4. Reset Server")
 print("5. Use A Custom Map In Server")
 print("6. Reset A Dimension In Server")
 print("7. Change Server Properties (BETA)")
-print("8. Changelog")
-print("9. Exit")
+print("8. Import External Server")
+print("9. Changelog")
+print("0. Exit")
 print("-------------------------")
 main_input = input("What Would You Like To Do? Enter The Corresponding Number:")
 if main_input == "1":
@@ -965,12 +1063,14 @@ elif main_input == "7":
                                           "or '1.17.1'")
     change_server_properties(properties_version=properties_version)
 elif main_input == "8":
+    import_external_server()
+elif main_input == "9":
     changelog = str(open(f"{cwd}\\CHANGELOG.txt", "r").read())
     showinfo(title="EasyMinecraftServer Changelog", message=changelog)
     print(changelog)
     restart()
     sys.exit(0)
-elif main_input == "9":
+elif main_input == "0":
     print("Exiting...")
     time.sleep(1)
     sys.exit(0)
@@ -1005,22 +1105,22 @@ port_forward_prompt = askyesno(title="Port Forwarded?", message=f"Is port number
 if port_forward_prompt:
     pass
 else:
-    if not os.path.exists(f"{cwd}\\Data\\"):
-        os.mkdir(f"{cwd}\\Data\\")
+    if not os.path.exists(f"{user_dir}\\Data\\"):
+        os.mkdir(f"{user_dir}\\Data\\")
         pass
     else:
         pass
-    if not os.path.exists(f"{cwd}\\Data\\authtoken.txt"):
-        open(f"{cwd}\\Data\\authtoken.txt", "w+")
+    if not os.path.exists(f"{user_dir}\\Data\\authtoken.txt"):
+        open(f"{user_dir}\\Data\\authtoken.txt", "w+")
         webbrowser.open("https://dashboard.ngrok.com/get-started/setup")
         showinfo(title="NGROK", message="Makeshift port-forwarding requires a ngrok account. Please navigate to "
                                         "https://dashboard.ngrok.com/get-started/setup after making an account and "
                                         "get your authtoken!")
         authtoken = askstring(title="Ngrok Authtoken", prompt="Enter your ngrok authtoken")
-        open(f"{cwd}\\Data\\authtoken.txt", "w").write(str(authtoken))
+        open(f"{user_dir}\\Data\\authtoken.txt", "w").write(str(authtoken))
         pass
     else:
-        authtoken = str(open(f"{cwd}\\Data\\authtoken.txt", "r").read())
+        authtoken = str(open(f"{user_dir}\\Data\\authtoken.txt", "r").read())
         pass
     showwarning(title="WARNING", message="DO NOT TOUCH ANYTHING FOR AT LEAST 3 SECONDS AFTER CLOSING THIS POPUP!")
     ngrok_process = Thread(target=ngrok)

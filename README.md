@@ -16,12 +16,10 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, and 1.17.
 
 # TODO
 * Add experimental 1.18 support
-* Support for multiple backups
 * Support modded servers
 * GUI
 * Add logging
 * Add more error handling when performing tasks
-* Use external servers (servers that were not created using this program)
 * Add checks to see if changed server properties are valid
 
 # License

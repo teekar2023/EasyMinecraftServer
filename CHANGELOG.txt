@@ -1,6 +1,4 @@
-New in version 1.10.0:
-Fixed 'clear' bug!
-Fixed some bugs with server properties editor window!
-Port forwarding via ngrok now uses port set in server properties!
-Updated some text to reflect changes to server properties!
-Added some more warnings and information text!
+New in version 1.11.0:
+Data files are now stored in user documents directory!
+Added ability to import external servers!
+Few other minor changes!
