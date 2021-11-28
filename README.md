@@ -15,12 +15,14 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, and 1.17.
 6. That is all. Just run the application, and you are good to go!
 
 # TODO
-* Add experimental 1.18 support
-* Support modded servers
-* GUI
-* Add logging
-* Add more error handling when performing tasks
-* Add checks to see if changed server properties are valid
+- Add experimental 1.18 support
+- Support modded servers
+- GUI
+- Add logging
+- Add checks to see if changed server properties are valid
+- Add settings menu
+- Add automatic backups option in settings menu
+- Add option for GUI server in settings menu
 
 # License
 Copyright 2021 Sreekar Palla

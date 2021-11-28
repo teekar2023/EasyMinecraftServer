@@ -1,4 +1,5 @@
-New in version 1.11.0:
-Data files are now stored in user documents directory!
-Added ability to import external servers!
-Few other minor changes!
+New in version 1.12.0:
+Fixed bug where program would crash when attempting to reset server!
+Added error handling for resetting server!
+Some bug fixes including text!
+Changed some hard coded text!

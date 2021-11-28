@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(['MinecraftServer.py'],
-             pathex=['C:\\Users\\sree2\\IdeaProjects\\Minecraft Server'],
+             pathex=[],
              binaries=[],
              datas=[],
              hiddenimports=[],
