@@ -23,6 +23,7 @@ copytree(f"{cwd}\\ServerFiles-1.8.9\\", f"{cwd}\\dist\\MinecraftServer\\ServerFi
 copytree(f"{cwd}\\ServerFiles-1.12.2\\", f"{cwd}\\dist\\MinecraftServer\\ServerFiles-1.12.2\\")
 copytree(f"{cwd}\\ServerFiles-1.16.5\\", f"{cwd}\\dist\\MinecraftServer\\ServerFiles-1.16.5\\")
 copytree(f"{cwd}\\ServerFiles-1.17.1\\", f"{cwd}\\dist\\MinecraftServer\\ServerFiles-1.17.1\\")
+copytree(f"{cwd}\\ServerFiles-1.18\\", f"{cwd}\\dist\\MinecraftServer\\ServerFiles-1.18\\")
 copytree(f"{cwd}\\ngrok\\", f"{cwd}\\dist\\MinecraftServer\\ngrok\\")
 copytree(f"{cwd}\\JDK\\", f"{cwd}\\dist\\MinecraftServer\\JDK\\")
 copy(f"{cwd}\\dist\\MinecraftServerElevator.exe", f"{cwd}\\dist\\MinecraftServer\\MinecraftServerElevator.exe")
@@ -60,6 +61,13 @@ if not os.path.exists(f"{cwd}\\dist\\MinecraftServer\\1.17.1-recovery\\"):
     copy(f"{cwd}\\ServerFiles-1.17.1\\server.properties", f"{cwd}\\dist\\MinecraftServer\\1.17.1"
                                                                            f"-recovery\\server.properties")
     copy(f"{cwd}\\ServerFiles-1.17.1\\eula.txt", f"{cwd}\\dist\\MinecraftServer\\1.17.1-recovery"
+                                                                  f"\\eula.txt")
+    pass
+if not os.path.exists(f"{cwd}\\dist\\MinecraftServer\\1.18-recovery\\"):
+    os.makedirs(f"{cwd}\\dist\\MinecraftServer\\1.18-recovery\\")
+    copy(f"{cwd}\\ServerFiles-1.18\\server.properties", f"{cwd}\\dist\\MinecraftServer\\1.18"
+                                                                           f"-recovery\\server.properties")
+    copy(f"{cwd}\\ServerFiles-1.18\\eula.txt", f"{cwd}\\dist\\MinecraftServer\\1.18-recovery"
                                                                   f"\\eula.txt")
     pass
 else:

@@ -1,5 +1,14 @@
-New in version 1.12.0:
-Fixed bug where program would crash when attempting to reset server!
-Added error handling for resetting server!
-Some bug fixes including text!
-Changed some hard coded text!
+New in version 1.13.0:
+Added support for minceraft version 1.18!
+Added new uninstall option!
+Some bug fixes and changes with server properties editor!
+Added new settings options!
+Added settings option for server GUI!
+Added settings option for automatic server backup!
+Added settings option for server ram allocation amount!
+Added new program setup process!
+Removed server properties printing on server startup!
+Some small filesystem changes!
+Added data file check and recovery system!
+Fixed a bug where server would crash when starting a server on version 1.8.9 or 1.12.2!
+Removed the info popup when server is stopped!
