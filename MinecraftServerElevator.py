@@ -16,11 +16,9 @@ if is_admin():
     print("Creating Anti-Virus Exception For EasyMinecraftServer...")
     cwd = os.getcwd()
     print(f"Exclusion Path: {cwd}")
-    time.sleep(3)
     print(f"Executing system command: powershell -Command Add-MpPreference -ExclusionPath '{cwd}'")
     subprocess.call(f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}'")
     print("Finished creating Anti-Virus Exception For EasyMinecraftServer...")
-    time.sleep(3)
 else:
     print("Error: Restart With Admin Privileges...")
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)

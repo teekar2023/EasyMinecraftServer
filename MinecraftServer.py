@@ -2,6 +2,7 @@ import os
 import sys
 import webbrowser
 import time
+from grpc import server
 import requests
 import urllib
 import ctypes
@@ -10,7 +11,7 @@ from threading import Thread
 from tkinter import *
 from tkinter.messagebox import showerror, showinfo, showwarning
 from tkinter.messagebox import askyesno
-from tkinter.simpledialog import askinteger, askstring
+from tkinter.simpledialog import askstring
 from tkinter.filedialog import askdirectory, asksaveasfile
 from shutil import copytree, rmtree, copy
 from jproperties import Properties
@@ -527,13 +528,7 @@ def reset_dimension():
 
 
 def change_server_properties(properties_version):
-    if properties_version == "1.8.9":
-        version = "1.8.9"
-        pass
-    elif properties_version == "1.12.2":
-        version = "1.12.2"
-        pass
-    elif properties_version == "1.16.5":
+    if properties_version == "1.16.5":
         version = "1.16.5"
         pass
     elif properties_version == "1.17.1":
@@ -543,8 +538,10 @@ def change_server_properties(properties_version):
         version = "1.18"
         pass
     else:
-        version = "1.17.1"
-        pass
+        showerror(title="Change Server Properties", message="Invalid Version!")
+        print("Invalid Version Selected! Please restart to use again!")
+        restart()
+        sys.exit(0)
     properties_window = Toplevel(root)
     properties_window.title("Change Server Properties")
     properties_window.geometry("1750x1050")
@@ -708,11 +705,15 @@ def change_server_properties(properties_version):
     spawn_animals_entry = Entry(properties_window, width=115)
     spawn_animals_entry.grid(row=12, column=2)
     spawn_animals_entry.insert(0, p.get("spawn-animals").data)
-    snooper_enabled_label = Label(properties_window, text="Snooper Enabled")
-    snooper_enabled_label.grid(sticky=W, row=13, column=2)
-    snooper_enabled_entry = Entry(properties_window, width=115)
-    snooper_enabled_entry.grid(row=14, column=2)
-    snooper_enabled_entry.insert(0, p.get("snooper-enabled").data)
+    if version != "1.18":
+        snooper_enabled_label = Label(properties_window, text="Snooper Enabled")
+        snooper_enabled_label.grid(sticky=W, row=13, column=2)
+        snooper_enabled_entry = Entry(properties_window, width=115)
+        snooper_enabled_entry.grid(row=14, column=2)
+        snooper_enabled_entry.insert(0, p.get("snooper-enabled").data)
+        pass
+    else:
+        pass
     difficulty_label = Label(properties_window, text="Difficulty")
     difficulty_label.grid(sticky=W, row=15, column=2)
     difficulty_entry = Entry(properties_window, width=115)
@@ -828,7 +829,11 @@ def change_server_properties(properties_version):
     pvp = pvp_entry.get()
     spawn_npcs = spawn_npcs_entry.get()
     spawn_animals = spawn_animals_entry.get()
-    snooper_enabled = snooper_enabled_entry.get()
+    if version != "1.18":
+        snooper_enabled = snooper_enabled_entry.get()
+        pass
+    else:
+        pass
     difficulty = difficulty_entry.get()
     function_permission_level = function_permission_level_entry.get()
     network_compression_threshold = network_compression_threshold_entry.get()
@@ -876,7 +881,11 @@ def change_server_properties(properties_version):
         p["pvp"] = str(pvp)
         p["spawn-npcs"] = str(spawn_npcs)
         p["spawn-animals"] = str(spawn_animals)
-        p["snooper-enabled"] = str(snooper_enabled)
+        if version != "1.18":
+            p["snooper-enabled"] = str(snooper_enabled)
+            pass
+        else:
+            pass
         p["difficulty"] = str(difficulty)
         p["function-permission-level"] = str(function_permission_level)
         p["network-compression-threshold"] = str(network_compression_threshold)
@@ -1219,14 +1228,22 @@ def settings_check():
 
 
 def auto_backup(version):
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
+        pass
     print("Saving Automatic Server Backup...")
-    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}"):
-        create_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}",
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt"):
+        create_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt",
                            'w+')
         create_file.close()
     else:
         last_auto_backup_file = open(
-            f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}", 'r')
+            f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", 'r')
         last_auto_backup = last_auto_backup_file.read()
         last_auto_backup_file.seek(0)
         last_auto_backup_file.truncate(0)
@@ -1241,7 +1258,7 @@ def auto_backup(version):
         print(
             f"Server Backup Saved to {user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{current_time}")
         last_auto_backup_file = open(
-            f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}", 'w+')
+            f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", 'w+')
         last_auto_backup_file.write(str(current_time))
         last_auto_backup_file.close()
         pass
@@ -1261,7 +1278,7 @@ else:
 os.system("cls")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.13.1")
+print("EasyMinecraftServer Version: 1.13.2")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -1289,7 +1306,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.13.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.13.2":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print("-------------------------")
         print(f"Updated Version Available: {new_version}")
@@ -1452,7 +1469,6 @@ else:
     showerror("Minecraft Server", "You have entered an invalid version!")
     sys.exit(0)
 if version == "1.16.5" or version == "1.17.1" or version == "1.18":
-
     p = Properties()
     with open(f"{cwd}\\ServerFiles-{version}\\server.properties", "rb") as f:
         p.load(f)
@@ -1474,7 +1490,7 @@ else:
         open(f"{user_dir}\\Data\\ngrok_authtoken.txt", "w+")
         webbrowser.open("https://dashboard.ngrok.com/get-started/setup")
         showinfo(title="NGROK", message="Makeshift port-forwarding requires a ngrok account. Please navigate to "
-                                        "https://dashboard.ngrok.com/get-started/setup after making an account and "
+                                        "https://dashboard.ngrok.com/get-started/setup after making a free account and "
                                         "get your authtoken!")
         authtoken = askstring(title="Ngrok Authtoken", prompt="Enter your ngrok authtoken")
         open(f"{user_dir}\\Data\\ngrok_authtoken.txt", "w").write(str(authtoken))
@@ -1500,11 +1516,13 @@ showinfo(title="Minecraft Server", message="Server will be created/started in a 
                                            "and are port forwarded, the server ip will be your computer's ip with the "
                                            f"port '{port}'! Have Fun!")
 print(f"Starting Minecraft Server On {version}")
-server_fui_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\server_gui.txt", "r")
-if server_fui_file.read() == "True":
+server_gui_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\server_gui.txt", "r")
+if server_gui_file.read() == "True":
+    server_gui_file.close()
     os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar")
     pass
 else:
+    server_gui_file.close()
     os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar nogui")
     pass
 time.sleep(1)

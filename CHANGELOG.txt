@@ -1,4 +1,6 @@
-New in version 1.13.1:
-Fixed some bugs with setup processes!
-Fixed issue with ram allocation setting and program constantly crashing!
-Some minor text formatting changes for better readability!
+New in version 1.13.2:
+Fixed a bug that would cause program to crash when changing 1.18 server properties!
+Fixed a bug where automatic server backup would fail and cause program to crash!
+Minor changes for better performance!
+Elevator script now works much faster!
+Other small changes and fixes!

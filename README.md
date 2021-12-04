@@ -20,6 +20,7 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, and 1.17.
 - Add logging
 - Add checks to see if changed server properties are valid
 - Add debug setting
+- Store settings in single json file
 
 # License
 Copyright 2021 Sreekar Palla
