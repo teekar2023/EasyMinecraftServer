@@ -1089,7 +1089,7 @@ def setup(arg):
             pass
         settings_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\ram_allocation_amount.txt", 'w+')
         ram_allocation_amount = askstring(title="RAM Allocation Amount",
-                                          message="How much RAM would you like to allocate to the server? (MB) "
+                                          prompt="How much RAM would you like to allocate to the server? (MB) "
                                                   "Minimum Recommended: 2048")
         settings_file.write(ram_allocation_amount)
         print(f"RAM Allocation Amount Set To {ram_allocation_amount}!")
@@ -1261,7 +1261,7 @@ else:
 os.system("cls")
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
-print("EasyMinecraftServer Version: 1.13.0")
+print("EasyMinecraftServer Version: 1.13.1")
 print("Created By: @teekar2023")
 print(f"User Directory: {user_dir}")
 print(f"Current Working Directory: {cwd}")
@@ -1289,8 +1289,9 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.13.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v1.13.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
+        print("-------------------------")
         print(f"Updated Version Available: {new_version}")
         changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
         changelog_download = urllib.request.urlopen(changelog_url)
@@ -1323,7 +1324,7 @@ try:
         if download_local:
             new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
             download_url = new_url.replace("tag", "download")
-            print("------------------------------")
+            print("-------------------------")
             print(f"Downloading Update From: {download_url}...")
             print("Please do not exit the program while downloading...")
             f = asksaveasfile(mode="wb", defaultextension=".exe", initialfile="MinecraftServerInstaller.exe")
