@@ -1,6 +1,22 @@
-New in version 1.13.2:
-Fixed a bug that would cause program to crash when changing 1.18 server properties!
-Fixed a bug where automatic server backup would fail and cause program to crash!
-Minor changes for better performance!
-Elevator script now works much faster!
-Other small changes and fixes!
+New in version 2.0.0:
+Complete re-write of program!
+New GUI launcher!
+Updated 1.18 server to 1.18.1!
+Some filesystem changes!
+Added new program backup option!
+Added new program restore option!
+Added new program reset option!
+Added new program update window with new version changelog!
+Added new settings window to allow changing and viewing of program settings!
+Added option to download update installer directly from the program!
+Added logging and error/crash detection!
+Added a help window!
+Added bug report function!
+All settings are now saved to a single json config file!
+Some changes and fixes with installer!
+Fixed some bugs with settings!
+Fixed some bugs with server properties
+Fixed some bugs with auto server backup!
+Fixed a ton of small bugs and problems!
+Patched a java security vulnerability!
+More info on security vulnerability: https://www.minecraft.net/en-us/article/important-message--security-vulnerability-java-edition?ref=launcher
