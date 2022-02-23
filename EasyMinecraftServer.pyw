@@ -80,7 +80,7 @@ def start_server():
     logging.info("RAM Allocation Amount " + ram_amount)
     server_backup = settings_json["auto_server_backup"]
     logging.info("Auto Server Backup " + server_backup)
-    showwarning(title="WARNING", message="DO NOT TOUCH ANYTHING FOR AT LEAST 5 SECONDS AFTER CLOSING THIS POPUP IN ORDER TO LET SERVER SUCCESSFULLY START!")
+    showwarning(title="WARNING", message="DO NOT TOUCH ANYTHING FOR AT LEAST 10 SECONDS AFTER CLOSING THIS POPUP IN ORDER TO LET SERVER SUCCESSFULLY START!")
     if server_gui_setting == "True":
         logging.info("Starting Powershell Process")
         os.system("start powershell")
@@ -1421,7 +1421,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.0.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.1.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1556,7 +1556,6 @@ def uninstall_program():
         if reset_all:
             logging.info("Resetting all settings and data including backups")
             try:
-                logging.shutdown()
                 file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
                 file_list = os.listdir(file_path)
                 for folder in file_list:
@@ -1658,7 +1657,7 @@ else:
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.0.0")
+root.title("Easy Minecraft Server v2.1.0")
 root.geometry("400x400")
 menubar = Menu(root)
 main_menu = Menu(menubar, tearoff=0)
@@ -1755,7 +1754,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.0.0 Started")
+logging.info("Easy Minecraft Server v2.1.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="Settings", command=settings)
@@ -1775,13 +1774,23 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.0.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.1.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         showinfo(title="Update Available", message=f"New version available: {new_version} Please press the update "
                                                    f"button in the main menu at the top to update!")
         pass
     else:
+        logging.info("No new update available")
+        file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
+        file_list = os.listdir(file_path)
+        for folder in file_list:
+            if "Update" in folder:
+                logging.info(f"Deleting update folder: {user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
+                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
+                pass
+            else:
+                pass
         pass
 except Exception as e:
     showerror(title="Error", message=f"Error while checking for updates: {e}")
@@ -1796,6 +1805,7 @@ if not os.path.exists("C:\\Program Files\\Java\\jdk-17.0.1\\bin\\"):
         logging.info("Installing JDK")
         os.startfile(f"{cwd}\\JDK\\jdk-17_windows-x64_bin.exe")
         logging.warning("Exiting for JDK Install")
+        exit_program_force()
         sys.exit(0)
         pass
     else:
@@ -1803,17 +1813,17 @@ if not os.path.exists("C:\\Program Files\\Java\\jdk-17.0.1\\bin\\"):
                                                 "The Program!")
         logging.error("JDK Installation Denied!")
         logging.warning("Exiting Due To JDK Installation Denial")
+        exit_program_force()
         sys.exit(0)
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.0.0\n"
-                                   "Created By: teekar2023\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.1.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"
                                    f"User Directory: {user_dir}\n"
-                                   f"Click Any Of The Following Buttons To Begin!")
+                                   "Click Any Of The Following Buttons To Begin!")
 main_text_label.pack()
 start_button = Button(root, text="Start Server", command=start_server)
 start_button.pack()
