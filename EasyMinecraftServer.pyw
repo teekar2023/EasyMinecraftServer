@@ -15,6 +15,7 @@ import json
 import ctypes
 import urllib
 import logging
+import psutil
 
 
 def start_server():
@@ -60,9 +61,11 @@ def start_server():
     port_forwarded = askyesno(title="Minecraft Server", message=f"Is tcp port {port} forwarded on your network? Press 'NO' if you are not sure!")
     if port_forwarded:
         logging.info("Port Forward Confirmed In start_server()")
+        port_forward_status = "True"
         pass
     else:
         logging.info("Port Forward Not Confirmed In start_server()")
+        port_forward_status = "False"
         showwarning(title="WARNING",
                     message="DO NOT TOUCH ANYTHING FOR AT LEAST 5 SECONDS AFTER CLOSING THIS POPUP IN ORDER TO LET NGROK PROCESS SUCCESSFULLY START!")
         logging.info("Connecting To NGROK For Port Forwarding")
@@ -86,8 +89,8 @@ def start_server():
         os.system("start powershell")
         time.sleep(1)
         logging.info("Starting Minecraft Server With GUI")
-        logging.info(f"Executing System Command In Powershell: MinecraftServerGUI {server_version} {ram_amount} {server_backup}")
-        kbm.typewrite(f"MinecraftServerGUI {server_version} {ram_amount} {server_backup}\n")
+        logging.info(f"Executing System Command In Powershell: MinecraftServerGUI {server_version} {ram_amount} {server_backup} {port_forward_status} {port}")
+        kbm.typewrite(f"MinecraftServerGUI {server_version} {ram_amount} {server_backup} {port_forward_status} {port}\n")
         kbm.typewrite("exit\n")
         time.sleep(1)
         logging.info("Moving To exit_program_force()")
@@ -98,8 +101,8 @@ def start_server():
         os.system("start powershell")
         time.sleep(1)
         logging.info("Starting Minecraft Server Without GUI")
-        logging.info(f"Executing System Command In Powershell: MinecraftServer-nogui {server_version} {ram_amount} {server_backup}")
-        kbm.typewrite(f"MinecraftServer-nogui {server_version} {ram_amount} {server_backup}\n")
+        logging.info(f"Executing System Command In Powershell: MinecraftServer-nogui {server_version} {ram_amount} {server_backup} {port_forward_status} {port}")
+        kbm.typewrite(f"MinecraftServer-nogui {server_version} {ram_amount} {server_backup} {port_forward_status} {port}\n")
         time.sleep(1)
         logging.info("Moving To exit_program_force()")
         exit_program_force()
@@ -1137,50 +1140,66 @@ def import_external_server():
 def setup(arg):
     showinfo(title="Setup", message="Setup for EasyMinecraftServer is required! Please follow the instructions!")
     if arg == "all":
-        path = f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\"
-        backup_subdirs = os.listdir(path)
-        if len(backup_subdirs) == 0:
-            pass
-        else:
-            restore_backup_prompt = askyesno(title="Restore Backup", message="Program backup detected! Would you like to restore?")
-            if restore_backup_prompt:
-                program_restore()
-                restart_force()
-                sys.exit(0)
-            else:
-                pass
-            pass
-        auto_server_backup = askyesno(title="Auto Server Backup",
-                                      message="Would you like to automatically backup your servers whenever they are stopped?")
-        server_gui = askyesno(title="Server GUI", message="Would you like to have a GUI for your servers?")
-        ram_allocation_amount = askstring(title="RAM Allocation Amount",
-                                          prompt="How much RAM (IN MB) would you like to allocate to the server? "
-                                                 "Minimum Recommended: 2048")
-        if not ram_allocation_amount or ram_allocation_amount.isspace() or ram_allocation_amount == "":
-            showerror(title="Error", message="Invalid RAM Allocation Amount!")
-            exit_program_force()
-        else:
-            pass
-        webbrowser.open("https://dashboard.ngrok.com/get-started/setup")
         showinfo(title="NGROK", message="Makeshift port-forwarding requires a ngrok account. Please navigate to "
-                                        "https://dashboard.ngrok.com/get-started/setup after making a free account and "
-                                        "get your authtoken!")
-        ngrok_authtoken = askstring(title="Ngrok Authtoken", prompt="Please enter your ngrok authtoken!")
-        if not ngrok_authtoken or ngrok_authtoken.isspace() or ngrok_authtoken == "":
-            showerror(title="Error", message="Invalid NGROK Authtoken!")
-            exit_program_force()
-        else:
-            pass
+                                "https://dashboard.ngrok.com/get-started/setup after making a free account and "
+                                "get your authtoken!")
+        setup_window = Toplevel(root)
+        setup_window.title("EasyMinecraftServer (SETUP)")
+        setup_window.geometry("500x500")
+        setup_window.resizable(False, False)
+        ngrok_authtoken_label = Label(setup_window, text="Ngrok Authtoken")
+        ngrok_authtoken_label.pack()
+        ngrok_authtoken_entry = Entry(setup_window, width=450)
+        ngrok_authtoken_entry.pack()
+        ngrok_authtoken_entry.insert(0, "Enter your ngrok authtoken here")
+        ram_bytes = psutil.virtual_memory().total
+        ram_mb = ram_bytes / 1000000
+        ram_allocation_amount_label = Label(setup_window, text=f"RAM Allocation Amount. Total Available: {ram_mb} MB")
+        ram_allocation_amount_label.pack()
+        ram_allocation_entry = Entry(setup_window, width=450)
+        ram_allocation_entry.pack()
+        ram_allocation_entry.insert(0, "Enter the amount of RAM you would like to allocate for the server in MB")
+        variable = StringVar(setup_window)
+        auto_server_backup_label = Label(setup_window, text="Auto Server Backup")
+        auto_server_backup_label.pack()
+        auto_server_backup_entry = OptionMenu(setup_window, variable, "True", "False")
+        auto_server_backup_entry.config(width=450)
+        auto_server_backup_entry.pack()
+        variable_two = StringVar(setup_window)
+        server_gui_label = Label(setup_window, text="Server GUI")
+        server_gui_label.pack()
+        server_gui_entry = OptionMenu(setup_window, variable_two, "True", "False")
+        server_gui_entry.config(width=450)
+        server_gui_entry.pack()
+        var = IntVar()
+        submit_button = Button(setup_window,
+                           command=lambda: var.set(1),
+                           font=("TrebuchetMS", 10, 'bold'),
+                           text="Click Here To Save And Continue!", width="400", height="5",
+                           bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
+        submit_button.pack()
+        submit_button.wait_variable(var)
+        new_ngrok_authtoken = ngrok_authtoken_entry.get()
+        new_ram_allocation_amount = ram_allocation_entry.get()
+        new_auto_server_backup = variable.get()
+        new_server_gui = variable_two.get()
         settings = {
-            "auto_server_backup": f"{str(auto_server_backup)}",
-            "server_gui": f"{str(server_gui)}",
-            "ram_allocation_amount": f"{str(ram_allocation_amount)}",
-            "ngrok_authtoken": f"{str(ngrok_authtoken)}"
+            "ngrok_authtoken": new_ngrok_authtoken,
+            "ram_allocation_amount": new_ram_allocation_amount,
+            "auto_server_backup": new_auto_server_backup,
+            "server_gui": new_server_gui
         }
         settings_object = json.dumps(settings, indent=4)
-        with open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "w+") as outfile:
+        settings_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "w+")
+        settings_file.truncate(0)
+        with settings_file as outfile:
             outfile.write(settings_object)
-            outfile.close()
+            pass
+        settings_file.close()
+        showinfo(title="EasyMinecraftServer Settings", message="New settings saved! Please restart to continue!")
+        setup_window.destroy()
+        restart_force()
+        sys.exit(0)
     elif arg == "auto_server_backup":
         showerror(title="Settings Error",
                   message="Settings file has been corrupted! Program will now be reset and setup will be required again!")
@@ -1251,7 +1270,9 @@ def settings():
     ngrok_authtoken_entry.pack()
     ngrok_authtoken = settings_json["ngrok_authtoken"]
     ngrok_authtoken_entry.insert(0, ngrok_authtoken)
-    ram_allocation_amount_label = Label(settings_window, text="RAM Allocation Amount (MB)")
+    ram_bytes = psutil.virtual_memory().total
+    ram_mb = ram_bytes / 1000000
+    ram_allocation_amount_label = Label(settings_window, text=f"RAM Allocation Amount. Total Available: {ram_mb} MB")
     ram_allocation_amount_label.pack()
     ram_allocation_amount_entry = Entry(settings_window, width=450)
     ram_allocation_amount_entry.pack()
@@ -1421,7 +1442,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.1.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.2.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1657,7 +1678,7 @@ else:
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.1.0")
+root.title("Easy Minecraft Server v2.2.0")
 root.geometry("400x400")
 menubar = Menu(root)
 main_menu = Menu(menubar, tearoff=0)
@@ -1754,7 +1775,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.1.0 Started")
+logging.info("Easy Minecraft Server v2.2.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="Settings", command=settings)
@@ -1774,7 +1795,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.1.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.2.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         showinfo(title="Update Available", message=f"New version available: {new_version} Please press the update "
@@ -1818,7 +1839,7 @@ if not os.path.exists("C:\\Program Files\\Java\\jdk-17.0.1\\bin\\"):
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.1.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.2.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"

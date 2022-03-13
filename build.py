@@ -1,4 +1,5 @@
 import os
+import sys
 from shutil import copytree, copy, rmtree
 
 cwd = os.getcwd()
@@ -89,3 +90,5 @@ os.system("pyinstaller --onefile MinecraftServerGUI.pyw")
 copy(f"{cwd}\\ServerLaunchers\\dist\\MinecraftServer-nogui.exe", f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServer-nogui.exe")
 copy(f"{cwd}\\ServerLaunchers\\dist\\MinecraftServerGUI.exe", f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
 print("Done!")
+os.startfile(f"{cwd}\\InstallerFiles\\MinecraftServerInstaller.iss")
+sys.exit(0)

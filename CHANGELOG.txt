@@ -1,7 +1,8 @@
-New in version 2.1.0:
-Update files are now deleted when on latest version to save storage space!
-Added logging in ServerLaunchers!
-Program logs now contain server logs!
-Fixed bugs with uninstall function!
-Fixed bugs with auto backup!
+New in version 2.2.0:
+Updated some dependencies!
+Small performance and runtime improvements on ServerLaunchers!
+Fixed some bugs with logging in ServerLaunchers!
+Added new setup window to replace all the popups!
+Prompt for ram allocation amount now shows total memory in system!
+Fixed bug where multiple instances of the launcher would run in background!
 Few other small changes and fixes!

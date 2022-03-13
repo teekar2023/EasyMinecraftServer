@@ -22,6 +22,8 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, 1.17.1, a
 - Add support for downloading required server files from the internet
 - Add better bug reporting system
 - Add RAM cleanup option to get max amount of RAM possible in server
+- Add checks to see if ram allocation amount is reasonable
+- Add 1.18.2 support
 
 # License
 Copyright 2021 Sreekar Palla

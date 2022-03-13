@@ -4,13 +4,18 @@ import sys
 import time
 import logging
 from shutil import rmtree, copytree
+import socket
+from tkinter.messagebox import showwarning
+import psutil
 
 
 @click.command()
 @click.argument("s_version")
 @click.argument("ram_amount")
 @click.argument("auto_server_backup")
-def main(s_version, ram_amount, auto_server_backup):
+@click.argument("port_forward_status")
+@click.argument("port")
+def main(s_version, ram_amount, auto_server_backup, port_forward_status, port):
     cwd = os.getcwd()
     if s_version == "189":
         version = "1.8.9"
@@ -32,6 +37,12 @@ def main(s_version, ram_amount, auto_server_backup):
     logging.info("RAM: " + ram_amount)
     logging.info("Auto Server Backup: " + auto_server_backup)
     os.chdir(f"{str(cwd).replace('ServerLaunchers', '')}\\ServerFiles-{version}\\")
+    if port_forward_status == "True":
+        ip = str(socket.gethostbyname(socket.gethostname()))
+        showwarning(title="Server IP", message=f"Server IP: {ip}:{port}")
+        pass
+    else:
+        showwarning(title="Server IP", message="To find your ip for this session, go to the ngrok window and find it next to the 'Forwarding' category. The ip will be in the format of '<number>.tcp.ngrok.io:<numbers>'")
     if version == "1.8.9":
         logging.info(f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
         os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
@@ -49,7 +60,7 @@ def main(s_version, ram_amount, auto_server_backup):
         os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j2.formatMsgNoLookups=true -jar server.jar nogui")
         pass
     elif version == "1.18.1":
-        logging.info("Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar nogui")
+        logging.info(f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar nogui")
         os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar nogui")
         pass
     else:
@@ -117,6 +128,10 @@ def auto_backup(version):
 
 
 if __name__ == "__main__":
+    PROCNAME = "EasyMinecraftServer.exe"
+    for proc in psutil.process_iter():
+        if proc.name() == PROCNAME:
+            proc.kill()
     time.sleep(5)
     cwd = os.getcwd()
     user_dir = os.path.expanduser("~")
