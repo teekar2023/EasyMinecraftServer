@@ -4,7 +4,7 @@
 # Description
 EasyMinecraftServer is a free and open source program that creates a minecraft server on your computer with or without port forwarding!
 
-This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, 1.17.1, and 1.18.1!
+This program has support for almost all minecraft versions 1.2.1 and newer!
 
 # Installation
 1. Go to http://github.com/teekar2023/EasyMinecraftServer/releases/latest/ and download the installer.
@@ -16,14 +16,11 @@ This program has support for minecraft versions 1.8.9, 1.12.2, 1.16.5, 1.17.1, a
 
 # TODO
 - Support modded servers
-- Add setting instead of asking if port forwarding is needed on every use
-- Add setup window to replace all the popups
 - Add checks to see if changed server properties are valid
-- Add support for downloading required server files from the internet
 - Add better bug reporting system
 - Add RAM cleanup option to get max amount of RAM possible in server
 - Add checks to see if ram allocation amount is reasonable
-- Add 1.18.2 support
+- Add third party licenses button in help window
 
 # License
 Copyright 2021 Sreekar Palla
