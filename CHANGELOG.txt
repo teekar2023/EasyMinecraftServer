@@ -1,6 +1,8 @@
-New in version 2.4.0:
-Legacy recovery files are now deleted on startup!
-Fixed a bug with program backup and restore!
-Fixed bugs with program reset!
-Fixed a bug with JDK installation checking!
-Fixed a ton of bugs!
+New in version 2.5.0:
+Small improvements to GUI!
+Added license button in help window!
+Added license window!
+Program now removes old packaged JDK installer files!
+Fixed a couple bugs with version selection prompts!
+Fixed a couple bugs with logging!
+Other small text bugs fixed!

@@ -18,7 +18,6 @@ import logging
 import psutil
 from win10toast import ToastNotifier
 from threading import Thread
-import subprocess
 
 
 def start_server():
@@ -155,7 +154,7 @@ def start_server():
 
 def create_server_backup():
     backup_version = askstring(title="Create Server Backup", prompt="Enter the version you want to backup! This can be any version but must be in the format 'num.num.num'!")
-    logging.info("Version Selected In create_server_backup(): " + backup_version)
+    logging.info("Version Selected In create_server_backup(): " + str(backup_version))
     backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
     if not os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\"):
         logging.error("Server version does not exist in create_server_backup()")
@@ -197,7 +196,7 @@ def create_server_backup():
 
 def restore_server_backup():
     backup_version = askstring(title="Create Server Backup", prompt="Enter the version you want to restore! This can be any version but must be in the format 'num.num.num'!")
-    logging.info("Version Selected In restore_server_backup(): " + backup_version)
+    logging.info("Version Selected In restore_server_backup(): " + str(backup_version))
     if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\"):
         logging.error("Backup version does not exist in restore_server_backup()")
         showerror(title="Error", message="The backup version you are trying to restore does not exist!")
@@ -283,7 +282,7 @@ def restore_server_backup():
 def reset_server():
     reset_version = askstring(title="Reset Server",
                                         prompt="Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
-    logging.info("Version Selected In reset_server(): " + reset_version)
+    logging.info("Version Selected In reset_server(): " + str(reset_version))
     if os.path.exists(f"{cwd}\\ServerFiles-{reset_version}\\"):
         try:
             logging.warning("Performing Server Reset")
@@ -303,7 +302,7 @@ def reset_server():
 def inject_custom_map():
     version = askstring(title="Select Version",
                                prompt="Enter the version you want to inject into! This can be any version but must be in the format 'num.num.num'!")
-    logging.info("Version Selected In inject_custom_map(): " + version)
+    logging.info("Version Selected In inject_custom_map(): " + str(version))
     if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
         showerror(title="Error", message="Invalid Version!")
         logging.error("Invalid Version In inject_custom_map()")
@@ -375,7 +374,7 @@ def inject_custom_map():
 def reset_overworld():
     version = askstring(title="Select Version",
                                   prompt="Please Select The Version You Would Like To Reset 'THE OVERWORLD' In! This can be any version but must be in the format 'num.num.num'!")
-    logging.info("Version Selected In reset_overworld(): " + version)
+    logging.info("Version Selected In reset_overworld(): " + str(version))
     backup_ask = askyesno("Backup", "Would you like to backup your server before resetting the dimension?")
     if backup_ask:
         logging.info("User Has Chosen To Backup Server Before Resetting Dimension")
@@ -410,6 +409,7 @@ def reset_overworld():
 def reset_nether():
     version = askstring(title="Select Version",
                                   prompt="Please Select The Version You Would Like To Reset 'THE NETHER' In! This can be any version but must be in the format 'num.num.num'!")
+    logging.info("Version Selected In reset_nether(): " + str(version))
     backup_ask = askyesno("Backup", "Would you like to backup your server before resetting the dimension?")
     if backup_ask:
         backup_name = askstring("Backup", "Please enter a name for your backup!")
@@ -443,6 +443,7 @@ def reset_nether():
 def reset_end():
     version = askstring(title="Select Version",
                                   prompt="Please Select The Version You Would Like To Reset 'THE END' In! This can be any version but must be in the format 'num.num.num'!")
+    logging.info("Version Selected In reset_end(): " + str(version))
     backup_ask = askyesno("Backup", "Would you like to backup your server before resetting the dimension?")
     if backup_ask:
         backup_name = askstring("Backup", "Please enter a name for your backup!")
@@ -880,7 +881,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.4.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.5.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1063,13 +1064,27 @@ def backup_logs():
     copy(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\{mod_time}\\AppCrash.log")
     showinfo(title="Crash Logs", message=f"Crash logs were backed up and can be found here: {user_dir}\\Documents\\EasyMinecraftServer\\Logs\\{mod_time}\\AppCrash.log")
     return
-    
+
+
+def license_window():
+    logging.info("Showing license window")
+    license_window = Toplevel()
+    license_window.title("EasyMinecraftServer (LICENSE)")
+    license_window.geometry("500x600")
+    license_window.resizable(0, 0)
+    license_text = Text(license_window, width=500, height=600)
+    license_text.pack()
+    license_text_string = open(f"{cwd}\\LICENSE", 'r').read()
+    license_text.insert(END, license_text_string)
+    license_text.config(state=DISABLED)
+    return
+
 
 
 def help_window():
     logging.info("Showing help window")
     help_window = Toplevel()
-    help_window.title("EasyMiencraftServer (HELP)")
+    help_window.title("EasyMinecraftServer (HELP)")
     help_window.geometry("700x400")
     help_window.resizable(False, False)
     help_text = """EasyMinecraftServer Help
@@ -1097,6 +1112,8 @@ def help_window():
     help_label.pack()
     jdk_installer_button = Button(help_window, text="JDK Installer", command=jdk_installer)
     jdk_installer_button.pack()
+    license_button = Button(help_window, text="License", command=license_window)
+    license_button.pack()
     return
 
 
@@ -1117,8 +1134,8 @@ toaster = ToastNotifier()
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.4.0")
-root.geometry("400x400")
+root.title("Easy Minecraft Server v2.5.0")
+root.geometry("430x640")
 menubar = Menu(root)
 main_menu = Menu(menubar, tearoff=0)
 if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\"):
@@ -1189,7 +1206,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.4.0 Started")
+logging.info("Easy Minecraft Server v2.5.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="Settings", command=settings)
@@ -1209,7 +1226,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.4.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.5.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico", threaded=True)
@@ -1257,6 +1274,12 @@ if java_check is None:
 else:
     logging.info(f"JDK Installation Found: {java_check}")
     pass
+if os.path.exists(f"{cwd}\\JDK\\"):
+    logging.info("JDK installer found")
+    rmtree(f"{cwd}\\JDK\\")
+    pass
+else:
+    pass
 if os.path.exists(f"{cwd}\\1.8.9-recovery\\"):
     logging.info("1.8.9-Recovery Found")
     rmtree(f"{cwd}\\1.8.9-recovery\\")
@@ -1293,29 +1316,45 @@ if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_ver
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.4.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.5.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"
                                    f"User Directory: {user_dir}\n"
                                    "Click Any Of The Following Buttons To Begin!")
 main_text_label.pack()
-start_button = Button(root, text="Start Server", command=start_server)
+start_button = Button(root, text="Start Server", command=start_server, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 start_button.pack()
-create_backup_button = Button(root, text="Create Server Backup", command=create_server_backup)
+create_backup_button = Button(root, text="Create Server Backup", command=create_server_backup, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 create_backup_button.pack()
-restore_backup_button = Button(root, text="Restore Server Backup", command=restore_server_backup)
+restore_backup_button = Button(root, text="Restore Server Backup", command=restore_server_backup, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 restore_backup_button.pack()
-reset_server_button = Button(root, text="Reset Server", command=reset_server)
+reset_server_button = Button(root, text="Reset Server", command=reset_server, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 reset_server_button.pack()
-use_custom_map_button = Button(root, text="Use Custom Map In Server", command=inject_custom_map)
+use_custom_map_button = Button(root, text="Use Custom Map In Server", command=inject_custom_map, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 use_custom_map_button.pack()
-reset_dimension_button = Button(root, text="Reset Dimension In A Server", command=reset_dimension_main)
+reset_dimension_button = Button(root, text="Reset Dimension In A Server", command=reset_dimension_main, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 reset_dimension_button.pack()
-change_server_properties_button = Button(root, text="Change Server Properties (EXPERIMENTAL)",
-                                         command=change_server_properties)
+change_server_properties_button = Button(root, text="Editt Server Properties",
+                                         command=change_server_properties, font=("TrebuchetMS", 12, 'bold'),
+                                         width="40", height="3",
+                                         bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 change_server_properties_button.pack()
-import_external_server_button = Button(root, text="Import External Server", command=import_external_server)
+import_external_server_button = Button(root, text="Import External Server", command=import_external_server, font=("TrebuchetMS", 12, 'bold'),
+                               width="40", height="3",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 import_external_server_button.pack()
 logging.info("GUI Built")
 logging.info("Starting Main Loop")
