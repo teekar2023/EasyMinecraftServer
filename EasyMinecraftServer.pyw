@@ -8,7 +8,7 @@ import os
 import requests
 import sys
 from jproperties import Properties
-from shutil import rmtree, copytree, copy
+from shutil import rmtree, copytree, copy, which
 import time
 import pyautogui as kbm
 import json
@@ -18,6 +18,7 @@ import logging
 import psutil
 from win10toast import ToastNotifier
 from threading import Thread
+import subprocess
 
 
 def start_server():
@@ -118,7 +119,7 @@ def start_server():
     logging.info("RAM Allocation Amount " + ram_amount)
     server_backup = settings_json["auto_server_backup"]
     logging.info("Auto Server Backup " + server_backup)
-    launch_version_file = open(f"{cwd}\\launch_version.txt", 'w+')
+    launch_version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", 'w+')
     try:
         launch_version_file.truncate(0)
         pass
@@ -789,7 +790,7 @@ def program_reset():
         file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
         file_list = os.listdir(file_path)
         for folder in file_list:
-            if folder == "Logs":
+            if folder == "Logs" or folder == "ProgramBackups":
                 pass
             else:
                 rmtree(f"{file_path}\\{folder}")
@@ -879,7 +880,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.3.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.4.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1116,7 +1117,7 @@ toaster = ToastNotifier()
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.3.0")
+root.title("Easy Minecraft Server v2.4.0")
 root.geometry("400x400")
 menubar = Menu(root)
 main_menu = Menu(menubar, tearoff=0)
@@ -1188,7 +1189,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.3.0 Started")
+logging.info("Easy Minecraft Server v2.4.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="Settings", command=settings)
@@ -1208,7 +1209,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.3.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.4.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico", threaded=True)
@@ -1231,10 +1232,12 @@ except Exception as e:
     showerror(title="Error", message=f"Error while checking for updates: {e}")
     logging.error(f"Error while checking for updates: {e}")
     pass
-if not os.path.exists("C:\\Program Files\\Java\\jdk-17.0.1\\bin\\"):
+java_check = which("java")
+print(str(java_check))
+if java_check is None:
     logging.warning("JDK Not Found")
     install_jdk_ask = askyesno(title="JDK Required",
-                               message="Java Development Kit 17.0.1 Is Required To Run Minecraft Servers! Would You Like To "
+                               message="Java Development Kit 17 Is Required To Run Minecraft Servers! Would You Like To "
                                        "Download/Install It Now?")
     if install_jdk_ask:
         logging.info("Launching Download Website")
@@ -1252,8 +1255,45 @@ if not os.path.exists("C:\\Program Files\\Java\\jdk-17.0.1\\bin\\"):
         sys.exit(0)
     pass
 else:
+    logging.info(f"JDK Installation Found: {java_check}")
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.3.0\n"
+if os.path.exists(f"{cwd}\\1.8.9-recovery\\"):
+    logging.info("1.8.9-Recovery Found")
+    rmtree(f"{cwd}\\1.8.9-recovery\\")
+    pass
+else:
+    pass
+if os.path.exists(f"{cwd}\\1.12.2-recovery\\"):
+    logging.info("1.12.2-Recovery Found")
+    rmtree(f"{cwd}\\1.12.2-recovery\\")
+    pass
+else:
+    pass
+if os.path.exists(f"{cwd}\\1.16.5-recovery\\"):
+    logging.info("1.16.5-Recovery Found")
+    rmtree(f"{cwd}\\1.16.5-recovery\\")
+    pass
+else:
+    pass
+if os.path.exists(f"{cwd}\\1.17.1-recovery\\"):
+    logging.info("1.17.1-Recovery Found")
+    rmtree(f"{cwd}\\1.17.1-recovery\\")
+    pass
+else:
+    pass
+if os.path.exists(f"{cwd}\\1.18.1-recovery\\"):
+    logging.info("1.18.1-Recovery Found")
+    rmtree(f"{cwd}\\1.18.1-recovery\\")
+    pass
+else:
+    pass
+if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt"):
+    logging.info("Launch Version File Found")
+    os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt")
+    pass
+else:
+    pass
+main_text_label = Label(root, text="Easy Minecraft Server v2.4.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"

@@ -15,7 +15,7 @@ import psutil
 @click.argument("port_forward_status")
 @click.argument("port")
 def main(ram_amount, auto_server_backup, port_forward_status, port):
-    version_file = open(f"{cwd}\\launch_version.txt", "r")
+    version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", "r")
     version = version_file.read()
     logging.info("Starting Minecraft Server with GUI")
     logging.info("Version: " + version)

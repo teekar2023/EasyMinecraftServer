@@ -1,13 +1,6 @@
-New in version 2.3.0:
-Added support for downloading and using any version of servers!
-Greatly reduced storage requirements!
-Some performance improvements!
-JDK is no longer bundled with program and will open webbrowser for download if required!
-Added more debug logging in ServerLaunchers!
-Server properties editor window replaced by default system editor!
-Fixed problems with external server import and made it faster!
-Server ip is now written and opened in a temporary text file!
-Fixed huge bugs with non-gui server!
-Update window is now opened in a new thread when an update is available!
-Added windows toast notification when update is available!
+New in version 2.4.0:
+Legacy recovery files are now deleted on startup!
+Fixed a bug with program backup and restore!
+Fixed bugs with program reset!
+Fixed a bug with JDK installation checking!
 Fixed a ton of bugs!

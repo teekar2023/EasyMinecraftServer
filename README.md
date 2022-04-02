@@ -21,6 +21,7 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 - Add RAM cleanup option to get max amount of RAM possible in server
 - Add checks to see if ram allocation amount is reasonable
 - Add third party licenses button in help window
+- Refine GUI
 
 # License
 Copyright 2021 Sreekar Palla
