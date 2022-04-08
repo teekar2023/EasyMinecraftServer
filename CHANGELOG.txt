@@ -1,8 +1,17 @@
-New in version 2.5.0:
-Small improvements to GUI!
-Added license button in help window!
-Added license window!
-Program now removes old packaged JDK installer files!
-Fixed a couple bugs with version selection prompts!
-Fixed a couple bugs with logging!
-Other small text bugs fixed!
+New in version 2.6.0:
+Added user EULA check on server creation!
+Added a few keybinds for quick actions:
+Escape - Exit program
+Return - Start server
+Control-s - Start server
+Control-r - Reset server
+F1 - Help
+F2 - License
+F3 - Backup Logs
+F4 - Uninstall
+F5 - Restart
+F6 - Update
+Added checks to see if RAM allocation amount is reasonable!
+Fixed bugs where program would run in background instead of exiting!
+Fixed a bug with license window!
+Few other small changes and fixes!

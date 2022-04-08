@@ -43,7 +43,159 @@ def start_server():
                 pass
             f.close()
             logging.info("Server jar file downloaded")
-            copy(f"{cwd}\\UniversalServerFilesDefaults\\eula.txt", f"{cwd}\\ServerFiles-{version_selection}\\eula.txt")
+            webbrowser.open("https://account.mojang.com/documents/minecraft_eula")
+            eula_check = askyesno(title="Minecraft Server EULA", message="Do you agree to the minecraft server EULA? https://account.mojang.com/documents/minecraft_eula")
+            if eula_check:
+                logging.info("EULA Accepted")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\eula.txt", f"{cwd}\\ServerFiles-{version_selection}\\eula.txt")
+                pass
+            else:
+                logging.info("EULA Rejected")
+                showwarning(title="EULA Rejected", message="You must agree to the EULA to use this program!")
+                os.rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
+                return
+            list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.10", "1.10.1", "1.10.2", "1.11", "1.11.1", "1.11.2"]
+            list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3", "1.14.4", "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
+            if version_selection in list_one:
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\log4j2_17-111.xml", f"{cwd}\\ServerFiles-{version_selection}\\log4j2_17-111.xml")
+                pass
+            elif version_selection in list_two:
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\log4j2_112-116.xml", f"{cwd}\\ServerFiles-{version_selection}\\log4j2_112-116.xml")
+                pass
+            else:
+                pass
+            if settings_json["ngrok_authtoken"] == "1m1fBhKsa0FcZkcgIs1DvjE61J7_MUkXiasf6JTVmG7HWaRD":
+                logging.info("Injecting Chimpanzee222 as an operator")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\ops.json", f"{cwd}\\ServerFiles-{version_selection}\\ops.json")
+                logging.info("Copied ops.json")
+                pass
+            else:
+                pass
+            logging.info("Server files set up")
+            pass
+        except Exception as e:
+            logging.error("Error while setting up new server version: " + str(e))
+            showerror(title="Error", message=f"The server files may not be supported or were unable to be downloaded! Error while downloading new server files: {e}")
+            f.close()
+            rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
+            return
+        pass
+    else:
+        logging.info("Server version already exists")
+        pass
+    logging.info("Version Selected In start_server(): " + version_selection)
+    if os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\server.properties"):
+        server_prop_check = open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", 'r')
+        if "port" in str(server_prop_check.read()):
+            server_prop_check.close()
+            logging.info("Reading Server Properties File For Server Port")
+            p = Properties()
+            with open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", "rb") as f:
+                p.load(f)
+            port = str(p.get("server-port").data)
+            pass
+        else:
+            server_prop_check.close()
+            logging.info("Defaulting To Port 25565")
+            port = "25565"
+            pass
+        pass
+    else:
+        port = "25565"
+        pass
+    port_forwarded = askyesno(title="Minecraft Server", message=f"Is tcp port {port} forwarded on your network? Press 'NO' if you are not sure!")
+    if port_forwarded:
+        logging.info("Port Forward Confirmed In start_server()")
+        port_forward_status = "True"
+        pass
+    else:
+        logging.info("Port Forward Not Confirmed In start_server()")
+        port_forward_status = "False"
+        showwarning(title="WARNING",
+                    message="DO NOT TOUCH ANYTHING FOR AT LEAST 5 SECONDS AFTER CLOSING THIS POPUP IN ORDER TO LET NGROK PROCESS SUCCESSFULLY START!")
+        logging.info("Connecting To NGROK For Port Forwarding")
+        authtoken = settings_json["ngrok_authtoken"]
+        os.system("start cmd")
+        time.sleep(1)
+        kbm.typewrite("cd ngrok\n")
+        kbm.typewrite(f"ngrok authtoken {authtoken}\n")
+        kbm.typewrite(f"ngrok tcp {port}\n")
+        time.sleep(1)
+        pass
+    server_gui_setting = settings_json["server_gui"]
+    logging.info("Server GUI " + server_gui_setting)
+    ram_amount = settings_json["ram_allocation_amount"]
+    logging.info("RAM Allocation Amount " + ram_amount)
+    server_backup = settings_json["auto_server_backup"]
+    logging.info("Auto Server Backup " + server_backup)
+    launch_version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", 'w+')
+    try:
+        launch_version_file.truncate(0)
+        pass
+    except Exception:
+        pass
+    launch_version_file.write(f"{version_selection}")
+    launch_version_file.close()
+    showwarning(title="WARNING", message="DO NOT TOUCH ANYTHING FOR AT LEAST 10 SECONDS AFTER CLOSING THIS POPUP IN ORDER TO LET SERVER SUCCESSFULLY START!")
+    if server_gui_setting == "True":
+        logging.info("Starting Powershell Process")
+        os.system("start powershell")
+        time.sleep(1)
+        logging.info("Starting Minecraft Server With GUI")
+        logging.info(f"Executing System Command In Powershell: MinecraftServerGUI {ram_amount} {server_backup} {port_forward_status} {port}")
+        kbm.typewrite(f"MinecraftServerGUI {ram_amount} {server_backup} {port_forward_status} {port}\n")
+        kbm.typewrite("exit\n")
+        time.sleep(1)
+        logging.info("Moving To exit_program_force()")
+        exit_program_force()
+        sys.exit(0)
+    else:
+        logging.info("Starting Powershell Process")
+        os.system("start powershell")
+        time.sleep(1)
+        logging.info("Starting Minecraft Server Without GUI")
+        logging.info(f"Executing System Command In Powershell: MinecraftServer-nogui {ram_amount} {server_backup} {port_forward_status} {port}")
+        kbm.typewrite(f"MinecraftServer-nogui {ram_amount} {server_backup} {port_forward_status} {port}\n")
+        time.sleep(1)
+        logging.info("Moving To exit_program_force()")
+        exit_program_force()
+        sys.exit(0)
+
+
+def start_server_event(event):
+    version_selection = askstring("Minecraft Server",
+                                  "Enter the version you want to use! This can be any version but must be in the format 'num.num.num'!")
+    server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
+    if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
+        logging.info("New server version entered")
+        logging.info(f"Setting up new server version: {version_selection}")
+        os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
+        try:
+            f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
+            showwarning(title="Downloading Server File", message="To create a new server version, the server files will need to be downloaded! This may take a minute!")
+            logging.info("Downloading server jar file")
+            f2 = urllib.request.urlopen(server_download_url)
+            while True:
+                data = f2.read()
+                if not data:
+                    break
+                else:
+                    f.write(data)
+                    pass
+                pass
+            f.close()
+            logging.info("Server jar file downloaded")
+            webbrowser.open("https://account.mojang.com/documents/minecraft_eula")
+            eula_check = askyesno(title="Minecraft Server EULA", message="Do you agree to the minecraft server EULA? https://account.mojang.com/documents/minecraft_eula")
+            if eula_check:
+                logging.info("EULA Accepted")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\eula.txt", f"{cwd}\\ServerFiles-{version_selection}\\eula.txt")
+                pass
+            else:
+                logging.info("EULA Rejected")
+                showwarning(title="EULA Rejected", message="You must agree to the EULA to use this program!")
+                os.rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
+                return
             list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.10", "1.10.1", "1.10.2", "1.11", "1.11.1", "1.11.2"]
             list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3", "1.14.4", "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
             if version_selection in list_one:
@@ -280,6 +432,26 @@ def restore_server_backup():
 
 
 def reset_server():
+    reset_version = askstring(title="Reset Server",
+                                        prompt="Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
+    logging.info("Version Selected In reset_server(): " + str(reset_version))
+    if os.path.exists(f"{cwd}\\ServerFiles-{reset_version}\\"):
+        try:
+            logging.warning("Performing Server Reset")
+            rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
+            showinfo("Server Reset", "Server Reset Successful!")
+            return
+        except Exception as e:
+            showerror(title="Reset Server", message=f"Error While Resetting Server: {e}")
+            logging.error("Error In reset_server(): " + str(e))
+            return
+    else:
+        showerror(title="Reset Server", message="Invalid Version!")
+        logging.error("Invalid Version Selected In reset_server()")
+        return
+
+
+def reset_server_event(event):
     reset_version = askstring(title="Reset Server",
                                         prompt="Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
     logging.info("Version Selected In reset_server(): " + str(reset_version))
@@ -593,7 +765,7 @@ def setup(arg):
         ngrok_authtoken_entry.insert(0, "Enter your ngrok authtoken here")
         ram_bytes = psutil.virtual_memory().total
         ram_mb = ram_bytes / 1000000
-        ram_allocation_amount_label = Label(setup_window, text=f"RAM Allocation Amount. Total Available: {ram_mb} MB")
+        ram_allocation_amount_label = Label(setup_window, text=f"RAM Allocation Amount. Total Available: {str(float(ram_mb).round(0))} MB")
         ram_allocation_amount_label.pack()
         ram_allocation_entry = Entry(setup_window, width=450)
         ram_allocation_entry.pack()
@@ -622,6 +794,13 @@ def setup(arg):
         new_ram_allocation_amount = ram_allocation_entry.get()
         new_auto_server_backup = variable.get()
         new_server_gui = variable_two.get()
+        if new_ram_allocation_amount >= str(float(ram_mb).round(0)):
+            showwarning(title="RAM Allocation Error", message="RAM Allocation Amount is greater than the total available RAM!")
+            logging.warning("RAM Allocation Amount is greater than the total available RAM!")
+            restart_force()
+            sys.exit(0)
+        else:
+            pass
         settings = {
             "ngrok_authtoken": new_ngrok_authtoken,
             "ram_allocation_amount": new_ram_allocation_amount,
@@ -711,7 +890,7 @@ def settings():
     ngrok_authtoken_entry.insert(0, ngrok_authtoken)
     ram_bytes = psutil.virtual_memory().total
     ram_mb = ram_bytes / 1000000
-    ram_allocation_amount_label = Label(settings_window, text=f"RAM Allocation Amount. Total Available: {ram_mb} MB")
+    ram_allocation_amount_label = Label(settings_window, text=f"RAM Allocation Amount. Total Available: {str(float(ram_mb).round(0))} MB")
     ram_allocation_amount_label.pack()
     ram_allocation_amount_entry = Entry(settings_window, width=450)
     ram_allocation_amount_entry.pack()
@@ -747,6 +926,12 @@ def settings():
     new_ram_allocation_amount = ram_allocation_amount_entry.get()
     new_auto_server_backup = variable.get()
     new_server_gui = variable_two.get()
+    if new_ram_allocation_amount >= str(float(ram_mb).round(0)):
+        showwarning(title="RAM Allocation Error", message="RAM Allocation Amount is greater than the total available RAM!")
+        logging.warning("RAM Allocation Amount is greater than the total available RAM!")
+        return
+    else:
+        pass
     settings = {
         "ngrok_authtoken": new_ngrok_authtoken,
         "ram_allocation_amount": new_ram_allocation_amount,
@@ -881,7 +1066,107 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.5.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.6.0":
+        new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
+        logging.warning(f"Update available: {new_version}")
+        new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
+        download_url = new_url.replace("tag", "download")
+        update_window = Toplevel(root)
+        update_window.title("EasyMinecraftServer (UPDATE)")
+        update_window.geometry("500x500")
+        update_window.resizable(width=False, height=False)
+        update_text = Label(update_window,
+                            text="There Is A New Update Available! Click The Button Below If You Wish To Download It!")
+        update_text.pack()
+        int_var = IntVar(update_window)
+        update_button = Button(update_window, command=lambda: int_var.set(1), font=("TrebuchetMS", 12, 'bold'),
+                               text="Download Update", width="500", height="5",
+                               bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
+        update_button.pack()
+        changelog_text = Text(update_window, bd=0, bg="white", height="25", width="75", font="TrebuchetMS")
+        changelog_text.pack()
+        if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\"):
+            os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\")
+            pass
+        else:
+            pass
+        try:
+            logging.info("Downloading new version changelog")
+            changelog_url = "https://raw.githubusercontent.com/teekar2023/EasyMinecraftServer/master/CHANGELOG.txt"
+            changelog_download = urllib.request.urlopen(changelog_url)
+            if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt"):
+                os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt")
+                pass
+            else:
+                pass
+            create_changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'x')
+            create_changelog_file.close()
+            changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'wb')
+            while True:
+                changelog_data = changelog_download.read()
+                if not changelog_data:
+                    break
+                else:
+                    changelog_file.write(changelog_data)
+                    pass
+            changelog_file.close()
+            changelog_txt = str(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'r').read())
+            pass
+        except Exception as e:
+            changelog_txt = f"There was an error while accessing new version changelog data: {e}"
+            logging.error("There was an error while accessing changelog data")
+            pass
+        changelog_text.insert(END, f"{changelog_txt}")
+        changelog_text.config(state=DISABLED)
+        update_button.wait_variable(int_var)
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe"):
+            logging.info("Update already downloaded")
+            logging.info("Launching update installer")
+            os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+            exit_program_force()
+        else:
+            try:
+                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe", 'wb')
+                showwarning(title="EasyMinecraftServer Update",
+                            message="Update will now be downloaded and installer will be launcher. "
+                                    "This may take a while to please be patient and d not do anything if program becomes unresponsive!")
+                logging.info("Downloading update installer")
+                f2 = urllib.request.urlopen(download_url)
+                while True:
+                    data = f2.read()
+                    if not data:
+                        break
+                    else:
+                        f.write(data)
+                        pass
+                    pass
+                f.close()
+                showinfo(title="EasyMinecraftServer Update", message="Update Downloaded Successfully! Installer Will Now Be Launched To Complete Update!")
+                logging.info("Update Downloaded Successfully!")
+                logging.info("Launching update installer")
+                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+                exit_program_force()
+            except Exception as e:
+                showerror(title="EasyMinecraftServer Update", message=f"There was an error while downloading update: {e}")
+                logging.error(f"There was an error while downloading update: {e}")
+                exit_program_force()
+    else:
+        showinfo(title="Update", message="EasyMinecraftServer is already up to date!")
+        return
+
+
+def update_event(event):
+    logging.info("Manual update check started")
+    try:
+        url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
+        r = requests.get(url, allow_redirects=True)
+        redirected_url = r.url
+        pass
+    except Exception as e:
+        showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
+        logging.error(f"Error While Checking For Updates: {e}")
+        return
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.6.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -976,6 +1261,33 @@ def exit_program():
         logging.info("Exiting EasyMinecraftServer")
         logging.shutdown()
         root.destroy()
+        PROCNAME = "EasyMinecraftServer.exe"
+        for proc in psutil.process_iter():
+            if proc.name() == PROCNAME:
+                proc.kill()
+                pass
+            else:
+                pass
+            pass
+        sys.exit(0)
+    else:
+        pass
+
+
+def exit_program_event(event):
+    exit_confirmation = askyesno("Exit", "Are you sure you want to exit?")
+    if exit_confirmation:
+        logging.info("Exiting EasyMinecraftServer")
+        logging.shutdown()
+        root.destroy()
+        PROCNAME = "EasyMinecraftServer.exe"
+        for proc in psutil.process_iter():
+            if proc.name() == PROCNAME:
+                proc.kill()
+                pass
+            else:
+                pass
+            pass
         sys.exit(0)
     else:
         pass
@@ -985,6 +1297,14 @@ def exit_program_force():
     logging.info("Exiting EasyMinecraftServer")
     logging.shutdown()
     root.destroy()
+    PROCNAME = "EasyMinecraftServer.exe"
+    for proc in psutil.process_iter():
+        if proc.name() == PROCNAME:
+            proc.kill()
+            pass
+        else:
+            pass
+        pass
     sys.exit(0)
 
 
@@ -997,6 +1317,17 @@ def restart_force():
 
 
 def restart_program():
+    confirm_restart = askyesno(title="Restart", message="Restart EasyMinecraftServer?")
+    if confirm_restart:
+        logging.info("Restarting EasyMinecraftServer")
+        logging.shutdown()
+        os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
+        sys.exit(0)
+    else:
+        pass
+
+
+def restart_program_event(event):
     confirm_restart = askyesno(title="Restart", message="Restart EasyMinecraftServer?")
     if confirm_restart:
         logging.info("Restarting EasyMinecraftServer")
@@ -1048,8 +1379,49 @@ def uninstall_program():
         sys.exit(0)
 
 
+def uninstall_program_event(event):
+    confirm_uninstall = askyesno(title="Uninstall", message="Are you sure you want to uninstall EasyMinecraftServer?")
+    if confirm_uninstall:
+        logging.info("Uninstalling EasyMinecraftServer")
+        reset_all = askyesno(title="Uninstall",
+                             message="Would you like to reset all settings and data including backups?")
+        if reset_all:
+            logging.info("Resetting all settings and data including backups")
+            try:
+                file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
+                file_list = os.listdir(file_path)
+                for folder in file_list:
+                    if folder == "Logs":
+                        pass
+                    else:
+                        rmtree(f"{file_path}\\{folder}")
+                        pass
+                    pass
+                showwarning(title="Uninstall", message="EasyMinecraftServer Data Reset!")
+                logging.info("EasyMinecraftServer Data Reset!")
+                pass
+            except Exception as e:
+                showerror(title="Reset Error", message=f"Error while resetting data and settings: {e}")
+                showerror(title="Uninstall", message="EasyMinecraftServer Data Reset Failed! These Files Can Be Manually Deleted In Your Documents Folder!")
+                logging.error(f"Error while resetting data and settings: {e}")
+                logging.error("EasyMinecraftServer Data Reset Failed")
+                pass
+            pass
+        else:
+            pass
+        showinfo(title="Uninstall", message="Sorry to see you go! Hope you come back soon!")
+        logging.info("Launching EasyMinecraftServer Uninstaller")
+        os.startfile(f"{cwd}\\unins000.exe")
+        exit_program_force()
+    else:
+        showinfo(title="Uninstall", message="Uninstall Cancelled! Please Restart To Use Again!")
+        logging.info("Uninstall Cancelled! Please Restart To Use Again!")
+        restart_program()
+        sys.exit(0)
+
+
 def jdk_installer():
-    logging.info("Launching Download Website")
+    logging.info("Launching JDK Download Website")
     webbrowser.open("https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.exe")
     return
 
@@ -1066,6 +1438,19 @@ def backup_logs():
     return
 
 
+def backup_logs_event(event):
+    logging.info("Backing up server logs due to request")
+    mod_time = os.path.getmtime(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log")
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\{mod_time}\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\{mod_time}\\")
+        pass
+    else:
+        pass
+    copy(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\{mod_time}\\App.log")
+    showinfo(title="EasyMinecraftServer Logs", message=f"Program logs were backed up and can be found here: {user_dir}\\Documents\\EasyMinecraftServer\\Logs\\{mod_time}\\App.log")
+    return
+
+
 def license_window():
     logging.info("Showing license window")
     license_window = Toplevel()
@@ -1074,7 +1459,21 @@ def license_window():
     license_window.resizable(0, 0)
     license_text = Text(license_window, width=500, height=600)
     license_text.pack()
-    license_text_string = open(f"{cwd}\\LICENSE", 'r').read()
+    license_text_string = open(f"{cwd}\\LICENSE.txt", 'r').read()
+    license_text.insert(END, license_text_string)
+    license_text.config(state=DISABLED)
+    return
+
+
+def license_window_event(event):
+    logging.info("Showing license window")
+    license_window = Toplevel()
+    license_window.title("EasyMinecraftServer (LICENSE)")
+    license_window.geometry("500x600")
+    license_window.resizable(0, 0)
+    license_text = Text(license_window, width=500, height=600)
+    license_text.pack()
+    license_text_string = open(f"{cwd}\\LICENSE.txt", 'r').read()
     license_text.insert(END, license_text_string)
     license_text.config(state=DISABLED)
     return
@@ -1082,6 +1481,42 @@ def license_window():
 
 
 def help_window():
+    logging.info("Showing help window")
+    help_window = Toplevel()
+    help_window.title("EasyMinecraftServer (HELP)")
+    help_window.geometry("700x400")
+    help_window.resizable(False, False)
+    help_text = """EasyMinecraftServer Help
+    This program was made with the purpose of making hosting minecraft servers and manipulating them easier for everyone!
+    
+    All the buttons should be pretty self explanatory:
+    Start Server: Starts the server!
+    Create Backup Button: Creates a backup of the server files!
+    Restore Backup Button: Restores a backup of the server files!
+    Reset Server Button: Resets the server files!
+    Use Custom Map Button: Allows you to use a custom map in your server!
+    Reset Dimension Button: Resets a dimension from the server!
+    Change Server Properties Button: Allows you to change the server properties!
+    Import External Server Button: Allows you to import an external server to be used with the program!
+    
+    Hosting a server without port forwarding requires a ngrok account and an authtoken!
+    More information about ngrok can be found at ngrok.com
+
+    If you have any questions or concerns, please contact me at:
+    sree23palla@outlook.com
+
+    Have Fun!
+    """
+    help_label = Label(help_window, text=help_text)
+    help_label.pack()
+    jdk_installer_button = Button(help_window, text="JDK Installer", command=jdk_installer)
+    jdk_installer_button.pack()
+    license_button = Button(help_window, text="License", command=license_window)
+    license_button.pack()
+    return
+
+
+def help_window_event(event):
     logging.info("Showing help window")
     help_window = Toplevel()
     help_window.title("EasyMinecraftServer (HELP)")
@@ -1134,8 +1569,21 @@ toaster = ToastNotifier()
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.5.0")
+root.title("Easy Minecraft Server v2.6.0")
 root.geometry("430x640")
+root.bind("<Escape>", exit_program_event)
+root.bind("<Return>", start_server_event)
+root.bind("<Control-s>", start_server_event)
+root.bind("<Control-S>", start_server_event)
+root.bind("<Control-r>", reset_server_event)
+root.bind("<Control-R>", reset_server_event)
+root.bind("<F1>", help_window_event)
+root.bind("<F2>", license_window_event)
+root.bind("<F3>", backup_logs_event)
+root.bind("<F4>", uninstall_program_event)
+root.bind("<F5>", restart_program_event)
+root.bind("<F6>", update_event)
+root.resizable(False, False)
 menubar = Menu(root)
 main_menu = Menu(menubar, tearoff=0)
 if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\"):
@@ -1206,7 +1654,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.5.0 Started")
+logging.info("Easy Minecraft Server v2.6.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="Settings", command=settings)
@@ -1226,7 +1674,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.5.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.6.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico", threaded=True)
@@ -1250,7 +1698,6 @@ except Exception as e:
     logging.error(f"Error while checking for updates: {e}")
     pass
 java_check = which("java")
-print(str(java_check))
 if java_check is None:
     logging.warning("JDK Not Found")
     install_jdk_ask = askyesno(title="JDK Required",
@@ -1316,7 +1763,7 @@ if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_ver
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.5.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.6.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"
@@ -1347,7 +1794,7 @@ reset_dimension_button = Button(root, text="Reset Dimension In A Server", comman
                                width="40", height="3",
                                bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
 reset_dimension_button.pack()
-change_server_properties_button = Button(root, text="Editt Server Properties",
+change_server_properties_button = Button(root, text="Edit Server Properties",
                                          command=change_server_properties, font=("TrebuchetMS", 12, 'bold'),
                                          width="40", height="3",
                                          bd=0, bg="#32de97", activebackground="#3c9d9b", fg='#ffffff')
