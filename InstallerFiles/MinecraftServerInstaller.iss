@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EasyMinecraftServer"
-#define MyAppVersion "2.6.0"
+#define MyAppVersion "2.7.0"
 #define MyAppPublisher "teekar2023"
 #define MyAppURL "https://github.com/teekar2023/EasyMinecraftServer"
 #define MyAppExeName "EasyMinecraftServer.exe"
@@ -29,6 +29,8 @@ OutputBaseFilename=MinecraftServerInstaller
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+DirExistsWarning=no
+LicenseFile=C:\Users\sree2\IdeaProjects\Minecraft Server\LICENSE.txt
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

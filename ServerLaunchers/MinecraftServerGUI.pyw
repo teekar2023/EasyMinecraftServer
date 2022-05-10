@@ -2,8 +2,7 @@ import click
 import os
 import sys
 import time
-from shutil import rmtree, copytree
-from tkinter.messagebox import showerror, showwarning
+from shutil import rmtree, copytree, which
 import logging
 import socket
 import psutil
@@ -112,7 +111,7 @@ def auto_backup(version):
     current_time = time.time()
     logging.info("Time: " + str(current_time))
     logging.info("Creating new auto backup")
-    copytree(f"{cwd}\\ServerFiles-{version}\\",
+    copytree(f"{cwd}\\ServerFiles-{version}",
             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{current_time}\\")
     last_auto_backup_file = open(
         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", 'w+')
@@ -132,7 +131,8 @@ if __name__ == "__main__":
             pass
         pass
     time.sleep(5)
-    cwd = os.getcwd()
+    cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    os.chdir(cwd)
     user_dir = os.path.expanduser("~")
     logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")

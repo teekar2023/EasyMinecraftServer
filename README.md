@@ -18,10 +18,9 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 - Add better bug reporting system
 - Add RAM cleanup option to get max amount of RAM possible in server
 - Make accent color setting for buttons
-- Add option for buttons to be minecraft themed images
-- Add cli tool
 - Add option to create bat script shortcuts to quickly do things in program using cli tool
-- Add debug bind
+- Add auto update check in cli tool
+- Add logging in cli tool
 
 # License
 Copyright 2021 Sreekar Palla

@@ -3,9 +3,8 @@ import os
 import sys
 import time
 import logging
-from shutil import rmtree, copytree
+from shutil import rmtree, copytree, which
 import socket
-from tkinter.messagebox import showwarning
 import psutil
 
 
@@ -15,7 +14,6 @@ import psutil
 @click.argument("port_forward_status")
 @click.argument("port")
 def main(ram_amount, auto_server_backup, port_forward_status, port):
-    cwd = os.getcwd()
     version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", "r")
     version = version_file.read()
     logging.info("Starting Minecraft Server without GUI")
@@ -85,8 +83,6 @@ def main(ram_amount, auto_server_backup, port_forward_status, port):
 
 
 def auto_backup(version):
-    cwd = os.getcwd()
-    user_dir = os.path.expanduser("~")
     print("Auto Backup Started...")
     logging.info("Auto Backup Started...")
     if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\"):
@@ -118,7 +114,7 @@ def auto_backup(version):
     current_time = time.time()
     logging.info("Time: " + str(current_time))
     logging.info("Creating new auto backup")
-    copytree(f"{cwd}\\",
+    copytree(f"{cwd}\\ServerFiles-{version}",
             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{current_time}\\")
     last_auto_backup_file = open(
         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", 'w+')
@@ -138,7 +134,8 @@ if __name__ == "__main__":
             pass
         pass
     time.sleep(5)
-    cwd = os.getcwd()
+    cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    os.chdir(cwd)
     user_dir = os.path.expanduser("~")
     logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")

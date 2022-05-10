@@ -18,6 +18,8 @@ import logging
 import psutil
 from win10toast import ToastNotifier
 from threading import Thread
+import subprocess
+import glob
 
 
 def start_server():
@@ -25,7 +27,34 @@ def start_server():
                                   "Enter the version you want to use! This can be any version but must be in the format 'num.num.num'!")
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
-        logging.info("New server version entered")
+        logging.info(f"New server version entered: {version_selection}")
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}"):
+            subdirs = set([os.path.dirname(p) for p in glob.glob(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
+            if len(subdirs) == 0:
+                pass
+            else:
+                logging.info("Found server backups")
+                restore_ask = askyesno("Restore", "Server backups for this version were found! Would you like to restore one?")
+                if restore_ask:
+                    backup_files = str(askdirectory(title="Select Backup", initialdir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"))
+                    if not os.path.exists(f"{backup_files}\\server.jar") or not os.path.exists(f"{backup_files}\\") or backup_files == "":
+                        logging.error("Invalid Backup Selected In start_server()")
+                        showerror(title="Error", message="Invalid Backup Selected!")
+                        return
+                    else:
+                        logging.info("Valid Backup Selected In start_server()")
+                        logging.info("Copying from " + f"{backup_files}\\" + " to " + f"{cwd}\\ServerFiles-{version_selection}\\")
+                        copytree(f"{backup_files}\\", f"{cwd}\\ServerFiles-{version_selection}\\")
+                        logging.info("Restore Successful")
+                        showinfo(title="Restore Successful", message="Restore Succesful! Please restart server!")
+                        return
+                else:
+                    logging.info("Server restore cancelled")
+                    pass
+                pass
+            pass
+        else:
+            pass
         logging.info(f"Setting up new server version: {version_selection}")
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
         try:
@@ -43,7 +72,6 @@ def start_server():
                 pass
             f.close()
             logging.info("Server jar file downloaded")
-            webbrowser.open("https://account.mojang.com/documents/minecraft_eula")
             eula_check = askyesno(title="Minecraft Server EULA", message="Do you agree to the minecraft server EULA? https://account.mojang.com/documents/minecraft_eula")
             if eula_check:
                 logging.info("EULA Accepted")
@@ -185,7 +213,6 @@ def start_server_event(event):
                 pass
             f.close()
             logging.info("Server jar file downloaded")
-            webbrowser.open("https://account.mojang.com/documents/minecraft_eula")
             eula_check = askyesno(title="Minecraft Server EULA", message="Do you agree to the minecraft server EULA? https://account.mojang.com/documents/minecraft_eula")
             if eula_check:
                 logging.info("EULA Accepted")
@@ -370,8 +397,7 @@ def restore_server_backup():
         return
     else:
         confirm_restore = askyesno(title="Restore Server Backup", message="Are you sure you want to restore this "
-                                                                          "backup? It will replace any current data "
-                                                                          "in the server!")
+                                                                          "backup?")
         if confirm_restore:
             if os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\ops.json\\") or \
                     os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-players.json\\") or \
@@ -436,6 +462,41 @@ def reset_server():
                                         prompt="Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
     logging.info("Version Selected In reset_server(): " + str(reset_version))
     if os.path.exists(f"{cwd}\\ServerFiles-{reset_version}\\"):
+        backup_current_server = askyesno(title="Server Backup",
+                                             message="You have current data in the server! Would you like "
+                                                     "to perform a backup?")
+        if backup_current_server:
+            logging.warning("Performing Server Backup Before Resetting")
+            backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
+            if not backup_name:
+                showerror(title="Error", message="Invalid Name!")
+            else:
+                pass
+            if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\"):
+                os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\")
+                pass
+            else:
+                pass
+            if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\"):
+                showerror(title="Backup Error",
+                            message="Backup with the same name already exists! Please try again!")
+            else:
+                try:
+                    copytree(f"{cwd}\\ServerFiles-{reset_version}\\",
+                                f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\")
+                    logging.info("Server Backup Successful")
+                    showinfo(title="Backup Successful", message="Backup Successful!")
+                    pass
+                except Exception as e:
+                    showerror(title="Backup Error", message=f"Error while performing backup: {e}")
+                    logging.error("Error when performing backup: " + str(e))
+                return
+        else:
+            showwarning(title="Server Backup", message="You have chosen not to backup the current "
+                                                                "server! Current server data will be "
+                                                                "overwritten!")
+            logging.warning("User Has Chosen Not To Backup Current Server")
+            pass
         try:
             logging.warning("Performing Server Reset")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
@@ -456,6 +517,41 @@ def reset_server_event(event):
                                         prompt="Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
     logging.info("Version Selected In reset_server(): " + str(reset_version))
     if os.path.exists(f"{cwd}\\ServerFiles-{reset_version}\\"):
+        backup_current_server = askyesno(title="Server Backup",
+                                             message="You have current data in the server! Would you like "
+                                                     "to perform a backup?")
+        if backup_current_server:
+            logging.warning("Performing Server Backup Before Resetting")
+            backup_name = askstring(title="Create Server Backup", prompt="Enter the name of the backup!")
+            if not backup_name:
+                showerror(title="Error", message="Invalid Name!")
+            else:
+                pass
+            if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\"):
+                os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\")
+                pass
+            else:
+                pass
+            if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\"):
+                showerror(title="Backup Error",
+                            message="Backup with the same name already exists! Please try again!")
+            else:
+                try:
+                    copytree(f"{cwd}\\ServerFiles-{reset_version}\\",
+                                f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\")
+                    logging.info("Server Backup Successful")
+                    showinfo(title="Backup Successful", message="Backup Successful!")
+                    pass
+                except Exception as e:
+                    showerror(title="Backup Error", message=f"Error while performing backup: {e}")
+                    logging.error("Error when performing backup: " + str(e))
+                return
+        else:
+            showwarning(title="Server Backup", message="You have chosen not to backup the current "
+                                                                "server! Current server data will be "
+                                                                "overwritten!")
+            logging.warning("User Has Chosen Not To Backup Current Server")
+            pass
         try:
             logging.warning("Performing Server Reset")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
@@ -519,7 +615,9 @@ def inject_custom_map():
                     except Exception as e:
                         showerror(title="Backup Error", message=f"Error while performing backup: {e}")
                         logging.error("Error In inject_custom_map(): " + str(e))
-                    return
+                        return
+                    pass
+                pass
             else:
                 showwarning(title="Server Backup", message="You have chosen not to backup the current "
                                                                    "server! Current server data will be "
@@ -531,8 +629,18 @@ def inject_custom_map():
             pass
         try:
             logging.warning("Performing Custom Map Injection")
-            rmtree(f"{cwd}\\ServerFiles-{version}\\world\\")
-            copytree(f"{custom_map}\\", f"{cwd}\\ServerFiles-{version}\\world\\")
+            server_prop = open(f"{cwd}\\ServerFiles-{version}\\server.properties", "r")
+            if "level-name" in str(server_prop.read()):
+                p = Properties()
+                p.load(open(f"{cwd}\\ServerFiles-{version}\\server.properties", "rb"))
+                level_name = p.get("level-name").data
+                pass
+            else:
+                level_name = "world"
+                pass
+            server_prop.close()
+            rmtree(f"{cwd}\\ServerFiles-{version}\\{level_name}\\")
+            copytree(f"{custom_map}\\", f"{cwd}\\ServerFiles-{version}\\{level_name}\\")
             showinfo(title="Custom Map", message="Custom Map Successfully Injected!")
             logging.info("Custom Map Injection Successful")
             pass
@@ -547,6 +655,12 @@ def reset_overworld():
     version = askstring(title="Select Version",
                                   prompt="Please Select The Version You Would Like To Reset 'THE OVERWORLD' In! This can be any version but must be in the format 'num.num.num'!")
     logging.info("Version Selected In reset_overworld(): " + str(version))
+    if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
+        showerror(title="Error", message="Invalid Version!")
+        logging.error("Invalid Version Entered")
+        return
+    else:
+        pass
     backup_ask = askyesno("Backup", "Would you like to backup your server before resetting the dimension?")
     if backup_ask:
         logging.info("User Has Chosen To Backup Server Before Resetting Dimension")
@@ -568,10 +682,21 @@ def reset_overworld():
     reset_ask = askyesno("Reset", "Are you sure you want to reset the dimension?")
     if reset_ask:
         logging.info("User Has Chosen To Reset Dimension")
-        rmtree(f"{cwd}\\ServerFiles-{version}\\world\\region\\")
-        showinfo(title="Dimension Reset", message="Overworld Successfully Reset!")
-        logging.info("Overworld Successfully Reset In reset_overworld()")
-        return
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\world\\region\\"):
+            pass
+        else:
+            showerror(title="Dimension Reset", message="The overworld files do not exist!")
+            logging.error("The overworld files do not exist In reset_overworld()")
+            return
+        try:
+            rmtree(f"{cwd}\\ServerFiles-{version}\\world\\region\\")
+            showinfo(title="Dimension Reset", message="Overworld Successfully Reset!")
+            logging.info("Overworld Successfully Reset In reset_overworld()")
+            return
+        except Exception as e:
+            showerror(title="Dimension Reset", message=f"Error while resetting dimension: {e}")
+            logging.error("Error In reset_overworld(): " + str(e))
+            return
     else:
         showinfo("Dimension Reset", "Dimension Reset Cancelled!")
         logging.info("Dimension Reset Cancelled In reset_overworld()")
@@ -582,6 +707,12 @@ def reset_nether():
     version = askstring(title="Select Version",
                                   prompt="Please Select The Version You Would Like To Reset 'THE NETHER' In! This can be any version but must be in the format 'num.num.num'!")
     logging.info("Version Selected In reset_nether(): " + str(version))
+    if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
+        showerror(title="Error", message="Invalid Version!")
+        logging.error("Invalid Version Entered")
+        return
+    else:
+        pass
     backup_ask = askyesno("Backup", "Would you like to backup your server before resetting the dimension?")
     if backup_ask:
         backup_name = askstring("Backup", "Please enter a name for your backup!")
@@ -602,10 +733,21 @@ def reset_nether():
     reset_ask = askyesno("Reset", "Are you sure you want to reset the dimension?")
     if reset_ask:
         logging.info("User Has Chosen To Reset Dimension")
-        rmtree(f"{cwd}\\ServerFiles-{version}\\world\\DIM-1\\region\\")
-        showinfo(title="Dimension Reset", message="Nether Successfully Reset!")
-        logging.info("Nether Successfully Reset In reset_nether()")
-        return
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\world\\DIM-1\\region\\"):
+            pass
+        else:
+            showerror(title="Dimension Reset", message="The nether files do not exist!")
+            logging.error("Nether Files Do Not Exist In reset_nether()")
+            return
+        try:
+            rmtree(f"{cwd}\\ServerFiles-{version}\\world\\DIM-1\\region\\")
+            showinfo(title="Dimension Reset", message="Nether Successfully Reset!")
+            logging.info("Nether Successfully Reset In reset_nether()")
+            return
+        except Exception as e:
+            showerror(title="Dimension Reset", message=f"Error while resetting dimension: {e}")
+            logging.error("Error In reset_nether(): " + str(e))
+            return
     else:
         showinfo("Dimension Reset", "Dimension Reset Cancelled!")
         logging.info("Dimension Reset Cancelled In reset_nether()")
@@ -616,6 +758,12 @@ def reset_end():
     version = askstring(title="Select Version",
                                   prompt="Please Select The Version You Would Like To Reset 'THE END' In! This can be any version but must be in the format 'num.num.num'!")
     logging.info("Version Selected In reset_end(): " + str(version))
+    if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
+        showerror(title="Error", message="Invalid Version!")
+        logging.error("Invalid Version Entered")
+        return
+    else:
+        pass
     backup_ask = askyesno("Backup", "Would you like to backup your server before resetting the dimension?")
     if backup_ask:
         backup_name = askstring("Backup", "Please enter a name for your backup!")
@@ -636,10 +784,21 @@ def reset_end():
     reset_ask = askyesno("Reset", "Are you sure you want to reset the dimension?")
     if reset_ask:
         logging.info("User Has Chosen To Reset Dimension")
-        rmtree(f"{cwd}\\ServerFiles-{version}\\world\\DIM1\\region\\")
-        showinfo(title="Dimension Reset", message="End Successfully Reset!")
-        logging.info("End Successfully Reset In reset_end()")
-        return
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\world\\DIM1\\region\\"):
+            pass
+        else:
+            showerror(title="Dimension Reset", message="The end files do not exist!")
+            logging.error("End Files Do Not Exist In reset_end()")
+            return
+        try:
+            rmtree(f"{cwd}\\ServerFiles-{version}\\world\\DIM1\\region\\")
+            showinfo(title="Dimension Reset", message="End Successfully Reset!")
+            logging.info("End Successfully Reset In reset_end()")
+            return
+        except Exception as e:
+            showerror(title="Dimension Reset", message=f"Error while resetting dimension: {e}")
+            logging.error("Error In reset_end(): " + str(e))
+            return
     else:
         showinfo("Dimension Reset", "Dimension Reset Cancelled!")
         logging.info("Dimension Reset Cancelled In reset_end()")
@@ -748,9 +907,39 @@ def import_external_server():
             return
 
 
+def folders_in(path_to_parent):
+  for fname in os.listdir(path_to_parent):
+    if os.path.isdir(os.path.join(path_to_parent, fname)):
+      yield os.path.join(path_to_parent, fname)
+
+
+def has_folders(path_to_parent):
+  folders = list(folders_in(path_to_parent))
+  return folders
+
+
 def setup(arg):
     showinfo(title="Setup", message="Setup for EasyMinecraftServer is required! Please follow the instructions!")
     if arg == "all":
+        subdirectories = has_folders(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\")
+        if len(subdirectories) == 0:
+            pass
+        else:
+            restore_backup = askyesno(title="Restore Program Backup", message="You have a backup of EasyMinecraftServer! Would you like to restore it?")
+            if restore_backup:
+                backup_files = str(askdirectory(title="Select Backup Folder", initialdir=f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\"))
+                if not os.path.exists(f"{backup_files}\\settings.json"):
+                    showerror(title="Error", message="Invalid Backup Folder!")
+                    logging.error("Invalid Backup Folder!")
+                    restart_force()
+                else:
+                    copy(f"{backup_files}\\settings.json", f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json")
+                    showinfo(title="Restore Successful", message="Restore Successful! EasyMinecraftServer will now restart!")
+                    logging.info("Restore successful")
+                    restart_force()
+            else:
+                pass
+            pass
         showinfo(title="NGROK", message="Makeshift port-forwarding requires a ngrok account. Please navigate to "
                                 "https://dashboard.ngrok.com/get-started/setup after making a free account and "
                                 "get your authtoken!")
@@ -765,7 +954,7 @@ def setup(arg):
         ngrok_authtoken_entry.insert(0, "Enter your ngrok authtoken here")
         ram_bytes = psutil.virtual_memory().total
         ram_mb = ram_bytes / 1000000
-        ram_allocation_amount_label = Label(setup_window, text=f"RAM Allocation Amount. Total Available: {str(float(ram_mb).round(0))} MB")
+        ram_allocation_amount_label = Label(setup_window, text=f"RAM Allocation Amount. Total Available: {str(round(float(ram_mb)))} MB")
         ram_allocation_amount_label.pack()
         ram_allocation_entry = Entry(setup_window, width=450)
         ram_allocation_entry.pack()
@@ -794,7 +983,7 @@ def setup(arg):
         new_ram_allocation_amount = ram_allocation_entry.get()
         new_auto_server_backup = variable.get()
         new_server_gui = variable_two.get()
-        if new_ram_allocation_amount >= str(float(ram_mb).round(0)):
+        if new_ram_allocation_amount >= str(round(float(ram_mb))):
             showwarning(title="RAM Allocation Error", message="RAM Allocation Amount is greater than the total available RAM!")
             logging.warning("RAM Allocation Amount is greater than the total available RAM!")
             restart_force()
@@ -890,7 +1079,7 @@ def settings():
     ngrok_authtoken_entry.insert(0, ngrok_authtoken)
     ram_bytes = psutil.virtual_memory().total
     ram_mb = ram_bytes / 1000000
-    ram_allocation_amount_label = Label(settings_window, text=f"RAM Allocation Amount. Total Available: {str(float(ram_mb).round(0))} MB")
+    ram_allocation_amount_label = Label(settings_window, text=f"RAM Allocation Amount. Total Available: {str(round(float(ram_mb)))} MB")
     ram_allocation_amount_label.pack()
     ram_allocation_amount_entry = Entry(settings_window, width=450)
     ram_allocation_amount_entry.pack()
@@ -926,7 +1115,7 @@ def settings():
     new_ram_allocation_amount = ram_allocation_amount_entry.get()
     new_auto_server_backup = variable.get()
     new_server_gui = variable_two.get()
-    if new_ram_allocation_amount >= str(float(ram_mb).round(0)):
+    if new_ram_allocation_amount >= str(round(float(ram_mb))):
         showwarning(title="RAM Allocation Error", message="RAM Allocation Amount is greater than the total available RAM!")
         logging.warning("RAM Allocation Amount is greater than the total available RAM!")
         return
@@ -957,7 +1146,7 @@ def program_reset_force():
     file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
     file_list = os.listdir(file_path)
     for folder in file_list:
-        if folder == "Logs":
+        if folder == "Logs" or folder == "ProgramBackups":
             pass
         else:
             rmtree(f"{file_path}\\{folder}")
@@ -1066,7 +1255,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.6.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1166,7 +1355,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.6.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1350,7 +1539,7 @@ def uninstall_program():
                 file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
                 file_list = os.listdir(file_path)
                 for folder in file_list:
-                    if folder == "Logs":
+                    if folder == "Logs" or folder == "ProgramBackups":
                         pass
                     else:
                         rmtree(f"{file_path}\\{folder}")
@@ -1373,10 +1562,8 @@ def uninstall_program():
         os.startfile(f"{cwd}\\unins000.exe")
         exit_program_force()
     else:
-        showinfo(title="Uninstall", message="Uninstall Cancelled! Please Restart To Use Again!")
-        logging.info("Uninstall Cancelled! Please Restart To Use Again!")
-        restart_program()
-        sys.exit(0)
+        showinfo(title="Uninstall", message="Uninstall Cancelled!")
+        return
 
 
 def uninstall_program_event(event):
@@ -1414,10 +1601,8 @@ def uninstall_program_event(event):
         os.startfile(f"{cwd}\\unins000.exe")
         exit_program_force()
     else:
-        showinfo(title="Uninstall", message="Uninstall Cancelled! Please Restart To Use Again!")
-        logging.info("Uninstall Cancelled! Please Restart To Use Again!")
-        restart_program()
-        sys.exit(0)
+        showinfo(title="Uninstall", message="Uninstall Cancelled!")
+        return
 
 
 def jdk_installer():
@@ -1551,6 +1736,25 @@ def help_window_event(event):
     license_button.pack()
     return
 
+def explorer_logs():
+    subprocess.Popen(f"explorer {user_dir}\\Documents\\EasyMinecraftServer\\Logs\\")
+    subprocess.Popen(f"explorer {cwd}")
+    return
+
+
+def debug_event(event):
+    logging.info("Debug function called")
+    explorer_logs_thread = Thread(target=explorer_logs)
+    explorer_logs_thread.start()
+    os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log")
+    showinfo(title="Debug", message="Logs and data folder launched! Press F3 on the main window to create a backup of current logs!")
+    return
+
+
+def server_backups():
+    subprocess.Popen(f"explorer {user_dir}\\Documents\\EasyMinecraftServer\\Backups\\")
+    return
+
 
 def is_admin():
     try:
@@ -1569,7 +1773,7 @@ toaster = ToastNotifier()
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.6.0")
+root.title("Easy Minecraft Server v2.7.0")
 root.geometry("430x640")
 root.bind("<Escape>", exit_program_event)
 root.bind("<Return>", start_server_event)
@@ -1583,6 +1787,7 @@ root.bind("<F3>", backup_logs_event)
 root.bind("<F4>", uninstall_program_event)
 root.bind("<F5>", restart_program_event)
 root.bind("<F6>", update_event)
+root.bind("<F12>", debug_event)
 root.resizable(False, False)
 menubar = Menu(root)
 main_menu = Menu(menubar, tearoff=0)
@@ -1654,10 +1859,11 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.6.0 Started")
+logging.info("Easy Minecraft Server v2.7.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="Settings", command=settings)
+main_menu.add_command(label="Server Backups", command=server_backups)
 main_menu.add_command(label="Backup Program", command=program_backup)
 main_menu.add_command(label="Restore Program", command=program_restore)
 main_menu.add_command(label="Reset Program", command=program_reset)
@@ -1674,7 +1880,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.6.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico", threaded=True)
@@ -1763,7 +1969,7 @@ if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_ver
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.6.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.7.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"

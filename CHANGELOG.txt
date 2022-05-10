@@ -1,17 +1,17 @@
-New in version 2.6.0:
-Added user EULA check on server creation!
-Added a few keybinds for quick actions:
-Escape - Exit program
-Return - Start server
-Control-s - Start server
-Control-r - Reset server
-F1 - Help
-F2 - License
-F3 - Backup Logs
-F4 - Uninstall
-F5 - Restart
-F6 - Update
-Added checks to see if RAM allocation amount is reasonable!
-Fixed bugs where program would run in background instead of exiting!
-Fixed a bug with license window!
-Few other small changes and fixes!
+New in version 2.7.0:
+Added new cli tool for main program functions:
+    - run 'mcserver' in an elevated terminal program to use!
+Added support to restore server backups if found when creating new servers!
+Added option to restore backups if detected in setup!
+Added keybind F12 to launch log file and some explorer directories!
+Added prompt to backup server before resetting!
+Added license file in installer!
+A restart is no longer required to use program when cancelling uninstall!
+Removed opening of eula in webbrowser on server creation!
+Removed the "Folder Already Exists" prompt in program installer!
+Fixed bugs with setup and settings!
+Fixed some bugs with restoring server backups!
+Fixed some bugs with uninstall and reset deleting ProgramBackups!
+Fixed some bugs with resetting dimensions!
+Fixed some bugs with ServerLaunchers!
+Fixed some bugs with injecting custom maps into servers!
