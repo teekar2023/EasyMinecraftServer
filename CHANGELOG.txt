@@ -1,17 +1,16 @@
-New in version 2.7.0:
-Added new cli tool for main program functions:
-    - run 'mcserver' in an elevated terminal program to use!
-Added support to restore server backups if found when creating new servers!
-Added option to restore backups if detected in setup!
-Added keybind F12 to launch log file and some explorer directories!
-Added prompt to backup server before resetting!
-Added license file in installer!
-A restart is no longer required to use program when cancelling uninstall!
-Removed opening of eula in webbrowser on server creation!
-Removed the "Folder Already Exists" prompt in program installer!
-Fixed bugs with setup and settings!
-Fixed some bugs with restoring server backups!
-Fixed some bugs with uninstall and reset deleting ProgramBackups!
-Fixed some bugs with resetting dimensions!
-Fixed some bugs with ServerLaunchers!
-Fixed some bugs with injecting custom maps into servers!
+New in version 2.8.0:
+Elevator script which runs in installer now adds exclusions for the following for improved performance:
+ - installation directory
+ - EasyMinecraftServer documents directory
+ - EasyMinecraftServer.exe
+ - mcserver.exe
+ - MinecraftServerGUI.exe
+ - MinecraftServer-nogui.exe
+ - java.exe
+ - javaw.exe
+ - cmd.exe
+ - powershell.exe
+Added new View ServerFiles button in dropdown menu to view and manage ServerFiles for any version!
+Added new Anti-Virus Exception creator button in dropdown menu to create Anti-Virus Exceptions!
+Added new Anti-Virus Exception remover button in dropdown menu to remove Anti-Virus Exceptions!
+Added automatic update checking in CLI tool!

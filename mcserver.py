@@ -685,7 +685,7 @@ def update_program():
     except Exception as e:
         print(f"There was an error while checking for updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -785,7 +785,7 @@ def is_admin():
 if __name__ == '__main__':
     os.system("title EasyMinecraftServer")
     os.system("cls")
-    print("EasyMinecraftServer v2.7.0")
+    print("EasyMinecraftServer v2.8.0")
     if is_admin():
         pass
     else:
@@ -836,5 +836,22 @@ if __name__ == '__main__':
     else:
         pass
     settings_json = json.load(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "r"))
+    url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
+    r = requests.get(url, allow_redirects=True)
+    redirected_url = r.url
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
+        update_program()
+        pass
+    else:
+        file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
+        file_list = os.listdir(file_path)
+        for folder in file_list:
+            if "Update" in folder:
+                print(f"Deleting update folder: {user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
+                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
+                pass
+            else:
+                pass
+        pass
     main()
     sys.exit(0)

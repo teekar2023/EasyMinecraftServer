@@ -19,7 +19,6 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 - Add RAM cleanup option to get max amount of RAM possible in server
 - Make accent color setting for buttons
 - Add option to create bat script shortcuts to quickly do things in program using cli tool
-- Add auto update check in cli tool
 - Add logging in cli tool
 
 # License

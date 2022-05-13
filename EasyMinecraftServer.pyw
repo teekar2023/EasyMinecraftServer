@@ -1255,7 +1255,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1355,7 +1355,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
@@ -1756,6 +1756,43 @@ def server_backups():
     return
 
 
+def server_files():
+    version = askstring(title="View Server Files", prompt="Enter the version you want to view! This can be any version but must be in the format 'num.num.num'!")
+    if version == None:
+        return
+    else:
+        if os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
+            showwarning(title="View Server Files", message="Do not tamper with ServerFiles unless you know what you are doing! A server backup is reccomended before interacting with ServerFiles!")
+            subprocess.Popen(f"explorer {cwd}\\ServerFiles-{version}\\")
+            return
+        else:
+            showerror(title="Error", message="Version does not exist!")
+            logging.error("Version does not exist!")
+            return
+
+
+def av_exclusions():
+    exclusion_confirm = askyesno(title="Anti-Virus Exclusion", message="Would you like to launch the anti-virus exception creator to make all program and server files not be scanned by your antivirus program?")
+    if exclusion_confirm:
+        showinfo(title="Anti-Virus Exclusion", message="Launching Anti-Virus Exclusion Creator! Program will exit!")
+        logging.info("Launching Anti-Virus Exclusion Creator!")
+        os.startfile(f"MinecraftServerElevator.exe")
+        exit_program_force()
+    else:
+        return
+
+
+def av_exclusions_remove():
+    exclusion_confirm = askyesno(title="Anti-Virus Exclusion", message="Would you like to remove the anti-virus exception creator to make all program and server files be scanned by your antivirus program?")
+    if exclusion_confirm:
+        showinfo(title="Anti-Virus Exclusion", message="Launching Anti-Virus Exclusion Remover! Program will exit!")
+        logging.info("Launching Anti-Virus Exclusion Remover!")
+        os.startfile(f"MinecraftServerUnelevator.exe")
+        exit_program_force()
+    else:
+        return
+
+
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -1773,7 +1810,7 @@ toaster = ToastNotifier()
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.7.0")
+root.title("Easy Minecraft Server v2.8.0")
 root.geometry("430x640")
 root.bind("<Escape>", exit_program_event)
 root.bind("<Return>", start_server_event)
@@ -1859,9 +1896,10 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.7.0 Started")
+logging.info("Easy Minecraft Server v2.8.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
+main_menu.add_command(label="View ServerFiles", command=server_files)
 main_menu.add_command(label="Settings", command=settings)
 main_menu.add_command(label="Server Backups", command=server_backups)
 main_menu.add_command(label="Backup Program", command=program_backup)
@@ -1870,6 +1908,8 @@ main_menu.add_command(label="Reset Program", command=program_reset)
 main_menu.add_command(label="Changelog", command=changelog)
 main_menu.add_command(label="Update", command=update)
 main_menu.add_command(label="Uninstall", command=uninstall_program)
+main_menu.add_command(label="Create Anti-Virus Exclusions", command=av_exclusions)
+main_menu.add_command(label="Remove Anti-Virus Exclusions", command=av_exclusions_remove)
 main_menu.add_command(label="Restart", command=restart_program)
 main_menu.add_command(label="Exit", command=exit_program)
 menubar.add_cascade(label="Menu", menu=main_menu)
@@ -1880,7 +1920,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.7.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico", threaded=True)
@@ -1969,7 +2009,7 @@ if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_ver
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.7.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.8.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"
