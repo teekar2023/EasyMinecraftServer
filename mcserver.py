@@ -86,7 +86,17 @@ def main(command):
             else:
                 print("Settings and data will not be reset...")
                 pass
+            remove_av = confirm("Would you like to remove Anti-Virus Exclusions?")
+            if remove_av:
+                print("Calling Anti-Virus Exception Remover...")
+                os.system("MinecraftServerUnelevator.exe")
+                print("Removed Anti-Virus Exclusions...")
+                pass
+            else:
+                print("Anti-Virus Exclusions will not be removed...")
+                pass
             print("Sorry to see you go! Hope you come back soon!")
+            time.sleep(1)
             os.startfile(f"{cwd}\\unins000.exe")
             return
         else:
@@ -685,10 +695,10 @@ def update_program():
     except Exception as e:
         print(f"There was an error while checking for updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Update available: {new_version}")
-        new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
+        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
         download_url = new_url.replace("tag", "download")
         if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\"):
             os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\")
@@ -723,7 +733,7 @@ def update_program():
         confirm_update = confirm(f"Would you like to update to version {new_version}?")
         if confirm_update:
             try:
-                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe", 'wb')
+                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe", 'wb')
                 print("Downloading update installer...")
                 f2 = urllib.request.urlopen(download_url)
                 while True:
@@ -737,7 +747,7 @@ def update_program():
                 f.close()
                 print("Update Downloaded Successfully! Installer Will Now Be Launched To Complete Update!")
                 time.sleep(5)
-                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
                 return
             except Exception as e:
                 print(f"There was an error while downloading the update: {e}")
@@ -785,7 +795,7 @@ def is_admin():
 if __name__ == '__main__':
     os.system("title EasyMinecraftServer")
     os.system("cls")
-    print("EasyMinecraftServer v2.8.0")
+    print("EasyMinecraftServer v2.9.0")
     if is_admin():
         pass
     else:
@@ -839,7 +849,7 @@ if __name__ == '__main__':
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
         update_program()
         pass
     else:

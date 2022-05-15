@@ -1255,10 +1255,10 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
-        new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
+        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
         download_url = new_url.replace("tag", "download")
         update_window = Toplevel(root)
         update_window.title("EasyMinecraftServer (UPDATE)")
@@ -1308,14 +1308,14 @@ def update():
         changelog_text.insert(END, f"{changelog_txt}")
         changelog_text.config(state=DISABLED)
         update_button.wait_variable(int_var)
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe"):
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe"):
             logging.info("Update already downloaded")
             logging.info("Launching update installer")
-            os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+            os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
             exit_program_force()
         else:
             try:
-                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe", 'wb')
+                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe", 'wb')
                 showwarning(title="EasyMinecraftServer Update",
                             message="Update will now be downloaded and installer will be launcher. "
                                     "This may take a while to please be patient and d not do anything if program becomes unresponsive!")
@@ -1333,7 +1333,7 @@ def update():
                 showinfo(title="EasyMinecraftServer Update", message="Update Downloaded Successfully! Installer Will Now Be Launched To Complete Update!")
                 logging.info("Update Downloaded Successfully!")
                 logging.info("Launching update installer")
-                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
                 exit_program_force()
             except Exception as e:
                 showerror(title="EasyMinecraftServer Update", message=f"There was an error while downloading update: {e}")
@@ -1355,10 +1355,10 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
-        new_url = str(redirected_url) + "/MinecraftServerInstaller.exe"
+        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
         download_url = new_url.replace("tag", "download")
         update_window = Toplevel(root)
         update_window.title("EasyMinecraftServer (UPDATE)")
@@ -1408,14 +1408,14 @@ def update_event(event):
         changelog_text.insert(END, f"{changelog_txt}")
         changelog_text.config(state=DISABLED)
         update_button.wait_variable(int_var)
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe"):
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe"):
             logging.info("Update already downloaded")
             logging.info("Launching update installer")
-            os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+            os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
             exit_program_force()
         else:
             try:
-                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe", 'wb')
+                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller.exe-{new_version}", 'wb')
                 showwarning(title="EasyMinecraftServer Update",
                             message="Update will now be downloaded and installer will be launcher. "
                                     "This may take a while to please be patient and d not do anything if program becomes unresponsive!")
@@ -1433,7 +1433,7 @@ def update_event(event):
                 showinfo(title="EasyMinecraftServer Update", message="Update Downloaded Successfully! Installer Will Now Be Launched To Complete Update!")
                 logging.info("Update Downloaded Successfully!")
                 logging.info("Launching update installer")
-                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\MinecraftServerInstaller.exe")
+                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
                 exit_program_force()
             except Exception as e:
                 showerror(title="EasyMinecraftServer Update", message=f"There was an error while downloading update: {e}")
@@ -1556,6 +1556,14 @@ def uninstall_program():
                 pass
             pass
         else:
+            pass
+        remove_av = askyesno(title="Anti-Virus Exclusions", message="Would you like to remove all Anti-Virus Exclusions?")
+        if remove_av:
+            logging.info("Launching MinecraftServerUnelevator.exe")
+            os.system(f"MinecraftServerUnelevator")
+            pass
+        else:
+            logging.info("Anti-Virus Exclusion removal denied")
             pass
         showinfo(title="Uninstall", message="Sorry to see you go! Hope you come back soon!")
         logging.info("Launching EasyMinecraftServer Uninstaller")
@@ -1762,7 +1770,9 @@ def server_files():
         return
     else:
         if os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
-            showwarning(title="View Server Files", message="Do not tamper with ServerFiles unless you know what you are doing! A server backup is reccomended before interacting with ServerFiles!")
+            showwarning(title="View Server Files", message="Do not tamper with ServerFiles unless you know what you "
+                                                           "are doing! A server backup is recommended before "
+                                                           "interacting with ServerFiles!") 
             subprocess.Popen(f"explorer {cwd}\\ServerFiles-{version}\\")
             return
         else:
@@ -1810,7 +1820,7 @@ toaster = ToastNotifier()
 cwd = os.getcwd()
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.8.0")
+root.title("Easy Minecraft Server v2.9.0")
 root.geometry("430x640")
 root.bind("<Escape>", exit_program_event)
 root.bind("<Return>", start_server_event)
@@ -1896,7 +1906,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.8.0 Started")
+logging.info("Easy Minecraft Server v2.9.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="View ServerFiles", command=server_files)
@@ -1920,7 +1930,7 @@ try:
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.8.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico", threaded=True)
@@ -2009,7 +2019,7 @@ if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_ver
     pass
 else:
     pass
-main_text_label = Label(root, text="Easy Minecraft Server v2.8.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.9.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"

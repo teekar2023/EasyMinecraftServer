@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EasyMinecraftServer"
-#define MyAppVersion "2.8.0"
+#define MyAppVersion "2.9.0"
 #define MyAppPublisher "teekar2023"
 #define MyAppURL "https://github.com/teekar2023/EasyMinecraftServer"
 #define MyAppExeName "EasyMinecraftServer.exe"
@@ -24,8 +24,8 @@ DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 PrivilegesRequired=admin
 PrivilegesRequiredOverridesAllowed=commandline
-OutputDir=C:\Users\sree2\IdeaProjects\Minecraft Server\InstallerFiles
-OutputBaseFilename=MinecraftServerInstaller
+OutputDir=C:\Users\sree2\IdeaProjects\Minecraft Server\InstallerFiles\Output
+OutputBaseFilename=EasyMinecraftServerInstaller-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
