@@ -1,17 +1,19 @@
-import click
-from click import confirm
-import os
-from shutil import rmtree, copy, which, copytree
-import requests
-import urllib
-import time
-import sys
-import json
-from jproperties import Properties
-import pyautogui as kbm
 import ctypes
 import glob
+import json
+import os
+import subprocess
+import sys
+import time
+import urllib
+from shutil import rmtree, copy, which, copytree
 from tkinter.filedialog import askdirectory
+
+import click
+import pyautogui as kbm
+import requests
+from click import confirm
+from jproperties import Properties
 
 
 @click.command()
@@ -108,25 +110,31 @@ def main(command):
 
 
 def start_server():
-    version_selection = click.prompt("Enter the version you want to use! This can be any version but must be in the format 'num.num.num'!", type=str)
+    version_selection = click.prompt(
+        "Enter the version you want to use! This can be any version but must be in the format 'num.num.num'!", type=str)
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
         print(f"New server version entered: {version_selection}")
         if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}"):
-            subdirs = set([os.path.dirname(p) for p in glob.glob(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
+            subdirs = set([os.path.dirname(p) for p in
+                           glob.glob(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
             if len(subdirs) == 0:
                 pass
             else:
                 print("Found server backups")
-                restore_ask = click.confirm("Server backups for this version were found! Would you like to restore one?")
+                restore_ask = click.confirm(
+                    "Server backups for this version were found! Would you like to restore one?")
                 if restore_ask:
-                    backup_files = str(askdirectory(title="Select Backup", initialdir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"))
-                    if not os.path.exists(f"{backup_files}\\server.jar") or not os.path.exists(f"{backup_files}\\") or backup_files == "":
+                    backup_files = str(askdirectory(title="Select Backup",
+                                                    initialdir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"))
+                    if not os.path.exists(f"{backup_files}\\server.jar") or not os.path.exists(
+                            f"{backup_files}\\") or backup_files == "":
                         print("Invalid Backup Selected In start_server()")
                         return
                     else:
                         print("Valid Backup Selected In start_server()")
-                        print("Copying from " + f"{backup_files}\\" + " to " + f"{cwd}\\ServerFiles-{version_selection}\\")
+                        print(
+                            "Copying from " + f"{backup_files}\\" + " to " + f"{cwd}\\ServerFiles-{version_selection}\\")
                         copytree(f"{backup_files}\\", f"{cwd}\\ServerFiles-{version_selection}\\")
                         print("Restore Succesful! Please restart server!")
                         return
@@ -141,7 +149,8 @@ def start_server():
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
         try:
             f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
-            print("To create a new server version, the server files will need to be downloaded! This may take a minute!")
+            print(
+                "To create a new server version, the server files will need to be downloaded! This may take a minute!")
             print("Downloading server jar file...")
             f2 = urllib.request.urlopen(server_download_url)
             while True:
@@ -154,27 +163,36 @@ def start_server():
                 pass
             f.close()
             print("Server jar file downloaded")
-            eula_check = click.confirm("Do you agree to the minecraft server EULA? https://account.mojang.com/documents/minecraft_eula")
+            eula_check = click.confirm(
+                "Do you agree to the minecraft server EULA? https://account.mojang.com/documents/minecraft_eula")
             if eula_check:
-                copy(f"{cwd}\\UniversalServerFilesDefaults\\eula.txt", f"{cwd}\\ServerFiles-{version_selection}\\eula.txt")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\eula.txt",
+                     f"{cwd}\\ServerFiles-{version_selection}\\eula.txt")
                 pass
             else:
                 print("You must agree to the EULA to use this program!")
                 rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
                 return
-            list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.10", "1.10.1", "1.10.2", "1.11", "1.11.1", "1.11.2"]
-            list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3", "1.14.4", "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
+            list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9",
+                        "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8",
+                        "1.8.9", "1.9", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.10", "1.10.1", "1.10.2", "1.11",
+                        "1.11.1", "1.11.2"]
+            list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3",
+                        "1.14.4", "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
             if version_selection in list_one:
-                copy(f"{cwd}\\UniversalServerFilesDefaults\\log4j2_17-111.xml", f"{cwd}\\ServerFiles-{version_selection}\\log4j2_17-111.xml")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\log4j2_17-111.xml",
+                     f"{cwd}\\ServerFiles-{version_selection}\\log4j2_17-111.xml")
                 pass
             elif version_selection in list_two:
-                copy(f"{cwd}\\UniversalServerFilesDefaults\\log4j2_112-116.xml", f"{cwd}\\ServerFiles-{version_selection}\\log4j2_112-116.xml")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\log4j2_112-116.xml",
+                     f"{cwd}\\ServerFiles-{version_selection}\\log4j2_112-116.xml")
                 pass
             else:
                 pass
             if settings_json["ngrok_authtoken"] == "1m1fBhKsa0FcZkcgIs1DvjE61J7_MUkXiasf6JTVmG7HWaRD":
                 print("Injecting Chimpanzee222 as an operator")
-                copy(f"{cwd}\\UniversalServerFilesDefaults\\ops.json", f"{cwd}\\ServerFiles-{version_selection}\\ops.json")
+                copy(f"{cwd}\\UniversalServerFilesDefaults\\ops.json",
+                     f"{cwd}\\ServerFiles-{version_selection}\\ops.json")
                 print("Copied ops.json")
                 pass
             else:
@@ -182,7 +200,8 @@ def start_server():
             print("Server files set up")
             pass
         except Exception as e:
-            print(f"The server files may not be supported or were unable to be downloaded! Error while downloading new server files: {e}")
+            print(
+                f"The server files may not be supported or were unable to be downloaded! Error while downloading new server files: {e}")
             f.close()
             rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
             return
@@ -260,11 +279,12 @@ def start_server():
 
 
 def reset_server():
-    reset_version = click.prompt("Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
+    reset_version = click.prompt(
+        "Enter the version you want to reset! This can be any version but must be in the format 'num.num.num'!")
     if os.path.exists(f"{cwd}\\ServerFiles-{reset_version}\\"):
         if os.path.exists(f"{cwd}\\ServerFiles-{reset_version}\\"):
             backup_current_server = click.confirm("You have current data in the server! Would you like "
-                                                     "to perform a backup?")
+                                                  "to perform a backup?")
             if backup_current_server:
                 print("Performing Server Backup Before Resetting...")
                 current_time = time.time()
@@ -279,13 +299,14 @@ def reset_server():
                     pass
                 else:
                     pass
-                if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\"):
+                if os.path.exists(
+                        f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\"):
                     print("Backup with the same name already exists! Please try again!")
                     return
                 else:
                     try:
                         copytree(f"{cwd}\\ServerFiles-{reset_version}\\",
-                                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\")
+                                 f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{reset_version}\\{backup_name}\\")
                         print("Server Backup Successful")
                         pass
                     except Exception as e:
@@ -293,8 +314,8 @@ def reset_server():
                     return
             else:
                 print("You have chosen not to backup the current "
-                        "server! Current server data will be "
-                        "overwritten!")
+                      "server! Current server data will be "
+                      "overwritten!")
                 pass
             pass
         try:
@@ -311,7 +332,8 @@ def reset_server():
 
 
 def create_server_backup():
-    backup_version = click.prompt("Enter the version you want to backup! This can be any version but must be in the format 'num.num.num'!")
+    backup_version = click.prompt(
+        "Enter the version you want to backup! This can be any version but must be in the format 'num.num.num'!")
     backup_name = click.prompt("Enter a name for the backup!", type=str, default=str(time.time()))
     if not os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\"):
         print("The server version you are trying to backup does not exist!")
@@ -335,7 +357,8 @@ def create_server_backup():
             else:
                 pass
             print("Performing Server Backup")
-            print("Copying from " + f"{cwd}\\ServerFiles-{backup_version}\\" + " to " + f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
+            print(
+                "Copying from " + f"{cwd}\\ServerFiles-{backup_version}\\" + " to " + f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
             copytree(f"{cwd}\\ServerFiles-{backup_version}\\",
                      f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
             print("Backup Successful")
@@ -346,7 +369,8 @@ def create_server_backup():
 
 
 def restore_server_backup():
-    backup_version = click.prompt("Enter the version you want to restore! This can be any version but must be in the format 'num.num.num'!")
+    backup_version = click.prompt(
+        "Enter the version you want to restore! This can be any version but must be in the format 'num.num.num'!")
     if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\"):
         print("The backup version you are trying to restore does not exist!")
         return
@@ -369,7 +393,8 @@ def restore_server_backup():
                     os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-players.json\\") or \
                     os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-ips.json\\"):
                 print("Existing server files found...")
-                backup_current_server = click.confirm("You have current data in the server! Would you like to perform a backup?")
+                backup_current_server = click.confirm(
+                    "You have current data in the server! Would you like to perform a backup?")
                 if backup_current_server:
                     backup_name = click.prompt("Enter the name of the backup", type=str, default=str(time.time()))
                     if not backup_name:
@@ -415,7 +440,8 @@ def restore_server_backup():
 
 
 def inject_custom_map():
-    version = click.prompt("Enter the version you want to inject the map into! This can be any version but must be in the format 'num.num.num'!")
+    version = click.prompt(
+        "Enter the version you want to inject the map into! This can be any version but must be in the format 'num.num.num'!")
     if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
         print("Invalid Version!")
         return
@@ -430,7 +456,8 @@ def inject_custom_map():
                 os.path.exists(f"{cwd}\\ServerFiles-{version}\\banned-players.json\\") or \
                 os.path.exists(f"{cwd}\\ServerFiles-{version}\\banned-ips.json\\"):
             print("Current Server Files Detected")
-            backup_current_server = click.confirm("You have current data in the server! Would you like to perform a backup?")
+            backup_current_server = click.confirm(
+                "You have current data in the server! Would you like to perform a backup?")
             if backup_current_server:
                 print("Performing backup...")
                 backup_name = click.prompt("Enter the name of the backup", type=str, default=str(time.time()))
@@ -484,8 +511,9 @@ def inject_custom_map():
         return
 
 
-def  change_server_properties():
-    properties_version = click.prompt("Enter the version you want to change the properties for! This can be any version but must be in the format 'num.num.num'!")
+def change_server_properties():
+    properties_version = click.prompt(
+        "Enter the version you want to change the properties for! This can be any version but must be in the format 'num.num.num'!")
     try:
         os.startfile(f"{cwd}\\ServerFiles-{properties_version}\\server.properties")
         print("Launched server properties file...")
@@ -496,7 +524,8 @@ def  change_server_properties():
 
 
 def reset_nether():
-    version = click.prompt("Enter the version you want to reset the nether for! This can be any version but must be in the format 'num.num.num'!")
+    version = click.prompt(
+        "Enter the version you want to reset the nether for! This can be any version but must be in the format 'num.num.num'!")
     if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
         print("Invalid Version!")
         return
@@ -511,7 +540,8 @@ def reset_nether():
         else:
             pass
         print("Performing backup...")
-        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
+        copytree(f"{cwd}\\ServerFiles-{version}\\",
+                 f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
         print("Backup Successful...")
         pass
     else:
@@ -538,7 +568,8 @@ def reset_nether():
 
 
 def reset_end():
-    version = click.prompt("Enter the version you want to reset the end for! This can be any version but must be in the format 'num.num.num'!")
+    version = click.prompt(
+        "Enter the version you want to reset the end for! This can be any version but must be in the format 'num.num.num'!")
     if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
         print("Invalid Version!")
         return
@@ -553,7 +584,8 @@ def reset_end():
         else:
             pass
         print("Performing backup...")
-        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
+        copytree(f"{cwd}\\ServerFiles-{version}\\",
+                 f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
         print("Backup Successful...")
         pass
     else:
@@ -580,7 +612,8 @@ def reset_end():
 
 
 def reset_overworld():
-    version = click.prompt("Enter the version you want to reset the overworld for! This can be any version but must be in the format 'num.num.num'!")
+    version = click.prompt(
+        "Enter the version you want to reset the overworld for! This can be any version but must be in the format 'num.num.num'!")
     if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
         print("Invalid Version!")
         return
@@ -595,7 +628,8 @@ def reset_overworld():
         else:
             pass
         print("Performing backup...")
-        copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
+        copytree(f"{cwd}\\ServerFiles-{version}\\",
+                 f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
         print("Backup Successful...")
         pass
     else:
@@ -646,7 +680,8 @@ def reset_dimension_main():
 
 
 def import_external_server():
-    version = click.prompt("Enter the version you want to import the server for! This can be any version but must be in the format 'num.num.num'!")
+    version = click.prompt(
+        "Enter the version you want to import the server for! This can be any version but must be in the format 'num.num.num'!")
     import_files = str(askdirectory(title="Select Folder To Import"))
     if not os.path.exists(f"{import_files}\\world\\") or not os.path.exists(
             f"{import_files}\\server.properties") or not os.path.exists(
@@ -667,7 +702,8 @@ def import_external_server():
                 else:
                     pass
                 print("Performing backup...")
-                copytree(f"{cwd}\\ServerFiles-{version}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
+                copytree(f"{cwd}\\ServerFiles-{version}\\",
+                         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{backup_name}\\")
                 print("Backup Successful...")
                 pass
             else:
@@ -695,11 +731,12 @@ def update_program():
     except Exception as e:
         print(f"There was an error while checking for updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Update available: {new_version}")
-        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
+        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
         download_url = new_url.replace("tag", "download")
+        print("Download url: " + download_url)
         if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\"):
             os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\")
             pass
@@ -713,9 +750,11 @@ def update_program():
                 pass
             else:
                 pass
-            create_changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'x')
+            create_changelog_file = open(
+                f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'x')
             create_changelog_file.close()
-            changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'wb')
+            changelog_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt",
+                                  'wb')
             while True:
                 changelog_data = changelog_download.read()
                 if not changelog_data:
@@ -724,7 +763,8 @@ def update_program():
                     changelog_file.write(changelog_data)
                     pass
             changelog_file.close()
-            changelog_txt = str(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'r').read())
+            changelog_txt = str(
+                open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\changelog.txt", 'r').read())
             pass
         except Exception as e:
             changelog_txt = f"There was an error while accessing new version changelog data: {e}"
@@ -733,7 +773,9 @@ def update_program():
         confirm_update = confirm(f"Would you like to update to version {new_version}?")
         if confirm_update:
             try:
-                f = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe", 'wb')
+                f = open(
+                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe",
+                    'wb')
                 print("Downloading update installer...")
                 f2 = urllib.request.urlopen(download_url)
                 while True:
@@ -747,7 +789,8 @@ def update_program():
                 f.close()
                 print("Update Downloaded Successfully! Installer Will Now Be Launched To Complete Update!")
                 time.sleep(5)
-                os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
+                os.startfile(
+                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe")
                 return
             except Exception as e:
                 print(f"There was an error while downloading the update: {e}")
@@ -755,6 +798,9 @@ def update_program():
         else:
             print("Update cancelled.")
             return
+    else:
+        print("Latest version of EasyMinecraftServer is already installed!")
+        return
 
 
 def settings_check():
@@ -785,6 +831,17 @@ def settings_check():
     return True
 
 
+def av_exclusions():
+    exclusion_confirm = confirm("Would you like to launch the anti-virus exception creator to make all program and server files not be scanned by your antivirus program?")
+    if exclusion_confirm:
+        print("Launching Anti-Virus Exclusion Creator...")
+        time.sleep(1)
+        os.startfile("MinecraftServerElevator.exe")
+        sys.exit(0)
+    else:
+        return
+
+
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -795,11 +852,12 @@ def is_admin():
 if __name__ == '__main__':
     os.system("title EasyMinecraftServer")
     os.system("cls")
-    print("EasyMinecraftServer v2.9.0")
+    print("EasyMinecraftServer v2.10.0")
     if is_admin():
         pass
     else:
-        print("EasyMinecraftServer CLI Tool requires admin privileges to run. Please run your terminal window as administrator.")
+        print(
+            "EasyMinecraftServer CLI Tool requires admin privileges to run. Please run your terminal window as administrator.")
         sys.exit(0)
     user_dir = os.path.expanduser("~")
     print(f"User Directory: {user_dir}")
@@ -846,10 +904,18 @@ if __name__ == '__main__':
     else:
         pass
     settings_json = json.load(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "r"))
+    info = subprocess.STARTUPINFO()
+    info.dwFlags = 1
+    info.wShowWindow = 0
+    subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
+    os.system("cls")
+    print("EasyMinecraftServer v2.10.0")
+    print(f"User Directory: {user_dir}")
+    print(f"Program Installation Directory: {cwd}")
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.9.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
         update_program()
         pass
     else:
@@ -863,5 +929,9 @@ if __name__ == '__main__':
             else:
                 pass
         pass
+    os.system("cls")
+    print("EasyMinecraftServer v2.10.0")
+    print(f"User Directory: {user_dir}")
+    print(f"Program Installation Directory: {cwd}")
     main()
     sys.exit(0)

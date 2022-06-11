@@ -1,7 +1,14 @@
-New in version 2.9.0:
-CLI tool is now much faster!
-Added option to remove Anti-Virus exclusions when using uninstall functions!
-Some dependencies have been updated!
-Package size slightly reduced!
-Some small installer changes!
-Fixed some typos!
+New in version 2.10.0:
+Updated ngrok installation!
+Added automatic ngrok config upgrader on main program and cli tool startup!
+Added anti-virus exclusions checker at main program startup!
+Added new readme button in help window!
+Added option to launch the program at the end of running Elevator or Unelevator!
+Added option to replace server backups if others with the same name exist!
+Added option to replace program backups if others with the same name exist!
+Added website launch button in main dropdown menu!
+Removed the launch of Elevator in the installer!
+Removed anti-virus exclusions for cmd.exe and powershell.exe!
+Minor cli tool changes and fixes!
+Fixed a bug where program tried to download updates from incorrect location!
+Fixed a bug where program retreived incorrect installation directory!

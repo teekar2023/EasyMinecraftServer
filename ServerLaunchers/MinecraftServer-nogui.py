@@ -1,10 +1,11 @@
-import click
+import logging
 import os
+import socket
 import sys
 import time
-import logging
 from shutil import rmtree, copytree, which
-import socket
+
+import click
 import psutil
 
 
@@ -33,23 +34,32 @@ def main(ram_amount, auto_server_backup, port_forward_status, port):
         pass
     else:
         ip_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\ip.txt", "w+")
-        ip_file.write("To find your ip for this session, go to the ngrok window and find it next to the 'Forwarding' category. The ip will be in the format of '<number>.tcp.ngrok.io:<numbers>'")
+        ip_file.write(
+            "To find your ip for this session, go to the ngrok window and find it next to the 'Forwarding' category. The ip will be in the format of '<number>.tcp.ngrok.io:<numbers>'")
         ip_file.close()
         os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\ip.txt")
         pass
-    list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9", "1.9.1", "1.9.2", "1.9.3", "1.9.4", "1.10", "1.10.1", "1.10.2", "1.11", "1.11.1", "1.11.2"]
-    list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3", "1.14.4", "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
+    list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.7.10", "1.8",
+                "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9", "1.9.1",
+                "1.9.2", "1.9.3", "1.9.4", "1.10", "1.10.1", "1.10.2", "1.11", "1.11.1", "1.11.2"]
+    list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3", "1.14.4",
+                "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
     list_three = ["1.17", "1.17.1"]
     if version in list_one:
-        logging.info(f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
-        os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
+        logging.info(
+            f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
+        os.system(
+            f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
         pass
     elif version in list_two:
-        logging.info(f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_112-116.xml -jar server.jar nogui")
-        os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_112-116.xml -jar server.jar nogui")
+        logging.info(
+            f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_112-116.xml -jar server.jar nogui")
+        os.system(
+            f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_112-116.xml -jar server.jar nogui")
         pass
     elif version in list_three:
-        logging.info(f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j2.formatMsgNoLookups=true -jar server.jar nogui")
+        logging.info(
+            f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j2.formatMsgNoLookups=true -jar server.jar nogui")
         os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j2.formatMsgNoLookups=true -jar server.jar nogui")
         pass
     else:
@@ -115,7 +125,7 @@ def auto_backup(version):
     logging.info("Time: " + str(current_time))
     logging.info("Creating new auto backup")
     copytree(f"{cwd}\\ServerFiles-{version}",
-            f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{current_time}\\")
+             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{current_time}\\")
     last_auto_backup_file = open(
         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", 'w+')
     last_auto_backup_file.write(str(current_time))
@@ -137,6 +147,7 @@ if __name__ == "__main__":
     cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
     os.chdir(cwd)
     user_dir = os.path.expanduser("~")
-    logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
-                    format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
+    logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+',
+                        level="DEBUG",
+                        format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
     main()
