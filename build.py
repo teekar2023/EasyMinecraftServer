@@ -75,6 +75,9 @@ print(f"Copied MinecraftServer-nogui.exe to {cwd}\\dist\\EasyMinecraftServer\\Mi
 copy(f"{cwd}\\ServerLaunchers\\dist\\MinecraftServerGUI.exe",
      f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
 print(f"Copied MinecraftServerGUI.exe to {cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
+print("Removing cv2 directory from build files...")
+rmtree(f"{cwd}\\dist\\EasyMinecraftServer\\cv2\\")
+print(f"Removed cv2 directory from {cwd}\\dist\\EasyMinecraftServer\\cv2\\")
 print("Done!")
 print("Exiting...")
 sys.exit(0)

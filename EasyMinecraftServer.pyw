@@ -63,6 +63,11 @@ def start_server():
             pass
         logging.info(f"Setting up new server version: {version_selection}")
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
+        logging.info("Created server directory")
+        logging.info(f"Creating ServerFiles Exclusion Path for version {version_selection}")
+        subprocess.call(f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        logging.info("Created server files exclusion path")
+        logging.info(f"Downloading server version {version_selection}")
         try:
             f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
             showwarning(title="Downloading Server File",
@@ -216,9 +221,46 @@ def start_server_event(event):
                                   "Enter the version you want to use! This can be any version but must be in the format 'num.num.num'!")
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
-        logging.info("New server version entered")
+        logging.info(f"New server version entered: {version_selection}")
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}"):
+            subdirs = set([os.path.dirname(p) for p in
+                           glob.glob(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
+            if len(subdirs) == 0:
+                pass
+            else:
+                logging.info("Found server backups")
+                restore_ask = askyesno("Restore",
+                                       "Server backups for this version were found! Would you like to restore one?")
+                if restore_ask:
+                    backup_files = str(askdirectory(title="Select Backup",
+                                                    initialdir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"))
+                    if not os.path.exists(f"{backup_files}\\server.jar") or not os.path.exists(
+                            f"{backup_files}\\") or backup_files == "":
+                        logging.error("Invalid Backup Selected In start_server()")
+                        showerror(title="Error", message="Invalid Backup Selected!")
+                        return
+                    else:
+                        logging.info("Valid Backup Selected In start_server()")
+                        logging.info(
+                            "Copying from " + f"{backup_files}\\" + " to " + f"{cwd}\\ServerFiles-{version_selection}\\")
+                        copytree(f"{backup_files}\\", f"{cwd}\\ServerFiles-{version_selection}\\")
+                        logging.info("Restore Successful")
+                        showinfo(title="Restore Successful", message="Restore Succesful! Please restart server!")
+                        return
+                else:
+                    logging.info("Server restore cancelled")
+                    pass
+                pass
+            pass
+        else:
+            pass
         logging.info(f"Setting up new server version: {version_selection}")
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
+        logging.info("Created server directory")
+        logging.info(f"Creating ServerFiles Exclusion Path for version {version_selection}")
+        subprocess.call(f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        logging.info("Created server files exclusion path")
+        logging.info(f"Downloading server version {version_selection}")
         try:
             f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
             showwarning(title="Downloading Server File",
@@ -562,7 +604,11 @@ def reset_server():
             pass
         try:
             logging.warning("Performing Server Reset")
+            logging.info(f"Removing ExclusionPath for ServerFiles-{reset_version}")
+            subprocess.call(f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
+            logging.info("Removed ExclusionPath")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
+            logging.info("Removed ServerFiles-{reset_version} directory")
             showinfo("Server Reset", "Server Reset Successful!")
             return
         except Exception as e:
@@ -617,7 +663,11 @@ def reset_server_event(event):
             pass
         try:
             logging.warning("Performing Server Reset")
+            logging.info(f"Removing ExclusionPath for ServerFiles-{reset_version}")
+            subprocess.call(f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
+            logging.info("Removed ExclusionPath")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
+            logging.info("Removed ServerFiles-{reset_version} directory")
             showinfo("Server Reset", "Server Reset Successful!")
             return
         except Exception as e:
@@ -1334,7 +1384,7 @@ def changelog():
 def update():
     logging.info("Manual update check started")
     try:
-        url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
+        url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
         r = requests.get(url, allow_redirects=True)
         redirected_url = r.url
         pass
@@ -1342,7 +1392,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -1453,7 +1503,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
@@ -1963,7 +2013,7 @@ toaster = ToastNotifier()
 cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.10.0")
+root.title("Easy Minecraft Server v2.11.0")
 root.geometry("430x640")
 root.bind("<Escape>", exit_program_event)
 root.bind("<Return>", start_server_event)
@@ -2050,7 +2100,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.10.0 Started")
+logging.info("Easy Minecraft Server v2.11.0 Started")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="View ServerFiles", command=server_files)
@@ -2139,10 +2189,10 @@ else:
     pass
 try:
     logging.info("Checking for updates")
-    url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
+    url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico",
@@ -2234,7 +2284,7 @@ else:
     pass
 loading_text.destroy()
 root.update()
-main_text_label = Label(root, text="Easy Minecraft Server v2.10.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.11.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"

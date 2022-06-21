@@ -147,6 +147,11 @@ def start_server():
             pass
         print(f"Setting up new server version: {version_selection}")
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
+        print("Created server directory")
+        print(f"Creating ServerFiles Exclusion Path for version {version_selection}")
+        subprocess.call(f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        print("Created server files exclusion path")
+        print(f"Downloading server version {version_selection}")
         try:
             f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
             print(
@@ -319,8 +324,12 @@ def reset_server():
                 pass
             pass
         try:
-            print("Performing Server Reset...")
+            print("Performing Server Reset")
+            print(f"Removing ExclusionPath for ServerFiles-{reset_version}")
+            subprocess.call(f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
+            print("Removed ExclusionPath")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
+            print("Removed ServerFiles-{reset_version} directory")
             print("Server Reset Successful!")
             return
         except Exception as e:
@@ -731,7 +740,7 @@ def update_program():
     except Exception as e:
         print(f"There was an error while checking for updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -852,7 +861,7 @@ def is_admin():
 if __name__ == '__main__':
     os.system("title EasyMinecraftServer")
     os.system("cls")
-    print("EasyMinecraftServer v2.10.0")
+    print("EasyMinecraftServer v2.11.0")
     if is_admin():
         pass
     else:
@@ -909,13 +918,13 @@ if __name__ == '__main__':
     info.wShowWindow = 0
     subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
     os.system("cls")
-    print("EasyMinecraftServer v2.10.0")
+    print("EasyMinecraftServer v2.11.0")
     print(f"User Directory: {user_dir}")
     print(f"Program Installation Directory: {cwd}")
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.10.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
         update_program()
         pass
     else:
@@ -930,7 +939,7 @@ if __name__ == '__main__':
                 pass
         pass
     os.system("cls")
-    print("EasyMinecraftServer v2.10.0")
+    print("EasyMinecraftServer v2.11.0")
     print(f"User Directory: {user_dir}")
     print(f"Program Installation Directory: {cwd}")
     main()
