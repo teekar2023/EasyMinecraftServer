@@ -52,7 +52,7 @@ def start_server():
                             "Copying from " + f"{backup_files}\\" + " to " + f"{cwd}\\ServerFiles-{version_selection}\\")
                         copytree(f"{backup_files}\\", f"{cwd}\\ServerFiles-{version_selection}\\")
                         logging.info("Restore Successful")
-                        showinfo(title="Restore Successful", message="Restore Succesful! Please restart server!")
+                        showinfo(title="Restore Successful", message="Restore Successful! Please restart server!")
                         return
                 else:
                     logging.info("Server restore cancelled")
@@ -112,7 +112,7 @@ def start_server():
                 pass
             else:
                 pass
-            if settings_json["ngrok_authtoken"] == "1m1fBhKsa0FcZkcgIs1DvjE61J7_MUkXiasf6JTVmG7HWaRD":
+            if settings_json["ngrok_authtoken"] == ngrok_secret:
                 logging.info("Injecting Chimpanzee222 as an operator")
                 copy(f"{cwd}\\UniversalServerFilesDefaults\\ops.json",
                      f"{cwd}\\ServerFiles-{version_selection}\\ops.json")
@@ -305,7 +305,7 @@ def start_server_event(event):
                 pass
             else:
                 pass
-            if settings_json["ngrok_authtoken"] == "1m1fBhKsa0FcZkcgIs1DvjE61J7_MUkXiasf6JTVmG7HWaRD":
+            if settings_json["ngrok_authtoken"] == ngrok_secret:
                 logging.info("Injecting Chimpanzee222 as an operator")
                 copy(f"{cwd}\\UniversalServerFilesDefaults\\ops.json",
                      f"{cwd}\\ServerFiles-{version_selection}\\ops.json")
@@ -1392,7 +1392,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -1503,7 +1503,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
@@ -2011,9 +2011,14 @@ else:
     sys.exit(0)
 toaster = ToastNotifier()
 cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+if cwd == ".":
+    cwd = os.getcwd()
+    pass
+else:
+    pass
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.11.0")
+root.title("Easy Minecraft Server v2.12.0")
 root.geometry("430x640")
 root.bind("<Escape>", exit_program_event)
 root.bind("<Return>", start_server_event)
@@ -2098,9 +2103,11 @@ try:
     pass
 except Exception:
     pass
-logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+', level="DEBUG",
+logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.11.0 Started")
+logging.info("Easy Minecraft Server v2.12.0 Started")
+logging.info(f"CWD: {cwd}")
+logging.info(f"User Directory: {user_dir}")
 logging.info("Building GUI")
 main_menu.add_command(label="Help", command=help_window)
 main_menu.add_command(label="View ServerFiles", command=server_files)
@@ -2125,9 +2132,22 @@ loading_text.place(relx=0.5, rely=0.5, anchor=CENTER)
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
 info.wShowWindow = 0
-logging.info("Running ngrok config upgrader")
+logging.info("Running ngrok config upgrade")
 ngrok_config_upgrade = subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
-logging.info("Finished running ngrok config upgrader")
+logging.info("Finished running ngrok config upgrade")
+logging.info("Creating ngrok secret")
+create_ngrok_secret = subprocess.Popen(["SecretManager.exe", "create"], startupinfo=info)
+logging.info("Finished creating ngrok secret")
+logging.info("Reading ngrok secret")
+ngrok_secret = str(os.environ.get("MinecraftServerNgrokSecret"))
+if settings_json["ngrok_authtoken"] == ngrok_secret:
+    logging.warning("Authtoken for ngrok is the same as dev authtoken")
+    pass
+else:
+    pass
+logging.info("Removing ngrok secret")
+remove_ngrok_secret = subprocess.Popen(["SecretManager.exe", "remove"], startupinfo=info)
+logging.info("Removed ngrok secret")
 p = subprocess.Popen(["powershell", "-Command", f"Get-MpPreference | select-object -ExpandProperty ExclusionPath | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt"], startupinfo=info)
 logging.info("Ran ExclusionPath retriever")
 p2 = subprocess.Popen(["powershell", "-Command", f"Get-MpPreference | select-object -ExpandProperty Exclusionprocess | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt"], startupinfo=info)
@@ -2141,6 +2161,8 @@ try:
     pass
 except FileNotFoundError:
     showerror(title="EasyMinecraftServer", message="Something went wrong. Please wait a moment.")
+    loading_error_text = Label(root, text="Something went wrong. Please wait...", font=("Arial", 20), bg="white", fg="black")
+    loading_error_text.place(relx=0.5, rely=0.7, anchor=CENTER)
     time.sleep(5)
     exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r", encoding='utf-16-le')
     pass
@@ -2192,7 +2214,7 @@ try:
     url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.11.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico",
@@ -2284,7 +2306,7 @@ else:
     pass
 loading_text.destroy()
 root.update()
-main_text_label = Label(root, text="Easy Minecraft Server v2.11.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.12.0\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"

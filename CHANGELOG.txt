@@ -1,6 +1,9 @@
-New in version 2.11.0:
-Added ExclusionPath adder for ServerFiles directories in program and cli tool!
-ServerFiles ExclusionPaths are deleted when server is reset through program or cli tool!
-Fixed problem where server backups were never detected when using keyboard shortcuts to start server!
-Fixed problems with updater not working!
-Other small changes and fixes!
+New in version 2.12.0:
+Added new SecretManager.exe for dev ngrok authtoken storage!
+SecretManager.exe will be expanded to be used for new features in the future!
+Updated logging configuration!
+Updated some dependencies!
+Some small build changes!
+Removed loading error popup and added text on main window to replace it!
+Fixed a problem where current working directory would show as a period!
+Minor changes and fixes!

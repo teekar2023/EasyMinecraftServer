@@ -144,7 +144,6 @@ if __name__ == "__main__":
     cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
     os.chdir(cwd)
     user_dir = os.path.expanduser("~")
-    logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', filemode='r+',
-                        level="DEBUG",
+    logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
                         format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
     main()

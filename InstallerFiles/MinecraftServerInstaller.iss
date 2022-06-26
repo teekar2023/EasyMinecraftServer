@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "EasyMinecraftServer"
-#define MyAppVersion "2.11.0"
+#define MyAppVersion "2.12.0"
 #define MyAppPublisher "teekar2023"
 #define MyAppURL "https://github.com/teekar2023/EasyMinecraftServer"
 #define MyAppExeName "EasyMinecraftServer.exe"

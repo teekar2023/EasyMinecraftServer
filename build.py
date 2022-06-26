@@ -23,8 +23,16 @@ else:
 print("Compiling EasyMinecraftServer.py to EasyMinecraftServer.exe...")
 print("Executing pyinstaller -i mc.ico EasyMinecraftServer.pyw")
 os.system("pyinstaller -i mc.ico EasyMinecraftServer.pyw")
+print("Removing cv2 folder in EasyMinecraftServer.exe dist folder...")
+if os.path.exists(f"{cwd}\\dist\\EasyMinecraftServer\\cv2\\"):
+    rmtree(f"{cwd}\\dist\\EasyMinecraftServer\\cv2\\")
+    print("Removed cv2 folder...")
+    pass
+else:
+    print("Folder not found...")
+    pass
 print("Compiling mcserver.py to mcserver.exe...")
-print("Executing pyinstaller  mcserver.py")
+print("Executing pyinstaller mcserver.py")
 os.system("pyinstaller  mcserver.py")
 print("Compiling MinecraftServerElevator.py to MinecraftServerElevator.exe...")
 print("Executing pyinstaller --onefile MinecraftServerElevator.py")
@@ -32,16 +40,29 @@ os.system("pyinstaller --onefile MinecraftServerElevator.py")
 print("Compiling MinecraftServerUnelevator.py to MinecraftServerUnelevator.exe...")
 print("Executing pyinstaller --onefile MinecraftServerUnelevator.py")
 os.system("pyinstaller --onefile MinecraftServerUnelevator.py")
+print("Compiling SecretManager.py to SecretManager.exe")
+print("Executing pyinstaller --onefile SecretManager.py")
+os.system("pyinstaller --onefile SecretManager.py")
 copytree(f"{cwd}\\UniversalServerFilesDefaults\\", f"{cwd}\\dist\\EasyMinecraftServer\\UniversalServerFilesDefaults\\")
 print(f"Copied UniversalServerFilesDefaults to {cwd}\\dist\\EasyMinecraftServer\\UniversalServerFilesDefaults\\")
 copytree(f"{cwd}\\ngrok\\", f"{cwd}\\dist\\EasyMinecraftServer\\ngrok\\")
 print(f"Copied ngrok to {cwd}\\dist\\EasyMinecraftServer\\ngrok\\")
 copy(f"{cwd}\\dist\\mcserver\\mcserver.exe", f"{cwd}\\dist\\EasyMinecraftServer\\mcserver.exe")
-print(f"Copied mcserver.exe to {cwd}\\dist\\EasyMinecraftServermcserver.exe")
+print(f"Copied mcserver.exe to {cwd}\\dist\\mcserver.exe")
+if os.path.exists(f"{cwd}\\dist\\mcserver\\"):
+    print("Removing mcserver.exe dist directory...")
+    rmtree(f"{cwd}\\dist\\mcserver\\")
+    print("Removed mcserver.exe dist directory...")
+    pass
+else:
+    print("mcserver.exe dist directory not found...")
+    pass
 copy(f"{cwd}\\dist\\MinecraftServerElevator.exe", f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServerElevator.exe")
 print(f"Copied MinecraftServerElevator.exe to {cwd}\\dist\\EasyMinecraftServer\\MinecraftServerElevator.exe")
 copy(f"{cwd}\\dist\\MinecraftServerUnelevator.exe", f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServerUnelevator.exe")
 print(f"Copied MinecraftServerUnelevator.exe to {cwd}\\dist\\EasyMinecraftServer\\MinecraftServerUnelevator.exe")
+copy(f"{cwd}\\dist\\SecretManager.exe", f"{cwd}\\dist\\EasyMinecraftServer\\SecretManager.exe")
+print(f"Copied SecretManager.exe to {cwd}\\dist\\EasyMinecraftServer\\SecretManager.exe")
 copy(f"{cwd}\\CHANGELOG.txt", f"{cwd}\\dist\\EasyMinecraftServer\\CHANGELOG.txt")
 print(f"Copied CHANGELOG.txt to {cwd}\\dist\\EasyMinecraftServer\\CHANGELOG.txt")
 copy(f"{cwd}\\LICENSE.txt", f"{cwd}\\dist\\EasyMinecraftServer\\LICENSE.txt")
@@ -52,7 +73,7 @@ copy(f"{cwd}\\mc.ico", f"{cwd}\\dist\\EasyMinecraftServer\\mc.ico")
 print(f"Copied mc.ico to {cwd}\\dist\\EasyMinecraftServer\\mc.ico")
 copy(f"{cwd}\\mc.png", f"{cwd}\\dist\\EasyMinecraftServer\\mc.png")
 print(f"Copied mc.png to {cwd}\\dist\\EasyMinecraftServer\\mc.png")
-print("Removiing old ServerLaunchers builds...")
+print("Removing old ServerLaunchers builds...")
 if os.path.exists(f"{cwd}\\ServerLaunchers\\dist\\"):
     rmtree(f"{cwd}\\ServerLaunchers\\dist\\")
     pass
@@ -75,9 +96,6 @@ print(f"Copied MinecraftServer-nogui.exe to {cwd}\\dist\\EasyMinecraftServer\\Mi
 copy(f"{cwd}\\ServerLaunchers\\dist\\MinecraftServerGUI.exe",
      f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
 print(f"Copied MinecraftServerGUI.exe to {cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
-print("Removing cv2 directory from build files...")
-rmtree(f"{cwd}\\dist\\EasyMinecraftServer\\cv2\\")
-print(f"Removed cv2 directory from {cwd}\\dist\\EasyMinecraftServer\\cv2\\")
 print("Done!")
 print("Exiting...")
 sys.exit(0)
