@@ -1,3 +1,11 @@
+#  Copyright (c) 2022. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+#
+#  You may obtain a copy of the License at
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
 import ctypes
 import glob
 import json
@@ -740,7 +748,7 @@ def update_program():
     except Exception as e:
         print(f"There was an error while checking for updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -861,7 +869,7 @@ def is_admin():
 if __name__ == '__main__':
     os.system("title EasyMinecraftServer")
     os.system("cls")
-    print("EasyMinecraftServer v2.12.0")
+    print("EasyMinecraftServer v2.12.1")
     if is_admin():
         pass
     else:
@@ -921,8 +929,12 @@ if __name__ == '__main__':
     info = subprocess.STARTUPINFO()
     info.dwFlags = 1
     info.wShowWindow = 0
-    subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
+    subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "update"], startupinfo=info).wait()
+    os.system("cls")
+    subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info).wait()
+    os.system("cls")
     create_ngrok_secret = subprocess.Popen(["SecretManager.exe", "create"], startupinfo=info)
+    create_ngrok_secret.wait()
     ngrok_secret = str(os.environ.get("MinecraftServerNgrokSecret"))
     if settings_json["ngrok_authtoken"] == ngrok_secret:
         print("Authtoken for ngrok is the same as dev authtoken")
@@ -930,14 +942,15 @@ if __name__ == '__main__':
     else:
         pass
     remove_ngrok_secret = subprocess.Popen(["SecretManager.exe", "remove"], startupinfo=info)
+    remove_ngrok_secret.wait()
     os.system("cls")
-    print("EasyMinecraftServer v2.12.0")
+    print("EasyMinecraftServer v2.12.1")
     print(f"User Directory: {user_dir}")
     print(f"Program Installation Directory: {cwd}")
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.1":
         update_program()
         pass
     else:
@@ -952,7 +965,7 @@ if __name__ == '__main__':
                 pass
         pass
     os.system("cls")
-    print("EasyMinecraftServer v2.12.0")
+    print("EasyMinecraftServer v2.12.1")
     print(f"User Directory: {user_dir}")
     print(f"Program Installation Directory: {cwd}")
     main()

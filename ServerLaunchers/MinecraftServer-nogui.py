@@ -1,3 +1,11 @@
+#  Copyright (c) 2022. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+#
+#  You may obtain a copy of the License at
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
 import logging
 import os
 import socket
@@ -17,6 +25,8 @@ import psutil
 def main(ram_amount, auto_server_backup, port_forward_status, port):
     version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", "r")
     version = version_file.read()
+    version_file.close()
+    os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt")
     logging.info("Starting Minecraft Server without GUI")
     logging.info("Version: " + version)
     logging.info("RAM: " + ram_amount)
@@ -145,6 +155,11 @@ if __name__ == "__main__":
         pass
     time.sleep(5)
     cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    if cwd == ".":
+        cwd = os.getcwd()
+        pass
+    else:
+        pass
     os.chdir(cwd)
     user_dir = os.path.expanduser("~")
     logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",

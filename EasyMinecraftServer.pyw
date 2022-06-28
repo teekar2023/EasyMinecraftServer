@@ -1,3 +1,11 @@
+#  Copyright (c) 2022. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+#
+#  You may obtain a copy of the License at
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
 import ctypes
 import glob
 import json
@@ -29,10 +37,11 @@ def start_server():
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
         logging.info(f"New server version entered: {version_selection}")
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}"):
-            subdirs = set([os.path.dirname(p) for p in
-                           glob.glob(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
-            if len(subdirs) == 0:
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"):
+            server_backup_subdirs = set([os.path.dirname(p) for p in
+                                         glob.glob(
+                                             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
+            if len(server_backup_subdirs) == 0:
                 pass
             else:
                 logging.info("Found server backups")
@@ -65,7 +74,8 @@ def start_server():
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
         logging.info("Created server directory")
         logging.info(f"Creating ServerFiles Exclusion Path for version {version_selection}")
-        subprocess.call(f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        subprocess.call(
+            f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
         logging.info("Created server files exclusion path")
         logging.info(f"Downloading server version {version_selection}")
         try:
@@ -222,10 +232,11 @@ def start_server_event(event):
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
         logging.info(f"New server version entered: {version_selection}")
-        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}"):
-            subdirs = set([os.path.dirname(p) for p in
-                           glob.glob(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
-            if len(subdirs) == 0:
+        if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"):
+            server_backup_subdirs = set([os.path.dirname(p) for p in
+                                         glob.glob(
+                                             f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\")])
+            if len(server_backup_subdirs) == 0:
                 pass
             else:
                 logging.info("Found server backups")
@@ -245,7 +256,7 @@ def start_server_event(event):
                             "Copying from " + f"{backup_files}\\" + " to " + f"{cwd}\\ServerFiles-{version_selection}\\")
                         copytree(f"{backup_files}\\", f"{cwd}\\ServerFiles-{version_selection}\\")
                         logging.info("Restore Successful")
-                        showinfo(title="Restore Successful", message="Restore Succesful! Please restart server!")
+                        showinfo(title="Restore Successful", message="Restore Successful! Please restart server!")
                         return
                 else:
                     logging.info("Server restore cancelled")
@@ -258,7 +269,8 @@ def start_server_event(event):
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
         logging.info("Created server directory")
         logging.info(f"Creating ServerFiles Exclusion Path for version {version_selection}")
-        subprocess.call(f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        subprocess.call(
+            f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
         logging.info("Created server files exclusion path")
         logging.info(f"Downloading server version {version_selection}")
         try:
@@ -429,7 +441,8 @@ def create_server_backup():
     logging.info("Name Selected In create_server_backup(): " + backup_name)
     if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\"):
         logging.error("Backup With Same Name Already Exists")
-        replace_ask = askyesno(title="Create Server Backup", message="A backup with the same name already exists! Do you want to replace it?")
+        replace_ask = askyesno(title="Create Server Backup",
+                               message="A backup with the same name already exists! Do you want to replace it?")
         if replace_ask:
             logging.info("User Selected To Replace Backup")
             logging.info("Removing Old Backup")
@@ -446,7 +459,7 @@ def create_server_backup():
                 logging.info(
                     "Copying from " + f"{cwd}\\ServerFiles-{backup_version}\\" + " to " + f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
                 copytree(f"{cwd}\\ServerFiles-{backup_version}\\",
-                        f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
+                         f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
                 logging.info("Backup Successful")
                 showinfo(title="Backup Successful", message="Backup Successful!")
                 return
@@ -605,10 +618,11 @@ def reset_server():
         try:
             logging.warning("Performing Server Reset")
             logging.info(f"Removing ExclusionPath for ServerFiles-{reset_version}")
-            subprocess.call(f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
+            subprocess.call(
+                f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
             logging.info("Removed ExclusionPath")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
-            logging.info("Removed ServerFiles-{reset_version} directory")
+            logging.info(f"Removed ServerFiles-{reset_version} directory")
             showinfo("Server Reset", "Server Reset Successful!")
             return
         except Exception as e:
@@ -664,10 +678,11 @@ def reset_server_event(event):
         try:
             logging.warning("Performing Server Reset")
             logging.info(f"Removing ExclusionPath for ServerFiles-{reset_version}")
-            subprocess.call(f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
+            subprocess.call(
+                f"powershell -Command Remove-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{reset_version}\\'")
             logging.info("Removed ExclusionPath")
             rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
-            logging.info("Removed ServerFiles-{reset_version} directory")
+            logging.info(f"Removed ServerFiles-{reset_version} directory")
             showinfo("Server Reset", "Server Reset Successful!")
             return
         except Exception as e:
@@ -1315,7 +1330,8 @@ def program_backup():
         return
     elif os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\{backup_name}\\"):
         logging.warning("Backup name already exists")
-        replace_ask = askyesno(title="EasyMinecraftServer Backup", message="A backup with this name already exists! Would you like to replace it?")
+        replace_ask = askyesno(title="EasyMinecraftServer Backup",
+                               message="A backup with this name already exists! Would you like to replace it?")
         if replace_ask:
             logging.info("User confirmed backup replace")
             logging.info("Removing old backup")
@@ -1324,7 +1340,7 @@ def program_backup():
             logging.info("Creating new backup")
             logging.info(f"Starting backup with name: {backup_name}")
             copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\",
-                    f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\{backup_name}\\")
+                     f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\{backup_name}\\")
             showinfo(title="Backup", message="EasyMinecraftServer has been backed up!")
             logging.info("EasyMinecraftServer backup complete")
             return
@@ -1392,7 +1408,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -1503,7 +1519,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
@@ -2018,7 +2034,7 @@ else:
     pass
 user_dir = os.path.expanduser("~")
 root = Tk()
-root.title("Easy Minecraft Server v2.12.0")
+root.title("Easy Minecraft Server v2.12.1")
 root.geometry("430x640")
 root.bind("<Escape>", exit_program_event)
 root.bind("<Return>", start_server_event)
@@ -2105,7 +2121,7 @@ except Exception:
     pass
 logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
                     format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-logging.info("Easy Minecraft Server v2.12.0 Started")
+logging.info("Easy Minecraft Server v2.12.1 Started")
 logging.info(f"CWD: {cwd}")
 logging.info(f"User Directory: {user_dir}")
 logging.info("Building GUI")
@@ -2132,6 +2148,9 @@ loading_text.place(relx=0.5, rely=0.5, anchor=CENTER)
 info = subprocess.STARTUPINFO()
 info.dwFlags = 1
 info.wShowWindow = 0
+logging.info("Running ngrok update")
+ngrok_update = subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "update"], startupinfo=info)
+logging.info("Finished running ngrok update")
 logging.info("Running ngrok config upgrade")
 ngrok_config_upgrade = subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
 logging.info("Finished running ngrok config upgrade")
@@ -2148,23 +2167,29 @@ else:
 logging.info("Removing ngrok secret")
 remove_ngrok_secret = subprocess.Popen(["SecretManager.exe", "remove"], startupinfo=info)
 logging.info("Removed ngrok secret")
-p = subprocess.Popen(["powershell", "-Command", f"Get-MpPreference | select-object -ExpandProperty ExclusionPath | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt"], startupinfo=info)
+p = subprocess.Popen(["powershell", "-Command",
+                      f"Get-MpPreference | select-object -ExpandProperty ExclusionPath | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt"],
+                     startupinfo=info)
 logging.info("Ran ExclusionPath retriever")
-p2 = subprocess.Popen(["powershell", "-Command", f"Get-MpPreference | select-object -ExpandProperty Exclusionprocess | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt"], startupinfo=info)
+p2 = subprocess.Popen(["powershell", "-Command",
+                       f"Get-MpPreference | select-object -ExpandProperty Exclusionprocess | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt"],
+                      startupinfo=info)
 logging.info("Ran ExclusionProcess retriever")
 logging.info("Waiting 3 seconds")
 time.sleep(3)
 logging.info("Finished waiting")
 logging.info("Reading exclusion paths from Paths.txt")
 try:
-    exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r", encoding='utf-16-le')
+    exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r",
+                                encoding='utf-16-le')
     pass
 except FileNotFoundError:
-    showerror(title="EasyMinecraftServer", message="Something went wrong. Please wait a moment.")
-    loading_error_text = Label(root, text="Something went wrong. Please wait...", font=("Arial", 20), bg="white", fg="black")
+    loading_error_text = Label(root, text="Something went wrong. Please wait...", font=("Arial", 20), bg="white",
+                               fg="black")
     loading_error_text.place(relx=0.5, rely=0.7, anchor=CENTER)
     time.sleep(5)
-    exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r", encoding='utf-16-le')
+    exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r",
+                                encoding='utf-16-le')
     pass
 exclusion_paths = exclusion_paths_file.read()
 exclusion_paths_file.close()
@@ -2181,7 +2206,8 @@ except Exception as e:
     logging.error(f"Failed to log exclusion paths: {e}")
     pass
 logging.info("Reading exclusion processes from Processes.txt")
-exclusion_processes_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt", mode="r", encoding='utf-16-le')
+exclusion_processes_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt", mode="r",
+                                encoding='utf-16-le')
 exclusion_processes = exclusion_processes_file.read()
 exclusion_processes_file.close()
 try:
@@ -2196,8 +2222,13 @@ try:
 except Exception as e:
     logging.error(f"Failed to log exclusion processes: {e}")
     pass
-if "EasyMinecraftServer" not in str(exclusion_processes) or "mcserver" not in str(exclusion_processes) or "MinecraftServerGUI" not in str(exclusion_processes) or "MinecraftServer-nogui" not in str(exclusion_processes) or "java" not in str(exclusion_processes) or "javaw" not in str(exclusion_processes) or str(cwd) not in str(exclusion_paths) or str(user_dir) not in str(exclusion_paths):
-    exclusion_prompt = askyesno(title="EasyMinecraftServer", message="It appears that you have not created all anti-virus exclusions for EasyMinecraftServer. Would you like to do this now?")
+if "EasyMinecraftServer" not in str(exclusion_processes) or "mcserver" not in str(
+        exclusion_processes) or "MinecraftServerGUI" not in str(
+    exclusion_processes) or "MinecraftServer-nogui" not in str(exclusion_processes) or "java" not in str(
+    exclusion_processes) or "javaw" not in str(exclusion_processes) or str(cwd) not in str(exclusion_paths) or str(
+    user_dir) not in str(exclusion_paths):
+    exclusion_prompt = askyesno(title="EasyMinecraftServer",
+                                message="It appears that you have not created all anti-virus exclusions for EasyMinecraftServer. Would you like to do this now?")
     if exclusion_prompt:
         logging.info("User chose to create exclusions on startup")
         av_exclusions()
@@ -2214,7 +2245,7 @@ try:
     url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.12.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"New version available: {new_version}")
         toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico",
@@ -2298,15 +2329,9 @@ if os.path.exists(f"{cwd}\\1.18.1-recovery\\"):
     pass
 else:
     pass
-if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt"):
-    logging.info("Launch Version File Found")
-    os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt")
-    pass
-else:
-    pass
 loading_text.destroy()
 root.update()
-main_text_label = Label(root, text="Easy Minecraft Server v2.12.0\n"
+main_text_label = Label(root, text="Easy Minecraft Server v2.12.1\n"
                                    "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                    "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                    f"Current Working Directory: {cwd}\n"
