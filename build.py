@@ -45,6 +45,10 @@ if os.path.exists(f"{cwd}\\dist\\EasyMinecraftServer\\cv2\\"):
 else:
     print("Folder not found...")
     pass
+print("Copying Sun Valley tcl theme files...")
+os.mkdir(f"{cwd}\\dist\\EasyMinecraftServer\\sv_ttk\\")
+copy(f"{cwd}\\SunValleyThemes\\sun-valley.tcl", f"{cwd}\\dist\\EasyMinecraftServer\\sv_ttk\\sun-valley.tcl")
+copytree(f"{cwd}\\SunValleyThemes\\theme", f"{cwd}\\dist\\EasyMinecraftServer\\theme\\")
 print("Compiling mcserver.py to mcserver.exe...")
 print("Executing pyinstaller mcserver.py")
 os.system("pyinstaller  mcserver.py")

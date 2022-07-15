@@ -1,11 +1,23 @@
-New in version 2.12.1:
-Started development on reworked auto backup system!
-Added ngrok executable auto updater on startup!
-Some startup optimizations and bug fixes!
-CLI tool is now a bit more organized after startup!
-Fixed a bug that caused cwd to show as "." in ServerLaunchers!
-Fixed a bug when creating servers where nonexistent backups would be detected!
-Removed startup loading error message!
-Fixed some visual GUI bugs!
-Some small logging fixes!
-Other small changes and fixes!
+New in version 2.13.0:
+New application theme with a redesigned GUI!
+New windows with quick options for:
+- Start Server
+- Create Server Backup
+- Restore Server Backup
+- Reset Server
+- Inject Custom Map
+- Reset Dimension
+- Edit Server Properties
+- Import External Server
+Sun Valley tcl theme by rdbende https://github.com/rdbende/Sun-Valley-ttk-theme
+New dark mode and auto dark mode option! (Auto follows system theme)
+New settings and setup window updates!
+Added visual separators in main dropdown menu!
+Fixed some visual bugs!
+Fixed some bugs with server reset!
+Added new window icon!
+Some logging changes!
+Installer now automatically updates files on system restart if the files were unable to be updated during normal installation!
+Installer also now downloads latest JDK installer and has option to run the installer!
+Other small installer changes and fixes!
+Few other minor changes and fixes!

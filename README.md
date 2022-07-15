@@ -24,10 +24,15 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 - Support modded servers
 - Add better bug reporting system
 - Add RAM cleanup option to get max amount of RAM possible in server
-- Make accent color setting for buttons
 - Add option to create bat script shortcuts to quickly do things in program using cli tool
 - Add logging in cli tool
-- Use del to release unused variables and release unneeded memory in all programs
+- Add icons for all windows
+- Add support for zipping/unzipping backups and other folders
+- Add auto backup while server running
+- Update CLI tool to look better and add more functionality
+- Add server export function
+- Add option to delete server backups
+- Replace standard logging with loguru logging
 
 # License
 
