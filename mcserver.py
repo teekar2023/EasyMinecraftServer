@@ -256,16 +256,18 @@ def start_server():
         time.sleep(1)
         kbm.typewrite(f"cd {cwd}\n")
         kbm.typewrite("cd ngrok\n")
-        kbm.typewrite(f"ngrok authtoken {authtoken}\n")
+        kbm.typewrite(f"ngrok config add-authtoken {authtoken}\n")
         kbm.typewrite(f"ngrok tcp {port}\n")
         time.sleep(1)
         pass
     server_gui_setting = settings_json["server_gui"]
     ram_amount = settings_json["ram_allocation_amount"]
     server_backup = settings_json["auto_server_backup"]
+    backup_interval = settings_json["backup_interval"]
     print(f"Server GUI setting: {server_gui_setting}")
     print(f"RAM allocation amount: {ram_amount}")
     print(f"Server backup setting: {server_backup}")
+    print(f"Backup interval: {backup_interval}")
     launch_version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", 'w+')
     try:
         launch_version_file.truncate(0)
@@ -278,7 +280,8 @@ def start_server():
         print("Starting server with GUI...")
         os.system("start powershell")
         time.sleep(1)
-        kbm.typewrite(f"MinecraftServerGUI {ram_amount} {server_backup} {port_forward_status} {port}\n")
+        print(f"Executing MinecraftServerGUI {ram_amount} {server_backup} {port_forward_status} {port} {backup_interval}")
+        kbm.typewrite(f"MinecraftServerGUI {ram_amount} {server_backup} {port_forward_status} {port} {backup_interval}\n")
         kbm.typewrite("exit\n")
         time.sleep(1)
         return
@@ -286,7 +289,8 @@ def start_server():
         print("Starting server without GUI...")
         os.system("start powershell")
         time.sleep(1)
-        kbm.typewrite(f"MinecraftServer-nogui {ram_amount} {server_backup} {port_forward_status} {port}\n")
+        print(f"Executing MinecraftServer-nogui {ram_amount} {server_backup} {port_forward_status} {port} {backup_interval}")
+        kbm.typewrite(f"MinecraftServer-nogui {ram_amount} {server_backup} {port_forward_status} {port} {backup_interval}\n")
         time.sleep(1)
         return
 
@@ -748,7 +752,7 @@ def update_program():
     except Exception as e:
         print(f"There was an error while checking for updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.13.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         print(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -831,7 +835,7 @@ def settings_check():
         settings_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "r")
         settings_content = settings_file.read()
         settings_file.close()
-        if "auto_server_backup" not in settings_content and "server_gui" not in settings_content and "ram_allocation_amount" not in settings_content and "ngrok_authtoken" not in settings_content:
+        if "auto_server_backup" not in settings_content or "server_gui" not in settings_content or "ram_allocation_amount" not in settings_content or "ngrok_authtoken" not in settings_content or "theme" not in settings_content or "backup_interval" not in settings_content:
             print("EasyMinecraftServer has not been set up yet! Please launch the main program to setup!")
             launch_confirm = click.confirm("Would you like to launch the main program now?")
             if launch_confirm:
@@ -869,7 +873,7 @@ def is_admin():
 if __name__ == '__main__':
     os.system("title EasyMinecraftServer")
     os.system("cls")
-    print("EasyMinecraftServer v2.13.0")
+    print("EasyMinecraftServer v2.14.0")
     if is_admin():
         pass
     else:
@@ -944,13 +948,13 @@ if __name__ == '__main__':
     remove_ngrok_secret = subprocess.Popen(["SecretManager.exe", "remove"], startupinfo=info)
     remove_ngrok_secret.wait()
     os.system("cls")
-    print("EasyMinecraftServer v2.13.0")
+    print("EasyMinecraftServer v2.14.0")
     print(f"User Directory: {user_dir}")
     print(f"Program Installation Directory: {cwd}")
     url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
     r = requests.get(url, allow_redirects=True)
     redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.13.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.0":
         update_program()
         pass
     else:
@@ -965,7 +969,7 @@ if __name__ == '__main__':
                 pass
         pass
     os.system("cls")
-    print("EasyMinecraftServer v2.13.0")
+    print("EasyMinecraftServer v2.14.0")
     print(f"User Directory: {user_dir}")
     print(f"Program Installation Directory: {cwd}")
     main()

@@ -1,5 +1,5 @@
 #define MyAppName "EasyMinecraftServer"
-#define MyAppVersion "2.13.0"
+#define MyAppVersion "2.14.0"
 #define MyAppPublisher "teekar2023"
 #define MyAppURL "https://github.com/teekar2023/EasyMinecraftServer"
 #define MyAppExeName "EasyMinecraftServer.exe"
@@ -17,7 +17,6 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 PrivilegesRequired=admin
-PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=C:\Users\sree2\IdeaProjects\Minecraft Server\InstallerFiles\Output
 OutputBaseFilename=EasyMinecraftServerInstaller-{#MyAppVersion}
 Compression=lzma
@@ -25,6 +24,10 @@ SolidCompression=yes
 WizardStyle=modern
 DirExistsWarning=no
 LicenseFile=C:\Users\sree2\IdeaProjects\Minecraft Server\LICENSE.txt
+AppCopyright=Copyright (C) 2021-2022 Sreekar Palla
+LanguageDetectionMethod=uilanguage
+DisableReadyMemo=yes
+ShowComponentSizes=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

@@ -1,23 +1,9 @@
-New in version 2.13.0:
-New application theme with a redesigned GUI!
-New windows with quick options for:
-- Start Server
-- Create Server Backup
-- Restore Server Backup
-- Reset Server
-- Inject Custom Map
-- Reset Dimension
-- Edit Server Properties
-- Import External Server
-Sun Valley tcl theme by rdbende https://github.com/rdbende/Sun-Valley-ttk-theme
-New dark mode and auto dark mode option! (Auto follows system theme)
-New settings and setup window updates!
-Added visual separators in main dropdown menu!
-Fixed some visual bugs!
-Fixed some bugs with server reset!
-Added new window icon!
-Some logging changes!
-Installer now automatically updates files on system restart if the files were unable to be updated during normal installation!
-Installer also now downloads latest JDK installer and has option to run the installer!
-Other small installer changes and fixes!
+New in version 2.14.0:
+Reworked server auto backup function that bucks up while server is running and stopped!
+Added new auto server backup interval setting!
+Added accent color to some GUI buttons!
+Fixed a bug with ngrok authtoken not working!
+Small cli tool changes and fixes!
+Small changes in restore server backup window!
+Few more small installer changes!
 Few other minor changes and fixes!

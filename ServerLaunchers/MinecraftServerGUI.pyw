@@ -11,10 +11,9 @@ import os
 import socket
 import sys
 import time
-from shutil import rmtree, copytree, which
-
 import click
 import psutil
+from shutil import rmtree, copytree, which
 
 
 @click.command()
@@ -22,17 +21,18 @@ import psutil
 @click.argument("auto_server_backup")
 @click.argument("port_forward_status")
 @click.argument("port")
-def main(ram_amount, auto_server_backup, port_forward_status, port):
+@click.argument("backup_interval")
+def main(ram_amount, auto_server_backup, port_forward_status, port, backup_interval):
     version_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt", "r")
     version = version_file.read()
     version_file.close()
-    os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt")
     logging.info("Starting Minecraft Server with GUI")
     logging.info("Version: " + version)
     logging.info("RAM: " + ram_amount)
     logging.info("Auto Server Backup: " + auto_server_backup)
     logging.info("Port Forward Status: " + port_forward_status)
     logging.info("Port: " + port)
+    logging.info("Backup Interval: " + backup_interval)
     os.chdir(f"{str(cwd).replace('ServerLaunchers', '')}\\ServerFiles-{version}\\")
     if port_forward_status == "True":
         ip = str(socket.gethostbyname(socket.gethostname()))
@@ -48,6 +48,12 @@ def main(ram_amount, auto_server_backup, port_forward_status, port):
             "To find your ip for this session, go to the ngrok window and find it next to the 'Forwarding' category. The ip will be in the format of '<number>.tcp.ngrok.io:<numbers>'")
         ip_file.close()
         os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\ip.txt")
+        pass
+    if auto_server_backup == "True":
+        logging.info("Starting Auto Backup Process")
+        os.startfile(f"{cwd}\\ServerAutoBackup.exe")
+        pass
+    else:
         pass
     list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9", "1.7.10", "1.8",
                 "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9", "1.9", "1.9.1",
@@ -76,12 +82,30 @@ def main(ram_amount, auto_server_backup, port_forward_status, port):
         logging.info(f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar")
         os.system(f"java -Xmx{ram_amount}M -Xms{ram_amount}M -jar server.jar")
         pass
+    try:
+        os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\launch_version.txt")
+        logging.info("Removed launch_version.txt")
+        pass
+    except Exception as e:
+        logging.error("Error removing launch_version.txt: " + str(e))
     if auto_server_backup == "True":
-        logging.info("Auto Server Backup Enabled")
-        auto_backup(version)
+        logging.info("Stopping Auto Backup Process")
+        PROCNAME2 = "ServerAutoBackup.exe"
+        for proc2 in psutil.process_iter():
+            if proc2.name() == PROCNAME2:
+                proc2.kill()
+                pass
+            else:
+                pass
+            pass
         pass
     else:
-        logging.info("Auto Server Backup Disabled")
+        pass
+    if auto_server_backup == "True":
+        logging.info("Creating final auto backup")
+        auto_backup(f"{version}")
+        pass
+    else:
         pass
     logging.info("Exiting Program")
     logging.shutdown()
