@@ -1,9 +1,13 @@
-New in version 2.14.0:
-Reworked server auto backup function that bucks up while server is running and stopped!
-Added new auto server backup interval setting!
-Added accent color to some GUI buttons!
-Fixed a bug with ngrok authtoken not working!
-Small cli tool changes and fixes!
-Small changes in restore server backup window!
-Few more small installer changes!
-Few other minor changes and fixes!
+New in version 2.14.1:
+Remake of help window to include some helpful functionality!
+Added ngrok dashboard button in settings and setup!
+Installer now automatically closes app before installation!
+Other small installer GUI changes!
+Update window is now resizable!
+Fixed a bug where new backup would not be created when restoring a backup!
+Fixed some bugs when creating a new server version!
+Fixed a bug where new version changelog would cut off in update window!
+Fixed some bugs with dimension reset window!
+Fixed some bugs with change server properties window!
+Fixed a small auto update check bug!
+Other small changes and fixes!

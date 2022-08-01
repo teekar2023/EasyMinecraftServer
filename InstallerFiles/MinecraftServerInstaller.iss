@@ -1,9 +1,10 @@
 #define MyAppName "EasyMinecraftServer"
-#define MyAppVersion "2.14.0"
+#define MyAppVersion "2.14.1"
 #define MyAppPublisher "teekar2023"
 #define MyAppURL "https://github.com/teekar2023/EasyMinecraftServer"
 #define MyAppExeName "EasyMinecraftServer.exe"
 #include "environment.iss"
+#include "taskKiller.iss"
 
 [Setup]
 AppId={{22F56680-5E0C-49B3-A0B6-F5D8A14C6E91}
@@ -28,6 +29,9 @@ AppCopyright=Copyright (C) 2021-2022 Sreekar Palla
 LanguageDetectionMethod=uilanguage
 DisableReadyMemo=yes
 ShowComponentSizes=yes
+CloseApplications=no
+SetupIconFile=C:\Users\sree2\IdeaProjects\Minecraft Server\mc.ico
+WizardSmallImageFile=C:\Users\sree2\IdeaProjects\Minecraft Server\mc.bmp
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -57,19 +61,23 @@ Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Code]
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
     if CurStep = ssPostInstall 
-     then EnvAddPath(ExpandConstant('{app}'));
+      then EnvAddPath(ExpandConstant('{app}'));
+    if CurStep = ssInstall
+      then TaskKill();
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
     if CurUninstallStep = usPostUninstall
-    then EnvRemovePath(ExpandConstant('{app}'));
+      then EnvRemovePath(ExpandConstant('{app}'));
+    if CurUninstallStep = usUninstall
+      then TaskKill();
 end;
 
 [Files]
@@ -122,5 +130,5 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
-Filename: "{app}\jdk17-installer.exe"; Description: "Install JDK"; Flags: postinstall skipifsilent nowait runascurrentuser
+Filename: "{app}\jdk17-installer.exe"; Description: "Launch JDK Installer"; Flags: postinstall skipifsilent nowait runascurrentuser
 

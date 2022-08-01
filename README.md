@@ -17,7 +17,7 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 3. When running the installer, windows smartscreen might block it as well. If it does, click on "learn more" and then
    click "run anyway".
 4. Follow the instructions in the installer and install EasyMinecraftServer.
-5. That is all. Just run the application, and you are good to go!
+5. That is all. Just run the application, complete setup, and you are good to go!
 
 # TODO
 
@@ -28,7 +28,6 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 - Add logging in cli tool
 - Add icons for all windows
 - Add support for zipping/unzipping backups and other folders
-- Add auto backup while server running
 - Update CLI tool to look better and add more functionality
 - Add server export function
 - Add option to delete server backups

@@ -12,7 +12,6 @@ import json
 import logging
 import os
 import subprocess
-from turtle import bgcolor
 import sv_ttk
 import darkdetect
 import sys
@@ -125,8 +124,7 @@ def start_server():
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
         logging.info("Created server directory")
         logging.info(f"Creating ServerFiles Exclusion Path for version {version_selection}")
-        subprocess.call(
-            f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        subprocess.Popen(["powershell.exe", "-Command", "Add-MpPreference", "-ExclusionPath", f"'{cwd}\\ServerFiles-{version_selection}\\'"], startupinfo=info)
         logging.info("Created server files exclusion path")
         logging.info(f"Downloading server version {version_selection}")
         try:
@@ -155,7 +153,7 @@ def start_server():
             else:
                 logging.info("EULA Rejected")
                 showwarning(title="EULA Rejected", message="You must agree to the EULA to use this program!")
-                os.rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
+                rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
                 return
             list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9",
                         "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8",
@@ -372,8 +370,7 @@ def start_server_event(event):
         os.mkdir(f"{cwd}\\ServerFiles-{version_selection}\\")
         logging.info("Created server directory")
         logging.info(f"Creating ServerFiles Exclusion Path for version {version_selection}")
-        subprocess.call(
-            f"powershell -Command Add-MpPreference -ExclusionPath '{cwd}\\ServerFiles-{version_selection}\\'")
+        subprocess.Popen(["powershell.exe", "-Command", "Add-MpPreference", "-ExclusionPath", f"'{cwd}\\ServerFiles-{version_selection}\\'"], startupinfo=info)
         logging.info("Created server files exclusion path")
         logging.info(f"Downloading server version {version_selection}")
         try:
@@ -402,7 +399,7 @@ def start_server_event(event):
             else:
                 logging.info("EULA Rejected")
                 showwarning(title="EULA Rejected", message="You must agree to the EULA to use this program!")
-                os.rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
+                rmtree(f"{cwd}\\ServerFiles-{version_selection}\\")
                 return
             list_one = ["1.7", "1.7.1", "1.7.2", "1.7.3", "1.7.4", "1.7.5", "1.7.6", "1.7.7", "1.7.8", "1.7.9",
                         "1.7.10", "1.8", "1.8.1", "1.8.2", "1.8.3", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8",
@@ -704,17 +701,13 @@ def restore_server_backup():
     else:
         confirm_restore = True
         if confirm_restore:
-            if os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\ops.json\\") or \
-                    os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-players.json\\") or \
-                    os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\banned-ips.json\\"):
+            if os.path.exists(f"{cwd}\\ServerFiles-{backup_version}\\server.jar"):
                 logging.info("Current Server Files Found")
                 if backup_current_server == "True":
-                    backup_server = False
+                    backup_server = True
                     pass
                 else:
-                    backup_server = askyesno(title="Restore Server Backup", message="You have current data in the "
-                                                                                    "server! Would you like "
-                                                                                    "to perform a backup?")
+                    backup_server = False
                     pass
                 if backup_server:
                     logging.info("Performing New Server Backup in restore_server_backup()")
@@ -1077,12 +1070,13 @@ def inject_custom_map():
         return
 
 
-def reset_overworld(version, backup_ask):
-    if backup_ask == "True":
+def reset_overworld(version, backup, window):
+    window.destroy()
+    if backup == "True":
         backup_ask = True
         pass
     else:
-        backup_ask = False
+        backup = False
         pass
     logging.info("Version Selected In reset_overworld(): " + str(version))
     if not os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
@@ -1132,7 +1126,8 @@ def reset_overworld(version, backup_ask):
         return
 
 
-def reset_nether(version, backup_ask):
+def reset_nether(version, backup_ask, window):
+    window.destroy()
     if backup_ask == "True":
         backup_ask = True
         pass
@@ -1186,7 +1181,8 @@ def reset_nether(version, backup_ask):
         return
 
 
-def reset_end(version, backup_ask):
+def reset_end(version, backup_ask, window):
+    window.destroy()
     if backup_ask == "True":
         backup_ask = True
         pass
@@ -1260,12 +1256,12 @@ def reset_dimension_main():
     dim_reset_label = ttk.Label(dim_reset_window, text="Select The Dimension To Reset")
     overworld_button = ttk.Button(dim_reset_window, text="Overworld",
                                   command=lambda: reset_overworld(version=version_selection_var.get(),
-                                                                  backup_ask=backup_before_reset_var.get()), width="25")
+                                                                  backup=backup_before_reset_var.get(), window=dim_reset_window), width="25")
     nether_button = ttk.Button(dim_reset_window, text="Nether",
                                command=lambda: reset_nether(version=version_selection_var.get(),
-                                                            backup_ask=backup_before_reset_var.get()), width="25")
+                                                            backup=backup_before_reset_var.get(), window=dim_reset_window), width="25")
     end_button = ttk.Button(dim_reset_window, text="End", command=lambda: reset_end(version=version_selection_var.get(),
-                                                                                    backup_ask=backup_before_reset_var.get()),
+                                                                                    backup=backup_before_reset_var.get(), window=dim_reset_window),
                             width="25")
     dim_reset_label.pack(padx=10, pady=5)
     overworld_button.pack(padx=10, pady=5)
@@ -1301,6 +1297,7 @@ def change_server_properties():
                                    command=lambda: properties_wait_var.set(1), style="Accent.TButton")
     properties_button.pack(padx=10, pady=5)
     properties_window.wait_variable(properties_wait_var)
+    properties_window.destroy()
     properties_version = properties_version_var.get()
     backup_before_launching = backup_before_launching_var.get()
     if os.path.exists(f"{cwd}\\ServerFiles-{properties_version}\\server.properties"):
@@ -1391,6 +1388,7 @@ def import_external_server():
                                                style="Accent.TButton")
     import_external_server_button.pack(padx=10, pady=5)
     import_external_server_window.wait_variable(import_external_server_wait_var)
+    import_external_server_window.destroy()
     version = import_version_selection_var.get()
     import_files = selected_folder_variable.get()
     if backup_before_import_var == "True":
@@ -1528,6 +1526,8 @@ def setup(arg):
             pass
         except:
             pass
+        ngrok_button = ttk.Button(setup_window, text="Ngrok Dashboard", command=ngrok_website)
+        ngrok_button.pack()
         ram_bytes = psutil.virtual_memory().total
         ram_mb = ram_bytes / 1000000
         ram_allocation_amount_label = ttk.Label(setup_window,
@@ -1803,6 +1803,8 @@ def settings():
     ngrok_authtoken_entry.pack()
     ngrok_authtoken = settings_json["ngrok_authtoken"]
     ngrok_authtoken_entry.insert(0, ngrok_authtoken)
+    ngrok_button = ttk.Button(settings_window, text="Ngrok Dashboard", command=ngrok_website)
+    ngrok_button.pack()
     ram_bytes = psutil.virtual_memory().total
     ram_mb = ram_bytes / 1000000
     ram_allocation_amount_label = ttk.Label(settings_window,
@@ -2027,7 +2029,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2035,8 +2037,7 @@ def update():
         logging.info("Update download url: " + download_url)
         update_window = Toplevel(root)
         update_window.title("EasyMinecraftServer (UPDATE)")
-        update_window.geometry("500x500")
-        update_window.resizable(width=False, height=False)
+        update_window.geometry("550x550")
         update_text = ttk.Label(update_window,
                                 text="There Is A New Update Available! Click The Button Below If You Wish To Download It!")
         update_text.pack()
@@ -2078,7 +2079,7 @@ def update():
             changelog_txt = f"There was an error while accessing new version changelog data: {e}"
             logging.error("There was an error while accessing changelog data")
             pass
-        changelog_text = ttk.Label(update_window, width="70", text=str(changelog_txt))
+        changelog_text = ttk.Label(update_window, text=str(changelog_txt))
         changelog_text.pack()
         update_button.wait_variable(int_var)
         if os.path.exists(
@@ -2127,7 +2128,7 @@ def update():
 def update_event(event):
     logging.info("Manual update check started")
     try:
-        url = "http://github.com/teekar2023/EasyMinecraftServer/releases/latest/"
+        url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
         r = requests.get(url, allow_redirects=True)
         redirected_url = r.url
         pass
@@ -2135,15 +2136,15 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
-        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{new_version}.exe"
+        new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
         download_url = new_url.replace("tag", "download")
+        logging.info("Update download url: " + download_url)
         update_window = Toplevel(root)
         update_window.title("EasyMinecraftServer (UPDATE)")
-        update_window.geometry("500x500")
-        update_window.resizable(width=False, height=False)
+        update_window.geometry("550x550")
         update_text = ttk.Label(update_window,
                                 text="There Is A New Update Available! Click The Button Below If You Wish To Download It!")
         update_text.pack()
@@ -2151,8 +2152,6 @@ def update_event(event):
         update_button = ttk.Button(update_window, command=lambda: int_var.set(1), text="Update Now", width="50",
                                    style="Accent.TButton")
         update_button.pack()
-        changelog_text = Text(update_window, bd=0, bg="white", height="25", width="75", font="TrebuchetMS")
-        changelog_text.pack()
         if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\"):
             os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\")
             pass
@@ -2187,8 +2186,8 @@ def update_event(event):
             changelog_txt = f"There was an error while accessing new version changelog data: {e}"
             logging.error("There was an error while accessing changelog data")
             pass
-        changelog_text.insert(END, f"{changelog_txt}")
-        changelog_text.config(state=DISABLED)
+        changelog_text = ttk.Label(update_window, text=str(changelog_txt))
+        changelog_text.pack()
         update_button.wait_variable(int_var)
         if os.path.exists(
                 f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe"):
@@ -2200,7 +2199,7 @@ def update_event(event):
         else:
             try:
                 f = open(
-                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller.exe-{new_version}",
+                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Update-{new_version}\\EasyMinecraftServerInstaller-{new_version}.exe",
                     'wb')
                 showwarning(title="EasyMinecraftServer Update",
                             message="Update will now be downloaded and installer will be launcher. "
@@ -2274,7 +2273,6 @@ def exit_program_event(event):
 def exit_program_force():
     logging.info("Exiting EasyMinecraftServer")
     logging.shutdown()
-    root.destroy()
     PROCNAME = "EasyMinecraftServer.exe"
     for proc in psutil.process_iter():
         if proc.name() == PROCNAME:
@@ -2283,6 +2281,7 @@ def exit_program_force():
         else:
             pass
         pass
+    root.destroy()
     sys.exit(0)
 
 
@@ -2510,79 +2509,144 @@ def help_window():
     logging.info("Showing help window")
     help_window = Toplevel()
     help_window.title("EasyMinecraftServer (HELP)")
-    help_window.geometry("750x500")
+    help_window.geometry("800x615")
     help_window.resizable(False, False)
-    help_text = """
-    EasyMinecraftServer Help
-    This program was made with the purpose of making hosting minecraft servers and manipulating them easier for everyone!
-    
-    All the buttons should be pretty self explanatory:
-    Start Server: Starts the server!
-    Create Backup Button: Creates a backup of the server files!
-    Restore Backup Button: Restores a backup of the server files!
-    Reset Server Button: Resets the server files!
-    Use Custom Map Button: Allows you to use a custom map in your server!
-    Reset Dimension Button: Resets a dimension from the server!
-    Change Server Properties Button: Allows you to change the server properties!
-    Import External Server Button: Allows you to import an external server to be used with the program!
-    
-    Hosting a server without port forwarding requires a ngrok account and an authtoken!
-    More information about ngrok can be found at ngrok.com
+    try:
+        url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
+        r = requests.get(url, allow_redirects=True)
+        redirected_url = r.url
+        pass
+    except Exception as e:
+        logging.error(f"Error While Checking For Updates: {e}")
+        redirected_url = "ERROR"
+        pass
+    help_text = "EasyMinecraftServer v2.14.1\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
+        new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
+        logging.warning(f"Update available: {new_version}")
+        help_text += "Update available: " + new_version + "\n\n"
+        pass
+    elif redirected_url == "ERROR":
+        help_text += "Error while checking for updates!\n\n"
+        pass
+    else:
+        logging.info("No update available")
+        help_text += "Latest Version Installed\n\n"
+        pass
+    help_text += """EasyMinecraftServer is a free and open source program that makes hosting and manipulating minecraft servers easy and convenient!
 
-    If you have any questions or concerns, please contact me at:
-    sree23palla@outlook.com
+All the buttons should be pretty self explanatory:
+Start Server: Starts the server!
+Create Backup Button: Creates a backup of the server files!
+Restore Backup Button: Restores a backup of the server files!
+Reset Server Button: Resets the server files!
+Use Custom Map Button: Allows you to use a custom map in your server!
+Reset Dimension Button: Resets a dimension from the server!
+Change Server Properties Button: Allows you to change the server properties!
+Import External Server Button: Allows you to import an external server to be used with the program!
 
-    Have Fun!
+Hosting a server without port forwarding requires a ngrok account and an authtoken!
+More information about ngrok can be found by visiting the ngrok dashboard with the button below!
+
+Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
+        update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
+        update_button.pack()
+        pass
+    else:
+        pass
+    program_github = ttk.Button(help_window, text="GitHub", command=website, width="50")
+    program_github.pack()
+    ngrok_button = ttk.Button(help_window, text="Ngrok Dashboard", command=ngrok_website, width="50")
+    ngrok_button.pack()
     jdk_installer_button = ttk.Button(help_window, text="JDK Installer", command=jdk_installer, width="50")
     jdk_installer_button.pack()
+    changelog_button = ttk.Button(help_window, text="Changelog", command=changelog, width="50")
+    changelog_button.pack()
     license_button = ttk.Button(help_window, text="License", command=license_window, width="50")
     license_button.pack()
     readme_button = ttk.Button(help_window, text="Readme", command=readme_window, width="50")
     readme_button.pack()
+    debug_button = ttk.Button(help_window, text="Debug", command=debug, width="50")
+    debug_button.pack()
     return
-
 
 def help_window_event(event):
     logging.info("Showing help window")
     help_window = Toplevel()
     help_window.title("EasyMinecraftServer (HELP)")
-    help_window.geometry("750x500")
+    help_window.geometry("800x615")
     help_window.resizable(False, False)
-    help_text = """
-    EasyMinecraftServer Help
-    This program was made with the purpose of making hosting minecraft servers and manipulating them easier for everyone!
-    
-    All the buttons should be pretty self explanatory:
-    Start Server: Starts the server!
-    Create Backup Button: Creates a backup of the server files!
-    Restore Backup Button: Restores a backup of the server files!
-    Reset Server Button: Resets the server files!
-    Use Custom Map Button: Allows you to use a custom map in your server!
-    Reset Dimension Button: Resets a dimension from the server!
-    Change Server Properties Button: Allows you to change the server properties!
-    Import External Server Button: Allows you to import an external server to be used with the program!
-    
-    Hosting a server without port forwarding requires a ngrok account and an authtoken!
-    More information about ngrok can be found at ngrok.com
+    try:
+        url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
+        r = requests.get(url, allow_redirects=True)
+        redirected_url = r.url
+        pass
+    except Exception as e:
+        logging.error(f"Error While Checking For Updates: {e}")
+        redirected_url = "ERROR"
+        pass
+    help_text = "EasyMinecraftServer v2.14.1\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
+        new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
+        logging.warning(f"Update available: {new_version}")
+        help_text += "Update available: " + new_version + "\n\n"
+        pass
+    elif redirected_url == "ERROR":
+        help_text += "Error while checking for updates!\n\n"
+        pass
+    else:
+        logging.info("No update available")
+        help_text += "Latest Version Installed\n\n"
+        pass
+    help_text += """EasyMinecraftServer is a free and open source program that makes hosting and manipulating minecraft servers easy and convenient!
 
-    If you have any questions or concerns, please contact me at:
-    sree23palla@outlook.com
+All the buttons should be pretty self explanatory:
+Start Server: Starts the server!
+Create Backup Button: Creates a backup of the server files!
+Restore Backup Button: Restores a backup of the server files!
+Reset Server Button: Resets the server files!
+Use Custom Map Button: Allows you to use a custom map in your server!
+Reset Dimension Button: Resets a dimension from the server!
+Change Server Properties Button: Allows you to change the server properties!
+Import External Server Button: Allows you to import an external server to be used with the program!
 
-    Have Fun!
+Hosting a server without port forwarding requires a ngrok account and an authtoken!
+More information about ngrok can be found by visiting the ngrok dashboard with the button below!
+
+Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
+        update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
+        update_button.pack()
+        pass
+    else:
+        pass
+    program_github = ttk.Button(help_window, text="GitHub", command=website, width="50")
+    program_github.pack()
+    ngrok_button = ttk.Button(help_window, text="Ngrok Dashboard", command=ngrok_website, width="50")
+    ngrok_button.pack()
     jdk_installer_button = ttk.Button(help_window, text="JDK Installer", command=jdk_installer, width="50")
     jdk_installer_button.pack()
+    changelog_button = ttk.Button(help_window, text="Changelog", command=changelog, width="50")
+    changelog_button.pack()
     license_button = ttk.Button(help_window, text="License", command=license_window, width="50")
     license_button.pack()
     readme_button = ttk.Button(help_window, text="Readme", command=readme_window, width="50")
     readme_button.pack()
+    debug_button = ttk.Button(help_window, text="Debug", command=debug, width="50")
+    debug_button.pack()
     return
 
+
+def ngrok_website():
+    webbrowser.open("https://dashboard.ngrok.com/")
+    return
 
 def explorer_logs():
     subprocess.Popen(f"explorer {user_dir}\\Documents\\EasyMinecraftServer\\Logs\\")
@@ -2600,6 +2664,16 @@ def debug_event(event):
     return
 
 
+def debug():
+    logging.info("Debug function called")
+    explorer_logs_thread = Thread(target=explorer_logs)
+    explorer_logs_thread.start()
+    os.startfile(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log")
+    showinfo(title="Debug",
+             message="Logs and data folder launched! Press F3 on the main window to create a backup of current logs!")
+    return
+
+
 def server_backups():
     subprocess.Popen(f"explorer {user_dir}\\Documents\\EasyMinecraftServer\\Backups\\")
     return
@@ -2608,7 +2682,7 @@ def server_backups():
 def server_files():
     version = askstring(title="View Server Files",
                         prompt="Enter the version you want to view! This can be any version but must be in the format 'num.num.num'!")
-    if version == None:
+    if version is None:
         return
     else:
         if os.path.exists(f"{cwd}\\ServerFiles-{version}\\"):
@@ -2648,7 +2722,7 @@ def av_exclusions_remove():
 
 
 def website():
-    webbrowser.open("https://github.com/teekar2023/EasyMinecraftServer")
+    webbrowser.open("https://github.com/teekar2023/EasyMinecraftServer/")
     logging.info("Launched website!")
     return
 
@@ -2695,435 +2769,442 @@ def is_admin():
     except:
         return False
 
-
-if is_admin():
-    pass
-else:
-    showwarning(title="EasyMinecraftServer",
-                message="EasyMinecraftServer requires administrator privileges to run! Please run as administrator!")
-    ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-    sys.exit(0)
-toaster = ToastNotifier()
-cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
-if cwd == ".":
-    cwd = os.getcwd()
-    pass
-else:
-    pass
-os.chdir(cwd)
-user_dir = os.path.expanduser("~")
-root = Tk()
-root.title("EasyMinecraftServer v2.14.0")
-root.geometry("510x350")
-root.resizable(False, False)
-root.iconbitmap(f"{cwd}\\mc.ico")
-root.bind("<Escape>", exit_program_event)
-root.bind("<Return>", start_server_event)
-root.bind("<Control-s>", start_server_event)
-root.bind("<Control-S>", start_server_event)
-root.bind("<Control-r>", reset_server_event)
-root.bind("<Control-R>", reset_server_event)
-root.bind("<F1>", help_window_event)
-root.bind("<F2>", license_window_event)
-root.bind("<F3>", backup_logs_event)
-root.bind("<F4>", uninstall_program_event)
-root.bind("<F5>", restart_program_event)
-root.bind("<F6>", update_event)
-root.bind("<F12>", debug_event)
-menubar = Menu(root)
-main_menu = Menu(menubar, tearoff=0)
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\")
-    pass
-else:
-    pass
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\")
-    pass
-else:
-    pass
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\")
-    pass
-else:
-    pass
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\")
-    pass
-else:
-    pass
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\")
-    pass
-else:
-    pass
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\")
-    pass
-else:
-    pass
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\"):
-    os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\")
-    pass
-else:
-    pass
-settings_good = settings_check()
-if settings_good:
-    pass
-else:
-    pass
-settings_json = json.load(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "r"))
-if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log"):
-    create_app_log = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", 'x')
-    create_app_log.close()
-    pass
-else:
-    pass
-try:
-    log_bytes = open("{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", "rb")
-    with log_bytes as f:
-        f.seek(-2, os.SEEK_END)
-        while f.read(1) != b'\n':
-            f.seek(-2, os.SEEK_CUR)
-        last_line = f.readline().decode()
-    if "Exiting Program" not in last_line and "Exiting for JDK Install" not in last_line and "Exiting Due To JDK Installation Denial" not in last_line and "Exiting EasyMinecraftServer" not in last_line and "Restarting EasyMinecraftServer" not in last_line and last_line != "" and not last_line.isspace() and "Restarting Program" not in last_line:
-        showwarning(title="EasyMinecraftServer",
-                    message="EasyMinecraftServer has detected that the program did not close properly last time it was run. Submitting a big report on the github page is recommended and log files will now be backed up!")
-        backup_logs()
+if __name__ == "__main__":
+    if is_admin():
         pass
-except OSError:
-    pass
-log_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", "w")
-try:
-    log_file.truncate(0)
-    pass
-except Exception:
-    pass
-logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
-                    format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-log_settings()
-logging.info("EasyMinecraftServer v2.14.0 Started")
-logging.info(f"Current Working Directory: {cwd}")
-logging.info(f"User Directory: {user_dir}")
-logging.info("Building GUI")
-logging.info("Applying GUI theme")
-logging.info("Retreiving theme settings")
-app_theme = settings_json["theme"]
-if app_theme.upper() == "LIGHT":
-    logging.info("Light Theme Selected")
-    sv_ttk.use_light_theme()
-    pass
-elif app_theme.upper() == "DARK":
-    logging.info("Dark Theme Selected")
-    sv_ttk.use_dark_theme()
-    dark_title_bar()
-    pass
-elif app_theme.upper() == "AUTO":
-    logging.info("Auto Theme Selected")
-    system_theme = darkdetect.theme()
-    if system_theme.upper() == "DARK":
-        logging.info("Dark Theme Detected")
+    else:
+        showwarning(title="EasyMinecraftServer",
+                    message="EasyMinecraftServer requires administrator privileges to run! Please run as administrator!")
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+        sys.exit(0)
+    toaster = ToastNotifier()
+    cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    if cwd == ".":
+        cwd = os.getcwd()
+        pass
+    else:
+        pass
+    os.chdir(cwd)
+    user_dir = os.path.expanduser("~")
+    root = Tk()
+    root.title("EasyMinecraftServer v2.14.1")
+    root.geometry("510x350")
+    root.resizable(False, False)
+    root.iconbitmap(f"{cwd}\\mc.ico")
+    root.bind("<Escape>", exit_program_event)
+    root.bind("<Return>", start_server_event)
+    root.bind("<Control-s>", start_server_event)
+    root.bind("<Control-S>", start_server_event)
+    root.bind("<Control-r>", reset_server_event)
+    root.bind("<Control-R>", reset_server_event)
+    root.bind("<F1>", help_window_event)
+    root.bind("<F2>", license_window_event)
+    root.bind("<F3>", backup_logs_event)
+    root.bind("<F4>", uninstall_program_event)
+    root.bind("<F5>", restart_program_event)
+    root.bind("<F6>", update_event)
+    root.bind("<F12>", debug_event)
+    menubar = Menu(root)
+    main_menu = Menu(menubar, tearoff=0)
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\")
+        pass
+    else:
+        pass
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\"):
+        os.mkdir(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\")
+        pass
+    else:
+        pass
+    settings_good = settings_check()
+    if settings_good:
+        pass
+    else:
+        pass
+    settings_json = json.load(open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Settings\\settings.json", "r"))
+    if not os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log"):
+        create_app_log = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", 'x')
+        create_app_log.close()
+        pass
+    else:
+        pass
+    try:
+        log_bytes = open("{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", "rb")
+        with log_bytes as f:
+            f.seek(-2, os.SEEK_END)
+            while f.read(1) != b'\n':
+                f.seek(-2, os.SEEK_CUR)
+            last_line = f.readline().decode()
+        if "Exiting Program" not in last_line and "Exiting for JDK Install" not in last_line and "Exiting Due To JDK Installation Denial" not in last_line and "Exiting EasyMinecraftServer" not in last_line and "Restarting EasyMinecraftServer" not in last_line and last_line != "" and not last_line.isspace() and "Restarting Program" not in last_line:
+            showwarning(title="EasyMinecraftServer",
+                        message="EasyMinecraftServer has detected that the program did not close properly last time it was run. Submitting a bug report on the github page is recommended and log files will now be backed up!")
+            backup_logs()
+            pass
+    except OSError:
+        pass
+    log_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", "w")
+    try:
+        log_file.truncate(0)
+        pass
+    except Exception:
+        pass
+    logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
+                        format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
+    logging.info("EasyMinecraftServer v2.14.1 Started")
+    logging.info(f"Current Working Directory: {cwd}")
+    logging.info(f"User Directory: {user_dir}")
+    log_settings()
+    logging.info("Building GUI")
+    logging.info("Applying GUI theme")
+    logging.info("Retreiving theme settings")
+    app_theme = settings_json["theme"]
+    if app_theme.upper() == "LIGHT":
+        logging.info("Light Theme Selected")
+        sv_ttk.use_light_theme()
+        pass
+    elif app_theme.upper() == "DARK":
+        logging.info("Dark Theme Selected")
         sv_ttk.use_dark_theme()
         dark_title_bar()
         pass
-    elif system_theme.upper() == "LIGHT":
-        logging.info("Light Theme Detected")
-        sv_ttk.use_light_theme()
+    elif app_theme.upper() == "AUTO":
+        logging.info("Auto Theme Selected")
+        system_theme = darkdetect.theme()
+        if system_theme.upper() == "DARK":
+            logging.info("Dark Theme Detected")
+            sv_ttk.use_dark_theme()
+            dark_title_bar()
+            pass
+        elif system_theme.upper() == "LIGHT":
+            logging.info("Light Theme Detected")
+            sv_ttk.use_light_theme()
+            pass
+        else:
+            logging.info("Auto Theme Failed")
+            sv_ttk.use_light_theme()
+            pass
         pass
     else:
-        logging.info("Auto Theme Failed")
+        logging.info("Error getting theme settings")
+        logging.info("Defaulting to light theme")
         sv_ttk.use_light_theme()
         pass
-    pass
-else:
-    logging.info("Error getting theme settings")
-    logging.info("Defaulting to light theme")
-    sv_ttk.use_light_theme()
-    pass
-main_menu.add_command(label="Help", command=help_window, underline=0)
-main_menu.add_command(label="Settings", command=settings, underline=0)
-main_menu.add_separator()
-main_menu.add_command(label="View ServerFiles", command=server_files, underline=0)
-main_menu.add_command(label="Server Backups", command=server_backups)
-main_menu.add_command(label="Backup Program", command=program_backup)
-main_menu.add_command(label="Restore Program", command=program_restore)
-main_menu.add_command(label="Reset Program", command=program_reset)
-main_menu.add_separator()
-main_menu.add_command(label="Changelog", command=changelog)
-main_menu.add_command(label="Update", command=update, underline=0)
-main_menu.add_command(label="Uninstall", command=uninstall_program)
-main_menu.add_command(label="Website", command=website, underline=0)
-main_menu.add_separator()
-main_menu.add_command(label="Create Anti-Virus Exclusions", command=av_exclusions)
-main_menu.add_command(label="Remove Anti-Virus Exclusions", command=av_exclusions_remove)
-main_menu.add_separator()
-main_menu.add_command(label="Restart", command=restart_program, underline=0)
-main_menu.add_command(label="Exit", command=exit_program, underline=0)
-menubar.add_cascade(label="Menu", menu=main_menu)
-root.config(menu=menubar)
-root.protocol("WM_DELETE_WINDOW", exit_program)
-loading_text = ttk.Label(root, text="Loading EasyMinecraftServer...")
-loading_text.place(relx=0.5, rely=0.5, anchor="center")
-root.update()
-info = subprocess.STARTUPINFO()
-info.dwFlags = 1
-info.wShowWindow = 0
-logging.info("Running ngrok update")
-ngrok_update = subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "update"], startupinfo=info)
-logging.info("Finished running ngrok update")
-logging.info("Running ngrok config upgrade")
-ngrok_config_upgrade = subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
-logging.info("Finished running ngrok config upgrade")
-if os.path.exists(f"{cwd}\\ngrok\\.ngrok.exe.old"):
-    logging.info("ngrok.exe.old found")
-    logging.info("Removing ngrok.exe.old")
-    try:
-        os.remove(f"{cwd}\\ngrok\\.ngrok.exe.old")
-        logging.info("Removed ngrok.exe.old")
-        pass
-    except Exception as e:
-        logging.info(f"Failed to remove ngrok.exe.old: {e}")
-        pass
-    pass
-else:
-    logging.info("ngrok.exe.old not found")
-    pass
-logging.info("Creating ngrok secret")
-create_ngrok_secret = subprocess.Popen(["SecretManager.exe", "create"], startupinfo=info)
-logging.info("Finished creating ngrok secret")
-logging.info("Reading ngrok secret")
-ngrok_secret = str(os.environ.get("MinecraftServerNgrokSecret"))
-if settings_json["ngrok_authtoken"] == ngrok_secret:
-    logging.warning("Authtoken for ngrok is the same as dev authtoken")
-    pass
-else:
-    logging.info("User authtoken does not match dev authtoken")
-    pass
-logging.info("Removing ngrok secret")
-remove_ngrok_secret = subprocess.Popen(["SecretManager.exe", "remove"], startupinfo=info)
-logging.info("Removed ngrok secret")
-p = subprocess.Popen(["powershell", "-Command",
-                      f"Get-MpPreference | select-object -ExpandProperty ExclusionPath | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt"],
-                     startupinfo=info)
-logging.info("Ran ExclusionPath retriever")
-p2 = subprocess.Popen(["powershell", "-Command",
-                       f"Get-MpPreference | select-object -ExpandProperty Exclusionprocess | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt"],
-                      startupinfo=info)
-logging.info("Ran ExclusionProcess retriever")
-logging.info("Waiting 3 seconds")
-time.sleep(3)
-logging.info("Finished waiting")
-logging.info("Reading exclusion paths from Paths.txt")
-try:
-    exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r",
-                                encoding='utf-16-le')
-    pass
-except FileNotFoundError:
-    loading_error_text = ttk.Label(root, text="Something went wrong. Please wait...")
-    loading_error_text.place(relx=0.5, rely=0.7, anchor="center")
+    main_menu.add_command(label="Help", command=help_window, underline=0)
+    main_menu.add_command(label="Settings", command=settings, underline=0)
+    main_menu.add_separator()
+    main_menu.add_command(label="View ServerFiles", command=server_files, underline=0)
+    main_menu.add_command(label="Server Backups", command=server_backups)
+    main_menu.add_command(label="Backup Program", command=program_backup)
+    main_menu.add_command(label="Restore Program", command=program_restore)
+    main_menu.add_command(label="Reset Program", command=program_reset)
+    main_menu.add_separator()
+    main_menu.add_command(label="Changelog", command=changelog)
+    main_menu.add_command(label="Update", command=update, underline=0)
+    main_menu.add_command(label="Uninstall", command=uninstall_program)
+    main_menu.add_command(label="Website", command=website, underline=0)
+    main_menu.add_separator()
+    main_menu.add_command(label="Create Anti-Virus Exclusions", command=av_exclusions)
+    main_menu.add_command(label="Remove Anti-Virus Exclusions", command=av_exclusions_remove)
+    main_menu.add_separator()
+    main_menu.add_command(label="Restart", command=restart_program, underline=0)
+    main_menu.add_command(label="Exit", command=exit_program, underline=0)
+    menubar.add_cascade(label="Menu", menu=main_menu)
+    root.config(menu=menubar)
+    root.protocol("WM_DELETE_WINDOW", exit_program)
+    loading_text = ttk.Label(root, text="Loading EasyMinecraftServer...")
+    loading_text.place(relx=0.5, rely=0.5, anchor="center")
     root.update()
-    time.sleep(5)
-    loading_error_text.destroy()
-    exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r",
-                                encoding='utf-16-le')
-    pass
-exclusion_paths = exclusion_paths_file.read()
-exclusion_paths_file.close()
-try:
-    os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt")
-    pass
-except Exception as e:
-    logging.error(f"Failed to remove temporary exclusion paths file: {e}")
-    pass
-try:
-    logging.warning(f"Exclusion Paths: {str(exclusion_paths)}")
-    pass
-except Exception as e:
-    logging.error(f"Failed to log exclusion paths: {e}")
-    pass
-logging.info("Reading exclusion processes from Processes.txt")
-exclusion_processes_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt", mode="r",
-                                encoding='utf-16-le')
-exclusion_processes = exclusion_processes_file.read()
-exclusion_processes_file.close()
-try:
-    os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt")
-    pass
-except Exception as e:
-    logging.error(f"Failed to remove temporary exclusion processes file: {e}")
-    pass
-try:
-    logging.warning(f"Exclusion Processes: {str(exclusion_processes)}")
-    pass
-except Exception as e:
-    logging.error(f"Failed to log exclusion processes: {e}")
-    pass
-if "EasyMinecraftServer" not in str(exclusion_processes) or "mcserver" not in str(
-        exclusion_processes) or "MinecraftServerGUI" not in str(
-    exclusion_processes) or "MinecraftServer-nogui" not in str(exclusion_processes) or "java" not in str(
-    exclusion_processes) or "javaw" not in str(exclusion_processes) or str(cwd) not in str(exclusion_paths) or str(
-    user_dir) not in str(exclusion_paths):
-    exclusion_prompt = askyesno(title="EasyMinecraftServer",
-                                message="It appears that you have not created all anti-virus exclusions for EasyMinecraftServer. Would you like to do this now?")
-    if exclusion_prompt:
-        logging.info("User chose to create exclusions on startup")
-        av_exclusions()
-        pass
-    else:
-        logging.info("User chose not to create exclusions on startup")
-        pass
-    pass
-else:
-    logging.info("All exclusion paths and processes found")
-    pass
-try:
-    logging.info("Checking for updates")
-    url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
-    r = requests.get(url, allow_redirects=True)
-    redirected_url = r.url
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.0":
-        new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
-        logging.warning(f"New version available: {new_version}")
-        toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico",
-                           threaded=True)
-        update_thread = Thread(target=update)
-        update_thread.start()
-        pass
-    else:
-        logging.info("No new update available")
-        file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
-        file_list = os.listdir(file_path)
-        for folder in file_list:
-            if "Update" in folder:
-                logging.info(f"Deleting update folder: {user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
-                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
-                pass
-            else:
-                pass
-        pass
-except Exception as e:
-    showerror(title="Error", message=f"Error while checking for updates: {e}")
-    logging.error(f"Error while checking for updates: {e}")
-    pass
-java_check = which("java")
-if java_check is None:
-    logging.warning("JDK Not Found")
-    install_jdk_ask = askyesno(title="JDK Required",
-                               message="Java Development Kit 17 Is Required To Run Minecraft Servers! Would You Like To "
-                                       "Download/Install It Now?")
-    if install_jdk_ask:
+    info = subprocess.STARTUPINFO()
+    info.dwFlags = 1
+    info.wShowWindow = 0
+    logging.info("Running ngrok update")
+    subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "update"], startupinfo=info)
+    logging.info("Finished running ngrok update")
+    logging.info("Running ngrok config upgrade")
+    subprocess.Popen([f"{cwd}\\ngrok\\ngrok.exe", "config", "upgrade"], startupinfo=info)
+    logging.info("Finished running ngrok config upgrade")
+    if os.path.exists(f"{cwd}\\ngrok\\.ngrok.exe.old"):
+        logging.info("ngrok.exe.old found")
+        logging.info("Removing ngrok.exe.old")
         try:
-            os.startfile(f"{cwd}\\jdk17-installer.exe")
-            logging.info("Launched JDK installer")
+            os.remove(f"{cwd}\\ngrok\\.ngrok.exe.old")
+            logging.info("Removed ngrok.exe.old")
             pass
-        except Exception:
-            jdk_download_text = ttk.Label(root, text="Downloading JDK Installer...")
-            jdk_download_text.place(relx=0.5, rely=0.6, anchor="center")
-            logging.error("JDK installer not found. Downloading from website")
-            logging.info("Downloading JDK installer")
-            java_f = open(f"{cwd}\\jdk17-installer.exe", mode="wb")
-            java_f2 = urllib.request.urlopen("https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.exe")
-            while True:
-                java_data = java_f2.read()
-                if not java_data:
-                    break
-                else:
-                    java_f.write(java_data)
-                    pass
-                pass
-            java_f.close()
-            logging.info("JDK installer downloaded")
-            os.startfile(f"{cwd}\\jdk17-installer.exe")
-            logging.info("Launched JDK installer")
+        except Exception as e:
+            logging.info(f"Failed to remove ngrok.exe.old: {e}")
             pass
-        logging.warning("Exiting for JDK Install")
-        exit_program_force()
-        sys.exit(0)
-    else:
-        showerror(title="JDK Required", message="Java Development Kit 17 Is Required! Please Install It And Restart "
-                                                "The Program!")
-        logging.error("JDK Installation Denied!")
-        logging.warning("Exiting Due To JDK Installation Denial")
-        exit_program_force()
-        sys.exit(0)
-    pass
-else:
-    logging.info(f"JDK Installation Found: {java_check}")
-    try:
-        os.remove(f"{cwd}\\jdk17-installer.exe")
-        logging.info("Removed jdk17-installer.exe")
-    except Exception as e:
-        logging.error(f"Failed to remove jdk17-installer.exe: {e}")
         pass
-    pass
-if os.path.exists(f"{cwd}\\JDK\\"):
-    logging.info("JDK installer found")
-    rmtree(f"{cwd}\\JDK\\")
-    pass
-else:
-    pass
-if os.path.exists(f"{cwd}\\1.8.9-recovery\\"):
-    logging.info("1.8.9-Recovery Found")
-    rmtree(f"{cwd}\\1.8.9-recovery\\")
-    pass
-else:
-    pass
-if os.path.exists(f"{cwd}\\1.12.2-recovery\\"):
-    logging.info("1.12.2-Recovery Found")
-    rmtree(f"{cwd}\\1.12.2-recovery\\")
-    pass
-else:
-    pass
-if os.path.exists(f"{cwd}\\1.16.5-recovery\\"):
-    logging.info("1.16.5-Recovery Found")
-    rmtree(f"{cwd}\\1.16.5-recovery\\")
-    pass
-else:
-    pass
-if os.path.exists(f"{cwd}\\1.17.1-recovery\\"):
-    logging.info("1.17.1-Recovery Found")
-    rmtree(f"{cwd}\\1.17.1-recovery\\")
-    pass
-else:
-    pass
-if os.path.exists(f"{cwd}\\1.18.1-recovery\\"):
-    logging.info("1.18.1-Recovery Found")
-    rmtree(f"{cwd}\\1.18.1-recovery\\")
-    pass
-else:
-    pass
-loading_text.destroy()
-root.update()
-main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.14.0\n"
-                                       "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
-                                       "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
-                                       f"Installation Directory: {cwd}\n"
-                                       f"User Directory: {user_dir}\n"
-                                       "Click Any Of The Following Buttons To Begin!")
-main_text_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
-start_button = ttk.Button(root, text="Start Server", command=start_server, width="30")
-start_button.grid(row=1, column=0, padx=10, pady=10)
-create_backup_button = ttk.Button(root, text="Create Server Backup", command=create_server_backup, width="30")
-create_backup_button.grid(row=2, column=0, padx=10, pady=10)
-restore_backup_button = ttk.Button(root, text="Restore Server Backup", command=restore_server_backup, width="30")
-restore_backup_button.grid(row=3, column=0, padx=10, pady=10)
-reset_server_button = ttk.Button(root, text="Reset Server", command=reset_server, width="30")
-reset_server_button.grid(row=4, column=0, padx=10, pady=10)
-use_custom_map_button = ttk.Button(root, text="Inject Custom Map", command=inject_custom_map, width="30")
-use_custom_map_button.grid(row=1, column=1, padx=10, pady=10)
-reset_dimension_button = ttk.Button(root, text="Reset Dimension", command=reset_dimension_main, width="30")
-reset_dimension_button.grid(row=2, column=1, padx=10, pady=10)
-change_server_properties_button = ttk.Button(root, text="Edit Server Properties",
-                                             command=change_server_properties, width="30")
-change_server_properties_button.grid(row=3, column=1, padx=10, pady=10)
-import_external_server_button = ttk.Button(root, text="Import External Server", command=import_external_server,
-                                           width="30")
-import_external_server_button.grid(row=4, column=1, padx=10, pady=10)
-root.update()
-logging.info("GUI Built")
-logging.info("Starting Main Loop")
-root.mainloop()
-logging.info("Main Loop Ended")
-logging.warning("Exiting Program")
-logging.shutdown()
-sys.exit(0)
+    else:
+        logging.info("ngrok.exe.old not found")
+        pass
+    logging.info("Creating ngrok secret")
+    subprocess.Popen(["SecretManager.exe", "create"], startupinfo=info)
+    logging.info("Finished creating ngrok secret")
+    logging.info("Reading ngrok secret")
+    ngrok_secret = str(os.environ.get("MinecraftServerNgrokSecret"))
+    if settings_json["ngrok_authtoken"] == ngrok_secret:
+        logging.warning("Authtoken for ngrok is the same as dev authtoken")
+        pass
+    else:
+        logging.info("User authtoken does not match dev authtoken")
+        pass
+    logging.info("Removing ngrok secret")
+    subprocess.Popen(["SecretManager.exe", "remove"], startupinfo=info)
+    logging.info("Removed ngrok secret")
+    p = subprocess.Popen(["powershell", "-Command",
+                          f"Get-MpPreference | select-object -ExpandProperty ExclusionPath | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt"],
+                         startupinfo=info)
+    logging.info("Ran ExclusionPath retriever")
+    p2 = subprocess.Popen(["powershell", "-Command",
+                           f"Get-MpPreference | select-object -ExpandProperty Exclusionprocess | Out-File -FilePath {user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt"],
+                          startupinfo=info)
+    logging.info("Ran ExclusionProcess retriever")
+    logging.info("Waiting 3 seconds")
+    time.sleep(3)
+    logging.info("Finished waiting")
+    logging.info("Reading exclusion paths from Paths.txt")
+    try:
+        exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r",
+                                    encoding='utf-16-le')
+        pass
+    except FileNotFoundError:
+        loading_error_text = ttk.Label(root, text="Something went wrong. Please wait...")
+        loading_error_text.place(relx=0.5, rely=0.7, anchor="center")
+        root.update()
+        time.sleep(5)
+        loading_error_text.destroy()
+        exclusion_paths_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt", mode="r",
+                                    encoding='utf-16-le')
+        pass
+    exclusion_paths = exclusion_paths_file.read()
+    exclusion_paths_file.close()
+    try:
+        os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Paths.txt")
+        pass
+    except Exception as e:
+        logging.error(f"Failed to remove temporary exclusion paths file: {e}")
+        pass
+    try:
+        logging.warning(f"Exclusion Paths: {str(exclusion_paths)}")
+        pass
+    except Exception as e:
+        logging.error(f"Failed to log exclusion paths: {e}")
+        pass
+    logging.info("Reading exclusion processes from Processes.txt")
+    exclusion_processes_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt", mode="r",
+                                    encoding='utf-16-le')
+    exclusion_processes = exclusion_processes_file.read()
+    exclusion_processes_file.close()
+    try:
+        os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Temp\\Processes.txt")
+        pass
+    except Exception as e:
+        logging.error(f"Failed to remove temporary exclusion processes file: {e}")
+        pass
+    try:
+        logging.warning(f"Exclusion Processes: {str(exclusion_processes)}")
+        pass
+    except Exception as e:
+        logging.error(f"Failed to log exclusion processes: {e}")
+        pass
+    if "EasyMinecraftServer" not in str(exclusion_processes) or "mcserver" not in str(
+            exclusion_processes) or "MinecraftServerGUI" not in str(
+        exclusion_processes) or "MinecraftServer-nogui" not in str(exclusion_processes) or "java" not in str(
+        exclusion_processes) or "javaw" not in str(exclusion_processes) or str(cwd) not in str(exclusion_paths) or str(
+        user_dir) not in str(exclusion_paths):
+        exclusion_prompt = askyesno(title="EasyMinecraftServer",
+                                    message="It appears that you have not created all anti-virus exclusions for EasyMinecraftServer. Would you like to do this now?")
+        if exclusion_prompt:
+            logging.info("User chose to create exclusions on startup")
+            av_exclusions()
+            pass
+        else:
+            logging.info("User chose not to create exclusions on startup")
+            pass
+        pass
+    else:
+        logging.info("All exclusion paths and processes found")
+        pass
+    try:
+        logging.info("Checking for updates")
+        url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
+        r = requests.get(url, allow_redirects=True)
+        redirected_url = r.url
+        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.14.1":
+            new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
+            logging.warning(f"New version available: {new_version}")
+            toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}", icon_path=f"{cwd}\\mc.ico",
+                               threaded=True)
+            update_thread = Thread(target=update)
+            update_thread.start()
+            pass
+        else:
+            logging.info("No new update available")
+            file_path = f"{user_dir}\\Documents\\EasyMinecraftServer\\"
+            file_list = os.listdir(file_path)
+            for folder in file_list:
+                if "Update" in folder:
+                    logging.info(f"Deleting update folder: {user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
+                    rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\{folder}")
+                    pass
+                else:
+                    pass
+            pass
+    except Exception as e:
+        showerror(title="Error", message=f"Error while checking for updates: {e}")
+        logging.error(f"Error while checking for updates: {e}")
+        pass
+    java_check = which("java")
+    if java_check is None:
+        logging.warning("JDK Not Found")
+        install_jdk_ask = askyesno(title="JDK Required",
+                                   message="Java Development Kit 17 Is Required To Run Minecraft Servers! Would You Like To "
+                                           "Download/Install It Now?")
+        if install_jdk_ask:
+            try:
+                os.startfile(f"{cwd}\\jdk17-installer.exe")
+                logging.info("Launched JDK installer")
+                pass
+            except Exception:
+                jdk_download_text = ttk.Label(root, text="Downloading JDK Installer...")
+                jdk_download_text.place(relx=0.5, rely=0.6, anchor="center")
+                logging.error("JDK installer not found. Downloading from website")
+                logging.info("Downloading JDK installer")
+                java_f = open(f"{cwd}\\jdk17-installer.exe", mode="wb")
+                java_f2 = urllib.request.urlopen("https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.exe")
+                while True:
+                    java_data = java_f2.read()
+                    if not java_data:
+                        break
+                    else:
+                        java_f.write(java_data)
+                        pass
+                    pass
+                java_f.close()
+                logging.info("JDK installer downloaded")
+                os.startfile(f"{cwd}\\jdk17-installer.exe")
+                logging.info("Launched JDK installer")
+                pass
+            logging.warning("Exiting for JDK Install")
+            exit_program_force()
+            sys.exit(0)
+        else:
+            showerror(title="JDK Required", message="Java Development Kit 17 Is Required! Please Install It And Restart "
+                                                    "The Program!")
+            logging.error("JDK Installation Denied!")
+            logging.warning("Exiting Due To JDK Installation Denial")
+            exit_program_force()
+            sys.exit(0)
+        pass
+    else:
+        logging.info(f"JDK Installation Found: {java_check}")
+        try:
+            os.remove(f"{cwd}\\jdk17-installer.exe")
+            logging.info("Removed jdk17-installer.exe")
+        except Exception as e:
+            logging.error(f"Failed to remove jdk17-installer.exe: {e}")
+            pass
+        pass
+    if os.path.exists(f"{cwd}\\JDK\\"):
+        logging.info("JDK installer found")
+        rmtree(f"{cwd}\\JDK\\")
+        pass
+    else:
+        pass
+    if os.path.exists(f"{cwd}\\1.8.9-recovery\\"):
+        logging.info("1.8.9-Recovery Found")
+        rmtree(f"{cwd}\\1.8.9-recovery\\")
+        pass
+    else:
+        pass
+    if os.path.exists(f"{cwd}\\1.12.2-recovery\\"):
+        logging.info("1.12.2-Recovery Found")
+        rmtree(f"{cwd}\\1.12.2-recovery\\")
+        pass
+    else:
+        pass
+    if os.path.exists(f"{cwd}\\1.16.5-recovery\\"):
+        logging.info("1.16.5-Recovery Found")
+        rmtree(f"{cwd}\\1.16.5-recovery\\")
+        pass
+    else:
+        pass
+    if os.path.exists(f"{cwd}\\1.17.1-recovery\\"):
+        logging.info("1.17.1-Recovery Found")
+        rmtree(f"{cwd}\\1.17.1-recovery\\")
+        pass
+    else:
+        pass
+    if os.path.exists(f"{cwd}\\1.18.1-recovery\\"):
+        logging.info("1.18.1-Recovery Found")
+        rmtree(f"{cwd}\\1.18.1-recovery\\")
+        pass
+    else:
+        pass
+    loading_text.destroy()
+    root.update()
+    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.14.1\n"
+                                           "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
+                                           "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
+                                           f"Installation Directory: {cwd}\n"
+                                           f"User Directory: {user_dir}\n"
+                                           "Click Any Of The Following Buttons To Begin!")
+    main_text_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
+    start_button = ttk.Button(root, text="Start Server", command=start_server, width="30")
+    start_button.grid(row=1, column=0, padx=10, pady=10)
+    create_backup_button = ttk.Button(root, text="Create Server Backup", command=create_server_backup, width="30")
+    create_backup_button.grid(row=2, column=0, padx=10, pady=10)
+    restore_backup_button = ttk.Button(root, text="Restore Server Backup", command=restore_server_backup, width="30")
+    restore_backup_button.grid(row=3, column=0, padx=10, pady=10)
+    reset_server_button = ttk.Button(root, text="Reset Server", command=reset_server, width="30")
+    reset_server_button.grid(row=4, column=0, padx=10, pady=10)
+    use_custom_map_button = ttk.Button(root, text="Inject Custom Map", command=inject_custom_map, width="30")
+    use_custom_map_button.grid(row=1, column=1, padx=10, pady=10)
+    reset_dimension_button = ttk.Button(root, text="Reset Dimension", command=reset_dimension_main, width="30")
+    reset_dimension_button.grid(row=2, column=1, padx=10, pady=10)
+    change_server_properties_button = ttk.Button(root, text="Edit Server Properties",
+                                                 command=change_server_properties, width="30")
+    change_server_properties_button.grid(row=3, column=1, padx=10, pady=10)
+    import_external_server_button = ttk.Button(root, text="Import External Server", command=import_external_server,
+                                               width="30")
+    import_external_server_button.grid(row=4, column=1, padx=10, pady=10)
+    root.update()
+    logging.info("Starting Main Loop")
+    root.mainloop()
+    logging.info("Main Loop Ended")
+    logging.warning("Exiting Program")
+    logging.shutdown()
+    PROCNAME = "EasyMinecraftServer.exe"
+    for proc in psutil.process_iter():
+        if proc.name() == PROCNAME:
+            proc.kill()
+            pass
+        else:
+            pass
+        pass
+    sys.exit(0)

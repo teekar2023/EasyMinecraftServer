@@ -96,6 +96,8 @@ copy(f"{cwd}\\mc.ico", f"{cwd}\\dist\\EasyMinecraftServer\\mc.ico")
 print(f"Copied mc.ico to {cwd}\\dist\\EasyMinecraftServer\\mc.ico")
 copy(f"{cwd}\\mc.png", f"{cwd}\\dist\\EasyMinecraftServer\\mc.png")
 print(f"Copied mc.png to {cwd}\\dist\\EasyMinecraftServer\\mc.png")
+copy(f"{cwd}\\mc.bmp", f"{cwd}\\dist\\EasyMinecraftServer\\mc.bmp")
+print(f"Copied mc.bmp to {cwd}\\dist\\EasyMinecraftServer\\mc.bmp")
 print("Removing old ServerLaunchers builds...")
 if os.path.exists(f"{cwd}\\ServerLaunchers\\dist\\"):
     rmtree(f"{cwd}\\ServerLaunchers\\dist\\")
