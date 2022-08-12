@@ -1,13 +1,13 @@
-New in version 2.14.1:
-Remake of help window to include some helpful functionality!
-Added ngrok dashboard button in settings and setup!
-Installer now automatically closes app before installation!
-Other small installer GUI changes!
-Update window is now resizable!
-Fixed a bug where new backup would not be created when restoring a backup!
-Fixed some bugs when creating a new server version!
-Fixed a bug where new version changelog would cut off in update window!
-Fixed some bugs with dimension reset window!
-Fixed some bugs with change server properties window!
-Fixed a small auto update check bug!
-Other small changes and fixes!
+New in version 2.15.0:
+Added new export server feature!
+Added new backup management window to rename, remove, and export backups!
+New window to restore detected backups on server creation!
+All windows are now resizable due to scaling issues!
+Reworked automatic update detection on startup!
+Start server button in main window is now accented!
+Resetting server no longer shows a powershell window to show up!
+Small fixes in import external server window!
+Slight performance optimizations
+Installer now also force closes ngrok processes!
+Fixed a bug where nonexistent backups are detected when creating server!
+Some small bug fixes!

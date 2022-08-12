@@ -121,6 +121,10 @@ print(f"Copied MinecraftServer-nogui.exe to {cwd}\\dist\\EasyMinecraftServer\\Mi
 copy(f"{cwd}\\ServerLaunchers\\dist\\MinecraftServerGUI.exe",
      f"{cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
 print(f"Copied MinecraftServerGUI.exe to {cwd}\\dist\\EasyMinecraftServer\\MinecraftServerGUI.exe")
+os.chdir("C:\\Program Files (x86)\\Inno Setup 6\\")
+print("New working directory: " + os.getcwd())
+print("Compiling installer...")
+os.system(f'ISCC "{cwd}\\InstallerFiles\\MinecraftServerInstaller.iss"')
 print("Done!")
 print("Exiting...")
 sys.exit(0)

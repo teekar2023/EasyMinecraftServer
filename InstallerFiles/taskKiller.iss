@@ -19,4 +19,6 @@ begin
      ewWaitUntilTerminated, ResultCode);
     Exec('taskkill.exe', '/f /im ' + '"' + 'ServerAutoBackup.exe' + '"', '', SW_HIDE,
      ewWaitUntilTerminated, ResultCode);
+    Exec('taskkill.exe', '/f /im ' + '"' + 'ngrok.exe' + '"', '', SW_HIDE,
+     ewWaitUntilTerminated, ResultCode);
 end;
