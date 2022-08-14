@@ -1,13 +1,2 @@
-New in version 2.15.0:
-Added new export server feature!
-Added new backup management window to rename, remove, and export backups!
-New window to restore detected backups on server creation!
-All windows are now resizable due to scaling issues!
-Reworked automatic update detection on startup!
-Start server button in main window is now accented!
-Resetting server no longer shows a powershell window to show up!
-Small fixes in import external server window!
-Slight performance optimizations
-Installer now also force closes ngrok processes!
-Fixed a bug where nonexistent backups are detected when creating server!
-Some small bug fixes!
+New in version 2.15.1:
+Fix for servers not downloading from api!

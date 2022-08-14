@@ -83,7 +83,8 @@ def start_server():
     start_button.wait_variable(wait_var)
     start_server_window.destroy()
     version_selection = server_version_variable.get()
-    server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
+    server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/vanilla/{version_selection}/"
+    logging.info("Server download url: " + server_download_url)
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
         logging.info(f"New server version entered: {version_selection}")
         if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"):
@@ -345,7 +346,8 @@ def start_server_event(event):
     start_button.wait_variable(wait_var)
     start_server_window.destroy()
     version_selection = server_version_variable.get()
-    server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/{version_selection}/"
+    server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/vanilla/{version_selection}/"
+    logging.info("Server download url: " + server_download_url)
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
         logging.info(f"New server version entered: {version_selection}")
         if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\"):
