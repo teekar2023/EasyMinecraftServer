@@ -29,8 +29,6 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
 - Add icons for all windows
 - Add support for zipping/unzipping backups and other folders
 - Update CLI tool to look better and add more functionality
-- Add server export function
-- Add option to delete server backups
 - Replace standard logging with loguru logging
 
 # License

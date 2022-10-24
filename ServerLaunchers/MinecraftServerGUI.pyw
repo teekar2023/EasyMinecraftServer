@@ -175,7 +175,7 @@ if __name__ == "__main__":
             pass
         pass
     time.sleep(5)
-    cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    cwd = str(which("EasyMinecraftServer")).replace("\\EasyMinecraftServer.EXE", "")
     if cwd == ".":
         cwd = os.getcwd()
         pass

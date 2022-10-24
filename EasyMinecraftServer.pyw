@@ -884,7 +884,7 @@ def reset_server():
                 logging.warning("Performing Server Reset")
                 logging.info(f"Removing ExclusionPath for ServerFiles-{reset_version}")
                 subprocess.Popen(["powershell.exe", "-Command", "Remove-MpPreference", "-ExclusionPath",
-                          f"'{cwd}\\ServerFiles-{reset_version}\\'"], startupinfo=info)
+                                  f"'{cwd}\\ServerFiles-{reset_version}\\'"], startupinfo=info)
                 logging.info("Removed ExclusionPath")
                 rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
                 logging.info(f"Removed ServerFiles-{reset_version} directory")
@@ -977,7 +977,7 @@ def reset_server_event(event):
                 logging.warning("Performing Server Reset")
                 logging.info(f"Removing ExclusionPath for ServerFiles-{reset_version}")
                 subprocess.Popen(["powershell.exe", "-Command", "Remove-MpPreference", "-ExclusionPath",
-                          f"'{cwd}\\ServerFiles-{reset_version}\\'"], startupinfo=info)
+                                  f"'{cwd}\\ServerFiles-{reset_version}\\'"], startupinfo=info)
                 logging.info("Removed ExclusionPath")
                 rmtree(f"{cwd}\\ServerFiles-{reset_version}\\")
                 logging.info(f"Removed ServerFiles-{reset_version} directory")
@@ -1338,7 +1338,7 @@ def change_server_properties():
     try:
         properties_version_menu.current(0)
         pass
-    except:
+    except Exception:
         pass
     backup_before_launching_var = StringVar()
     backup_before_launching_var.set("False")
@@ -1571,7 +1571,8 @@ def manage_server_backups():
         if "AutomaticBackup-" in backup_name:
             os.rename(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\",
                       f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{new_backup_name}\\")
-            os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{backup_version}.txt")
+            os.remove(
+                f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{backup_version}.txt")
             showinfo(title="Rename Backup", message="Backup Successfully Renamed!")
             logging.info("Auto Backup renamed")
             return
@@ -1604,7 +1605,8 @@ def manage_server_backups():
         logging.info("User opted to remove server backup")
         if "AutomaticBackup-" in backup_name:
             confirm_auto_backup_removal = askyesno(title="Remove Server Backup",
-                                                   message="Are you sure you want to remove the automatic backup: " + backup_name.replace("AutomaticBackup-", "") + "?")
+                                                   message="Are you sure you want to remove the automatic backup: " + backup_name.replace(
+                                                       "AutomaticBackup-", "") + "?")
             if confirm_auto_backup_removal:
                 try:
                     rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{backup_version}\\{backup_name}\\")
@@ -1655,15 +1657,16 @@ def export_server():
                                     text="Select the version you would like to export\nand set the destination!")
     export_server_label.pack(padx=10, pady=5)
     export_version_var = StringVar()
-    export_server_version_selection = ttk.Combobox(export_server_window, values=get_server_versions(), textvariable=export_version_var)
-    export_version_var.set(get_server_versions()[0])
+    export_server_version_selection = ttk.Combobox(export_server_window, values=get_server_versions(),
+                                                   textvariable=export_version_var)
     export_server_version_selection.pack(padx=10, pady=5)
     export_server_destination_var = StringVar()
     export_server_destination_entry = ttk.Entry(export_server_window, width=50, state="readonly",
                                                 textvariable=export_server_destination_var)
     export_server_destination_entry.pack(padx=10, pady=5)
     export_server_destination_button = ttk.Button(export_server_window, text="Select Destination",
-                                                  command=lambda: export_server_destination_var.set(folder_selection("Select Destination Folder")))
+                                                  command=lambda: export_server_destination_var.set(
+                                                      folder_selection("Select Destination Folder")))
     export_server_destination_button.pack(padx=10, pady=5)
     compress_server_var = StringVar()
     compress_server_var.set("False")
@@ -1689,13 +1692,14 @@ def export_server():
         logging.info("User opted to compress server folder")
         try:
             make_archive(base_name=f"EasyMinecraftServer-Export-{export_server_version}", format="zip",
-                        root_dir=f"{cwd}\\ServerFiles-{export_server_version}\\")
-            copy(f"{cwd}\\EasyMinecraftServer-Export-{export_server_version}.zip", f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}.zip")
+                         root_dir=f"{cwd}\\ServerFiles-{export_server_version}\\")
+            copy(f"{cwd}\\EasyMinecraftServer-Export-{export_server_version}.zip",
+                 f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}.zip")
             os.remove(f"{cwd}\\EasyMinecraftServer-Export-{export_server_version}.zip")
             logging.info(
                 "Server successfully exported to:\n" + f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}.zip")
             showinfo(title="Export Server",
-                    message="Server successfully exported to:\n" + f"{export_server_destination}\\EasyMinecraftServer"
+                     message="Server successfully exported to:\n" + f"{export_server_destination}\\EasyMinecraftServer"
                                                                     f"-Export-{export_server_version}.zip")
             return
         except Exception as e:
@@ -1706,11 +1710,11 @@ def export_server():
         logging.info("User opted to not compress server folder")
         try:
             copytree(f"{cwd}\\ServerFiles-{export_server_version}\\",
-                    f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}\\")
+                     f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}\\")
             logging.info(
                 "Server successfully exported to:\n" + f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}")
             showinfo(title="Export Server",
-                    message="Server successfully exported to:\n" + f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}")
+                     message="Server successfully exported to:\n" + f"{export_server_destination}\\EasyMinecraftServer-Export-{export_server_version}")
             return
         except Exception as e:
             logging.error(f"Error while exporting server: {e}")
@@ -1722,19 +1726,27 @@ def export_server_backup(version: str, name: str):
     export_server_backup_window = Toplevel(root)
     export_server_backup_window.title("Export Server Backup")
     export_server_backup_window.geometry("300x300")
-    export_server_backup_window_label = ttk.Label(export_server_backup_window, text="Select the destination and decide\nto compress backup or not!")
+    export_server_backup_window_label = ttk.Label(export_server_backup_window,
+                                                  text="Select the destination and decide\nto compress backup or not!")
     export_server_backup_window_label.pack(padx=10, pady=5)
     export_server_backup_destination_var = StringVar()
-    export_server_backup_destination_entry = ttk.Entry(export_server_backup_window, width=50, state="readonly", textvariable=export_server_backup_destination_var)
+    export_server_backup_destination_entry = ttk.Entry(export_server_backup_window, width=50, state="readonly",
+                                                       textvariable=export_server_backup_destination_var)
     export_server_backup_destination_entry.pack(padx=10, pady=5)
-    export_server_backup_destination_button = ttk.Button(export_server_backup_window, text="Select Destination", command=lambda: export_server_backup_destination_var.set(folder_selection("Select Destination Folder")))
+    export_server_backup_destination_button = ttk.Button(export_server_backup_window, text="Select Destination",
+                                                         command=lambda: export_server_backup_destination_var.set(
+                                                             folder_selection("Select Destination Folder")))
     export_server_backup_destination_button.pack(padx=10, pady=5)
     compress_server_backup_var = StringVar()
     compress_server_backup_var.set("False")
-    compress_server_backup_check = ttk.Checkbutton(export_server_backup_window, text="Compress Server Backup Into .zip File", variable=compress_server_backup_var, onvalue="True", offvalue="False")
+    compress_server_backup_check = ttk.Checkbutton(export_server_backup_window,
+                                                   text="Compress Server Backup Into .zip File",
+                                                   variable=compress_server_backup_var, onvalue="True",
+                                                   offvalue="False")
     compress_server_backup_check.pack(padx=10, pady=5)
     export_server_backup_wait_var = IntVar()
-    export_server_backup_btn = ttk.Button(export_server_backup_window, text="Export Server Backup", command=lambda: export_server_backup_wait_var.set(1), style="Accent.TButton")
+    export_server_backup_btn = ttk.Button(export_server_backup_window, text="Export Server Backup",
+                                          command=lambda: export_server_backup_wait_var.set(1), style="Accent.TButton")
     export_server_backup_btn.pack(padx=10, pady=5)
     export_server_backup_window.wait_variable(export_server_backup_wait_var)
     export_server_backup_destination = export_server_backup_destination_var.get()
@@ -1751,11 +1763,16 @@ def export_server_backup(version: str, name: str):
         logging.info("User opted to compress server backup folder")
         try:
             make_archive(base_name=f"EasyMinecraftServer-BackupExport-{version}-{name}", format="zip",
-                        root_dir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
-            copy(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip", f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
-            os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
-            logging.info("Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
-            showinfo(title="Export Server Backup", message="Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
+                         root_dir=f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\")
+            copy(
+                f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip",
+                f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
+            os.remove(
+                f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
+            logging.info(
+                "Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
+            showinfo(title="Export Server Backup",
+                     message="Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}.zip")
             return
         except Exception as e:
             logging.error(f"Error while exporting server backup: {e}")
@@ -1764,14 +1781,105 @@ def export_server_backup(version: str, name: str):
     else:
         logging.info("User opted to not compress server backup folder")
         try:
-            copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{name}\\", f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}\\")
-            logging.info("Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}")
-            showinfo(title="Export Server Backup", message="Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}")
+            copytree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\{name}\\",
+                     f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}\\")
+            logging.info(
+                "Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}")
+            showinfo(title="Export Server Backup",
+                     message="Server backup successfully exported to:\n" + f"{export_server_backup_destination}\\EasyMinecraftServer-BackupExport-{version}-{name}")
             return
         except Exception as e:
             logging.error(f"Error while exporting server backup: {e}")
             showerror(title="Export Server Backup", message=f"Error while exporting server backup: {e}")
             return
+
+
+def change_server_version():
+    change_server_version_window = Toplevel(root)
+    change_server_version_window.title("Change Server Version")
+    change_server_version_window.geometry("350x350")
+    change_server_version_label = ttk.Label(change_server_version_window,
+                                            text="Fill out the following to convert server version!")
+    change_server_version_label.pack()
+    ver_sel_var = StringVar()
+    ver_selection_text = ttk.Label(change_server_version_window, text="Version to convert from")
+    ver_selection_text.pack(padx=5, pady=5)
+    ver_selection = ttk.Combobox(change_server_version_window, values=get_server_versions(), textvariable=ver_sel_var,
+                                 width=50)
+    ver_selection.pack(padx=10, pady=10)
+    conv_ver_var = StringVar()
+    conv_ver_text = ttk.Label(change_server_version_window, text="Version to convert to")
+    conv_ver_text.pack(padx=5, pady=5)
+    conv_ver_selection = ttk.Entry(change_server_version_window, textvariable=conv_ver_var, width=50)
+    conv_ver_selection.pack(padx=10, pady=10)
+    convert_server_wait_var = IntVar()
+    convert_server_button = ttk.Button(change_server_version_window, text="Convert Server Version", width=25,
+                                       style="Accent.TButton", command=lambda: convert_server_wait_var.set(1))
+    convert_server_button.pack(padx=10, pady=10)
+    change_server_version_window.wait_variable(convert_server_wait_var)
+    change_server_version_window.destroy()
+    change_server_version_confirm = askyesno(title="Change Server Version",
+                                             message="Changing server version is an experimental feature and can cause problems! It is recommended to take a backup before continuing! Are you sure you want to continue?")
+    if change_server_version_confirm:
+        og_ver = ver_sel_var.get()
+        conv_ver = conv_ver_var.get()
+        logging.info(f"Converting from: {og_ver}")
+        logging.info(f"Converting to: {conv_ver}")
+        if os.path.exists(f"{cwd}\\ServerFiles-{conv_ver}\\"):
+            reset_current_server = askyesno(title="Change Server Version", message=f"A server of version {conv_ver} already exists! Would you like to reset it?")
+            if reset_current_server:
+                try:
+                    logging.info(f"Resetting server version {conv_ver}")
+                    rmtree(f"{cwd}\\ServerFiles-{conv_ver}\\")
+                    logging.info(f"Successfuly reset server version {conv_ver}")
+                    pass
+                except Exception as e:
+                    logging.error(f"Error while resetting server: {e}")
+                    showerror(title="Change Server Version", message=f"There was an error while resetting the server: {e}")
+                    return
+                pass
+            else:
+                logging.info("Aborting server version change")
+                showinfo(title="Change Server Version", message="Server version will not be changed!")
+                return
+            pass
+        else:
+            pass
+        try:
+            os.mkdir(f"{cwd}\\ServerFiles-{conv_ver}\\")
+            copytree(f"{cwd}\\ServerFiles-{og_ver}\\", f"{cwd}\\ServerFiles-{conv_ver}\\")
+            os.remove(f"{cwd}\\ServerFiles-{conv_ver}\\")
+            rmtree(f"{cwd}\\ServerFiles-{og_ver}\\")
+            try:
+                f = open(f"{cwd}\\ServerFiles-{conv_ver}\\server.jar", 'wb')
+                logging.info("Downloading server jar file")
+                server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/vanilla/{conv_ver}/"
+                f2 = urllib.request.urlopen(server_download_url)
+                while True:
+                    data = f2.read()
+                    if not data:
+                        break
+                    else:
+                        f.write(data)
+                        pass
+                    pass
+                f.close()
+                logging.info("Server jar file downloaded")
+                showinfo(title="Change Server Version", message=f"Server version successfully changed from {og_ver} to {conv_ver}")
+                return
+            except Exception as e:
+                logging.error(f"Error when downloading new server jar: {e}")
+                showerror(title="Change Server Version", message=f"Error while downloading new server files. The server version could also be unsupported: {e}")
+                return
+        except Exception as e:
+            logging.error(f"Error converting server version: {e}")
+            showerror(title="Change Server Version", message=f"There was an error while changing the server version: {e}")
+            return
+        return
+    else:
+        logging.info("Server version conversion cancelled")
+        showinfo(title="Change Server Version", message="Server version will not be changed!")
+        return
 
 
 def folders_in(path_to_parent: str):
@@ -1792,7 +1900,7 @@ def setup(arg: str):
         try:
             settings_json = json.load(settings_file)
             pass
-        except:
+        except Exception as e:
             pass
         subdirectories = has_folders(f"{user_dir}\\Documents\\EasyMinecraftServer\\ProgramBackups\\")
         if len(subdirectories) == 0:
@@ -1830,7 +1938,7 @@ def setup(arg: str):
         try:
             ngrok_authtoken_entry.insert(0, settings_json["ngrok_authtoken"])
             pass
-        except:
+        except Exception:
             pass
         ngrok_button = ttk.Button(setup_window, text="Ngrok Dashboard", command=ngrok_website)
         ngrok_button.pack()
@@ -1844,14 +1952,14 @@ def setup(arg: str):
         try:
             ram_allocation_entry.insert(0, settings_json["ram_allocation_amount"])
             pass
-        except:
+        except Exception:
             ram_allocation_entry.insert(0, str(round(float(ram_mb)) / 2))
             pass
         variable = StringVar(setup_window)
         try:
             variable.set(settings_json["auto_server_backup"])
             pass
-        except:
+        except Exception:
             variable.set("True")
             pass
         auto_server_backup_label = ttk.Label(setup_window, text="Auto Server Backup")
@@ -1867,14 +1975,14 @@ def setup(arg: str):
         try:
             backup_interval_entry.insert(0, settings_json["backup_interval"])
             pass
-        except:
+        except Exception:
             backup_interval_entry.insert(0, "5")
             pass
         variable_two = StringVar(setup_window)
         try:
             variable_two.set(settings_json["server_gui"])
             pass
-        except:
+        except Exception:
             variable_two.set("True")
             pass
         server_gui_label = ttk.Label(setup_window, text="Server GUI")
@@ -1887,7 +1995,7 @@ def setup(arg: str):
         try:
             variable_three.set(settings_json["theme"])
             pass
-        except:
+        except Exception:
             variable_three.set("Dark")
             pass
         theme_label = ttk.Label(setup_window, text="Theme")
@@ -2332,7 +2440,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2439,7 +2547,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2546,7 +2654,7 @@ def update_startup():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2928,8 +3036,8 @@ def help_window():
         logging.error(f"Error While Checking For Updates: {e}")
         redirected_url = "ERROR"
         pass
-    help_text = "EasyMinecraftServer v2.15.1\n"
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    help_text = "EasyMinecraftServer v2.16.0\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         help_text += "Update available: " + new_version + "\n\n"
@@ -2962,7 +3070,7 @@ Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
         update_button.pack()
         pass
@@ -2999,8 +3107,8 @@ def help_window_event(event):
         logging.error(f"Error While Checking For Updates: {e}")
         redirected_url = "ERROR"
         pass
-    help_text = "EasyMinecraftServer v2.15.1\n"
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    help_text = "EasyMinecraftServer v2.16.0\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         help_text += "Update available: " + new_version + "\n\n"
@@ -3033,7 +3141,7 @@ Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
         update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
         update_button.pack()
         pass
@@ -3179,7 +3287,7 @@ def log_settings():
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
+    except Exception:
         return False
 
 
@@ -3202,8 +3310,8 @@ if __name__ == "__main__":
     os.chdir(cwd)
     user_dir = os.path.expanduser("~")
     root = Tk()
-    root.title("EasyMinecraftServer v2.15.1")
-    root.geometry("510x390")
+    root.title("EasyMinecraftServer")
+    root.geometry("510x440")
     root.iconbitmap(f"{cwd}\\mc.ico")
     root.bind("<Escape>", exit_program_event)
     root.bind("<Return>", start_server_event)
@@ -3287,7 +3395,7 @@ if __name__ == "__main__":
         pass
     logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
                         format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-    logging.info("EasyMinecraftServer v2.15.1 Started")
+    logging.info("EasyMinecraftServer v2.16.0 Started")
     logging.info(f"Current Working Directory: {cwd}")
     logging.info(f"User Directory: {user_dir}")
     log_settings()
@@ -3326,30 +3434,7 @@ if __name__ == "__main__":
         logging.error("Defaulting to light theme")
         sv_ttk.use_light_theme()
         pass
-    menubar = Menu(root)
-    main_menu = Menu(menubar, tearoff=0)
-    main_menu.add_command(label="Help", command=help_window, underline=0)
-    main_menu.add_command(label="Settings", command=settings, underline=0)
-    main_menu.add_separator()
-    main_menu.add_command(label="View ServerFiles", command=server_files, underline=0)
-    main_menu.add_command(label="Server Backups", command=server_backups)
-    main_menu.add_command(label="Backup Program", command=program_backup)
-    main_menu.add_command(label="Restore Program", command=program_restore)
-    main_menu.add_command(label="Reset Program", command=program_reset)
-    main_menu.add_separator()
-    main_menu.add_command(label="Changelog", command=changelog)
-    main_menu.add_command(label="Update", command=update, underline=0)
-    main_menu.add_command(label="Uninstall", command=uninstall_program)
-    main_menu.add_command(label="Website", command=website, underline=0)
-    main_menu.add_separator()
-    main_menu.add_command(label="Create Anti-Virus Exclusions", command=av_exclusions)
-    main_menu.add_command(label="Remove Anti-Virus Exclusions", command=av_exclusions_remove)
-    main_menu.add_separator()
-    main_menu.add_command(label="Restart", command=restart_program, underline=0)
-    main_menu.add_command(label="Exit", command=exit_program, underline=0)
-    menubar.add_cascade(label="Menu", menu=main_menu)
-    root.config(menu=menubar)
-    root.protocol("WM_DELETE_WINDOW", exit_program_force)
+    root.protocol("WM_DELETE_WINDOW", exit_program)
     loading_text = ttk.Label(root, text="Loading EasyMinecraftServer...")
     loading_text.place(relx=0.5, rely=0.5, anchor="center")
     root.update()
@@ -3358,7 +3443,7 @@ if __name__ == "__main__":
         url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
         r = requests.get(url, allow_redirects=True)
         redirected_url = r.url
-        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.15.1":
+        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
             new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
             logging.warning(f"New version available: {new_version}")
             toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}",
@@ -3370,7 +3455,8 @@ if __name__ == "__main__":
             update_button = ttk.Button(root, text="Update", command=update_startup, style="Accent.TButton", width=50)
             update_button.pack(pady=10)
             continue_var = IntVar()
-            continue_without_update_button = ttk.Button(root, text="Continue Without Updating", command=lambda: continue_var.set(1), width=50)
+            continue_without_update_button = ttk.Button(root, text="Continue Without Updating",
+                                                        command=lambda: continue_var.set(1), width=50)
             continue_without_update_button.pack()
             root.update()
             root.wait_variable(continue_var)
@@ -3598,16 +3684,40 @@ if __name__ == "__main__":
     else:
         pass
     loading_text.destroy()
+    menubar = Menu(root)
+    main_menu = Menu(menubar, tearoff=0)
+    main_menu.add_command(label="Help", command=help_window, underline=0)
+    main_menu.add_command(label="Settings", command=settings, underline=0)
+    main_menu.add_separator()
+    main_menu.add_command(label="View ServerFiles", command=server_files, underline=0)
+    main_menu.add_command(label="Server Backups", command=server_backups)
+    main_menu.add_command(label="Backup Program", command=program_backup)
+    main_menu.add_command(label="Restore Program", command=program_restore)
+    main_menu.add_command(label="Reset Program", command=program_reset)
+    main_menu.add_separator()
+    main_menu.add_command(label="Changelog", command=changelog)
+    main_menu.add_command(label="Update", command=update, underline=0)
+    main_menu.add_command(label="Uninstall", command=uninstall_program)
+    main_menu.add_command(label="Website", command=website, underline=0)
+    main_menu.add_separator()
+    main_menu.add_command(label="Create Anti-Virus Exclusions", command=av_exclusions)
+    main_menu.add_command(label="Remove Anti-Virus Exclusions", command=av_exclusions_remove)
+    main_menu.add_separator()
+    main_menu.add_command(label="Restart", command=restart_program, underline=0)
+    main_menu.add_command(label="Exit", command=exit_program, underline=0)
+    menubar.add_cascade(label="Menu", menu=main_menu)
+    root.config(menu=menubar)
     root.update()
-    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.15.1\n"
+    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.16.0\n"
                                            "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                            "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                            f"Installation Directory: {cwd}\n"
                                            f"User Directory: {user_dir}\n"
                                            "Click Any Of The Following Buttons To Begin!")
     main_text_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
-    start_button = ttk.Button(root, text="Start Server", command=start_server, width="30", style="Accent.TButton")
-    start_button.grid(row=1, column=0, padx=10, pady=10)
+    start_button = ttk.Button(root, text="Start/Create Server", command=start_server, width="60",
+                              style="Accent.TButton")
+    start_button.grid(row=1, column=0, padx=10, pady=10, columnspan=2)
     create_backup_button = ttk.Button(root, text="Create Server Backup", command=create_server_backup, width="30")
     create_backup_button.grid(row=2, column=0, padx=10, pady=10)
     restore_backup_button = ttk.Button(root, text="Restore Server Backup", command=restore_server_backup, width="30")
@@ -3616,18 +3726,21 @@ if __name__ == "__main__":
     manage_backups_button.grid(row=4, column=0, padx=10, pady=10)
     reset_server_button = ttk.Button(root, text="Reset Server", command=reset_server, width="30")
     reset_server_button.grid(row=5, column=0, padx=10, pady=10)
+    change_server_version_button = ttk.Button(root, text="Change Server Version", command=change_server_version,
+                                              width="30")
+    change_server_version_button.grid(row=6, column=0, padx=10, pady=10)
     use_custom_map_button = ttk.Button(root, text="Inject Custom Map", command=inject_custom_map, width="30")
-    use_custom_map_button.grid(row=1, column=1, padx=10, pady=10)
+    use_custom_map_button.grid(row=2, column=1, padx=10, pady=10)
     reset_dimension_button = ttk.Button(root, text="Reset Dimension", command=reset_dimension_main, width="30")
-    reset_dimension_button.grid(row=2, column=1, padx=10, pady=10)
+    reset_dimension_button.grid(row=3, column=1, padx=10, pady=10)
     change_server_properties_button = ttk.Button(root, text="Edit Server Properties",
                                                  command=change_server_properties, width="30")
-    change_server_properties_button.grid(row=3, column=1, padx=10, pady=10)
+    change_server_properties_button.grid(row=4, column=1, padx=10, pady=10)
     import_external_server_button = ttk.Button(root, text="Import External Server", command=import_external_server,
                                                width="30")
-    import_external_server_button.grid(row=4, column=1, padx=10, pady=10)
+    import_external_server_button.grid(row=5, column=1, padx=10, pady=10)
     export_server_button = ttk.Button(root, text="Export Server", command=export_server, width="30")
-    export_server_button.grid(row=5, column=1, padx=10, pady=10)
+    export_server_button.grid(row=6, column=1, padx=10, pady=10)
     root.update()
     logging.info("Starting Main Loop")
     root.mainloop()

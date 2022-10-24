@@ -111,7 +111,7 @@ def main(ram_amount, auto_server_backup, port_forward_status, port, backup_inter
     logging.shutdown()
     try:
         program_log_file = open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log", "a")
-        server_log_file = open(f"{cwd}\\logs\\latest.log", "r+")
+        server_log_file = open(f"{cwd}\\ServerFiles-{version}\\logs\\latest.log", "r+")
         server_logs = server_log_file.read()
         program_log_file.write(server_logs)
         program_log_file.close()
@@ -178,7 +178,7 @@ if __name__ == "__main__":
             pass
         pass
     time.sleep(5)
-    cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    cwd = str(which("EasyMinecraftServer")).replace("\\EasyMinecraftServer.EXE", "")
     if cwd == ".":
         cwd = os.getcwd()
         pass

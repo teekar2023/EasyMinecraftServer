@@ -51,7 +51,7 @@ copy(f"{cwd}\\SunValleyThemes\\sun-valley.tcl", f"{cwd}\\dist\\EasyMinecraftServ
 copytree(f"{cwd}\\SunValleyThemes\\theme", f"{cwd}\\dist\\EasyMinecraftServer\\theme\\")
 print("Compiling mcserver.py to mcserver.exe...")
 print("Executing pyinstaller mcserver.py")
-os.system("pyinstaller  mcserver.py")
+os.system("pyinstaller mcserver.py")
 print("Compiling MinecraftServerElevator.py to MinecraftServerElevator.exe...")
 print("Executing pyinstaller --onefile MinecraftServerElevator.py")
 os.system("pyinstaller --onefile MinecraftServerElevator.py")

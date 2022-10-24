@@ -40,7 +40,13 @@ def main():
             last_auto_backup_file.close()
             logging.info("Removing last auto backup")
             os.remove(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt")
-            rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{last_auto_backup}\\")
+            if os.path.exists(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{last_auto_backup}\\"):
+                rmtree(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{last_auto_backup}\\")
+                logging.info("Removed last auto backup")
+                pass
+            else:
+                logging.info("Last auto backup files not found")
+                pass
             pass
         else:
             pass
@@ -48,7 +54,7 @@ def main():
         logging.info("Creating new auto backup: " + str(current_time))
         try:
             copytree(f"{cwd}\\ServerFiles-{version}",
-                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{current_time}\\")
+                    f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version}\\AutomaticBackup-{str(current_time)}\\")
             last_auto_backup_file = open(
                 f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", 'w+')
             last_auto_backup_file.write(str(current_time))
@@ -60,7 +66,7 @@ def main():
             pass
 
 
-cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+cwd = str(which("EasyMinecraftServer")).replace("\\EasyMinecraftServer.EXE", "")
 if cwd == ".":
     cwd = os.getcwd()
     pass
