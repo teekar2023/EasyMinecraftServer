@@ -7,28 +7,27 @@
 #  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 import ctypes
-import glob
 import json
 import logging
 import os
 import subprocess
-import sv_ttk
-import darkdetect
 import sys
 import time
 import urllib
 import webbrowser
-import psutil
-import pyautogui as kbm
-import requests
-from shutil import rmtree, copytree, copy, which, make_archive
+from shutil import copy, copytree, make_archive, rmtree, which
 from threading import Thread
 from tkinter import *
 from tkinter import ttk
 from tkinter.filedialog import askdirectory
-from tkinter.messagebox import askyesno
-from tkinter.messagebox import showerror, showinfo, showwarning
+from tkinter.messagebox import askyesno, showerror, showinfo, showwarning
 from tkinter.simpledialog import askstring
+
+import darkdetect
+import psutil
+import pyautogui as kbm
+import requests
+import sv_ttk
 from jproperties import Properties
 from win10toast import ToastNotifier
 
@@ -2440,7 +2439,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2547,7 +2546,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2654,7 +2653,7 @@ def update_startup():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -3036,8 +3035,8 @@ def help_window():
         logging.error(f"Error While Checking For Updates: {e}")
         redirected_url = "ERROR"
         pass
-    help_text = "EasyMinecraftServer v2.16.0\n"
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    help_text = "EasyMinecraftServer v2.16.1\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         help_text += "Update available: " + new_version + "\n\n"
@@ -3070,7 +3069,7 @@ Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
         update_button.pack()
         pass
@@ -3107,8 +3106,8 @@ def help_window_event(event):
         logging.error(f"Error While Checking For Updates: {e}")
         redirected_url = "ERROR"
         pass
-    help_text = "EasyMinecraftServer v2.16.0\n"
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    help_text = "EasyMinecraftServer v2.16.1\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         help_text += "Update available: " + new_version + "\n\n"
@@ -3141,7 +3140,7 @@ Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
         update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
         update_button.pack()
         pass
@@ -3395,7 +3394,7 @@ if __name__ == "__main__":
         pass
     logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
                         format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-    logging.info("EasyMinecraftServer v2.16.0 Started")
+    logging.info("EasyMinecraftServer v2.16.1 Started")
     logging.info(f"Current Working Directory: {cwd}")
     logging.info(f"User Directory: {user_dir}")
     log_settings()
@@ -3443,7 +3442,7 @@ if __name__ == "__main__":
         url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
         r = requests.get(url, allow_redirects=True)
         redirected_url = r.url
-        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.0":
+        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
             new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
             logging.warning(f"New version available: {new_version}")
             toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}",
@@ -3708,7 +3707,7 @@ if __name__ == "__main__":
     menubar.add_cascade(label="Menu", menu=main_menu)
     root.config(menu=menubar)
     root.update()
-    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.16.0\n"
+    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.16.1\n"
                                            "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                            "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
                                            f"Installation Directory: {cwd}\n"

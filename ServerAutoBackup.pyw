@@ -6,11 +6,11 @@
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
+import json
 import logging
 import os
 import time
-import json
-from shutil import rmtree, copytree, which
+from shutil import copytree, rmtree, which
 
 
 def main():
@@ -49,7 +49,13 @@ def main():
                 pass
             pass
         else:
-            pass
+            try:
+                open(f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\Data\\last_auto_backup_{version}.txt", "x").close()
+                logging.info("Created auto backup data file")
+                pass
+            except Exception as e:
+                logging.error(f"Error while creating auto backup data file: {e}")
+                pass
         current_time = time.time()
         logging.info("Creating new auto backup: " + str(current_time))
         try:

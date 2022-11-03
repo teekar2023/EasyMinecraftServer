@@ -1,7 +1,3 @@
-New in version 2.16.0:
-Small design change in main window!
-New feature to change server version!
-Fixed a bug where auto backups would not be deleted automatically!
-Fixed bug where server logs would fail to be copied into program logs!
-Closing main window now shows exit confirmation prompt again!
+New in version 2.16.1:
+Bug fixes for auto backup data files!
 Other small bug fixes and changes!

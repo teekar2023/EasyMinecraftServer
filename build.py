@@ -8,7 +8,7 @@
 
 import os
 import sys
-from shutil import copytree, copy, rmtree
+from shutil import copy, copytree, rmtree
 
 cwd = os.getcwd()
 print("Current working directory: " + cwd)

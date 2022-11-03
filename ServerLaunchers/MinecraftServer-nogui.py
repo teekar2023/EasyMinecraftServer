@@ -11,9 +11,10 @@ import os
 import socket
 import sys
 import time
+from shutil import copytree, rmtree, which
+
 import click
 import psutil
-from shutil import rmtree, copytree, which
 
 
 @click.command()
