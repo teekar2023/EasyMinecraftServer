@@ -62,6 +62,8 @@ def main(ram_amount, auto_server_backup, port_forward_status, port, backup_inter
     list_two = ["1.12", "1.12.1", "1.12.2", "1.13", "1.13.1", "1.13.2", "1.14", "1.14.1", "1.14.2", "1.14.3", "1.14.4",
                 "1.15", "1.15.1", "1.15.2", "1.16", "1.16.1", "1.16.2", "1.16.3", "1.16.4", "1.16.5"]
     list_three = ["1.17", "1.17.1"]
+    logging.info("Starting System Optimizer")
+    os.startfile(f"{cwd}\\SystemOptimizer.exe")
     if version in list_one:
         logging.info(
             f"Executing system command: java -Xmx{ram_amount}M -Xms{ram_amount}M -Dlog4j.configurationFile=log4j2_17-111.xml -jar server.jar nogui")
@@ -95,6 +97,7 @@ def main(ram_amount, auto_server_backup, port_forward_status, port, backup_inter
         for proc2 in psutil.process_iter():
             if proc2.name() == PROCNAME2:
                 proc2.kill()
+                logging.info("Killed auto backup process")
                 pass
             else:
                 pass
@@ -107,6 +110,15 @@ def main(ram_amount, auto_server_backup, port_forward_status, port, backup_inter
         auto_backup(f"{version}")
         pass
     else:
+        pass
+    sys_optimizer_proc_name = "SystemOptimizer.exe"
+    for sys_proc in psutil.process_iter() :
+        if sys_proc.name() == sys_optimizer_proc_name:
+            sys_proc.kill()
+            logging.info("Killed system optimizer process")
+            pass
+        else:
+            pass
         pass
     logging.info("Exiting Program")
     logging.shutdown()

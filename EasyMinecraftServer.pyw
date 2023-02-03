@@ -35,7 +35,7 @@ from win10toast import ToastNotifier
 def start_server():
     start_server_window = Toplevel(root)
     start_server_window.title("Start Server")
-    start_server_window.geometry("315x315")
+    start_server_window.geometry("330x380")
     start_server_label = ttk.Label(start_server_window,
                                    text="Select The Version You Would Like To Start\nOr Enter A New Version To Create A Server!")
     start_server_label.pack()
@@ -55,6 +55,12 @@ def start_server():
     ram_allocation_variable.set(ram_allocation_amount_setting)
     ram_allocation_amount_entry = ttk.Entry(start_server_window, textvariable=ram_allocation_variable, width=10)
     ram_allocation_amount_entry.pack()
+    custom_seed_label = ttk.Label(start_server_window, text="If you would like to use a custom seed when creating\na server, put it in here or leave it blank to keep random")
+    custom_seed_label.pack()
+    custom_seed_variable = StringVar()
+    custom_seed_variable.set("")
+    custom_seed_entry = ttk.Entry(start_server_window, textvariable=custom_seed_variable, width=40)
+    custom_seed_entry.pack()
     gui_variable = StringVar()
     current_gui_setting = settings_json["server_gui"]
     gui_variable.set(current_gui_setting)
@@ -82,6 +88,7 @@ def start_server():
     start_button.wait_variable(wait_var)
     start_server_window.destroy()
     version_selection = server_version_variable.get()
+    custom_seed = custom_seed_variable.get()
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/vanilla/{version_selection}/"
     logging.info("Server download url: " + server_download_url)
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
@@ -143,8 +150,8 @@ def start_server():
                           f"'{cwd}\\ServerFiles-{version_selection}\\'"], startupinfo=info)
         logging.info("Created server files exclusion path")
         logging.info(f"Downloading server version {version_selection}")
+        f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
         try:
-            f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
             showwarning(title="Downloading Server File",
                         message="To create a new server version, the server files will need to be downloaded! This may take a minute!")
             logging.info("Downloading server jar file")
@@ -208,7 +215,56 @@ def start_server():
     else:
         logging.info("Server version already exists")
         pass
-    logging.info("Version Selected In start_server(): " + version_selection)
+    logging.info("Version Selected To Start: " + version_selection)
+
+    if custom_seed != "" and not custom_seed.isspace():
+        server_prop_file = open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", "r")
+        if "level-name" in str(server_prop_file.read()):
+            p = Properties()
+            p.load(open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", "rb"))
+            level_name = p.get("level-name").data
+            pass
+        else:
+            level_name = "world"
+            pass
+        server_prop_file.close()
+        if os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\{level_name}\\"):
+            confirm_custom_seed = askyesno(title="Server Custom Seed", message="There is current data in the server. Would you like to reset it and overwrite the current world with the new seed?")
+            if confirm_custom_seed:
+                back_name = askstring(title="Server Backup Name", prompt="What would you like to name the backup?")
+                try:
+                    copytree(f"{cwd}\\ServerFiles-{version_selection}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\{back_name}\\")
+                    logging.info("Backup before seed injection successful")
+                    pass
+                except Exception as e:
+                    logging.error(f"Error backing up before seed injection: {e}")
+                    showerror(title="Server Custom Seed", message=f"There was an error backuing up the server: {e}")
+                    return
+                try:
+                    rmtree(f"{cwd}\\ServerFiles-{version_selection}\\{level_name}\\")
+                    logging.info("Reset before seed injection successful")
+                    pass
+                except Exception as e:
+                    logging.error(f"Error while resetting before seed injection: {e}")
+                    showerror(title="Server Custom Seed", message=f"There was an error while resetting the overworld to replace with seed: {e}")
+                    return
+                showinfo(title="Server Custom Seed", message="Server backup and overworld reset successful for custom seed usage!")
+                logging.info("Injecting custom seed")
+                custom_seed_injection(version=version_selection, seed=custom_seed)
+                pass
+            else:
+                logging.info("Custom seed injection cancelled")
+                pass
+            pass
+        else:
+            logging.info("Current world not found for seed overwrite")
+            logging.info("Injecting custom seed")
+            custom_seed_injection(version=version_selection, seed=custom_seed)
+            pass
+        pass
+    else:
+        logging.info("No custom seed entered")
+        pass
     if os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\server.properties"):
         server_prop_check = open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", 'r')
         if "port" in str(server_prop_check.read()):
@@ -298,7 +354,7 @@ def start_server():
 def start_server_event(event):
     start_server_window = Toplevel(root)
     start_server_window.title("Start Server")
-    start_server_window.geometry("315x315")
+    start_server_window.geometry("330x380")
     start_server_label = ttk.Label(start_server_window,
                                    text="Select The Version You Would Like To Start\nOr Enter A New Version To Create A Server!")
     start_server_label.pack()
@@ -318,6 +374,12 @@ def start_server_event(event):
     ram_allocation_variable.set(ram_allocation_amount_setting)
     ram_allocation_amount_entry = ttk.Entry(start_server_window, textvariable=ram_allocation_variable, width=10)
     ram_allocation_amount_entry.pack()
+    custom_seed_label = ttk.Label(start_server_window, text="If you would like to use a custom seed when creating\na server, put it in here or leave it blank to keep random")
+    custom_seed_label.pack()
+    custom_seed_variable = StringVar()
+    custom_seed_variable.set("")
+    custom_seed_entry = ttk.Entry(start_server_window, textvariable=custom_seed_variable, width=40)
+    custom_seed_entry.pack()
     gui_variable = StringVar()
     current_gui_setting = settings_json["server_gui"]
     gui_variable.set(current_gui_setting)
@@ -345,6 +407,7 @@ def start_server_event(event):
     start_button.wait_variable(wait_var)
     start_server_window.destroy()
     version_selection = server_version_variable.get()
+    custom_seed = custom_seed_variable.get()
     server_download_url = f"https://serverjars.com/api/fetchJar/vanilla/vanilla/{version_selection}/"
     logging.info("Server download url: " + server_download_url)
     if not os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\"):
@@ -406,8 +469,8 @@ def start_server_event(event):
                           f"'{cwd}\\ServerFiles-{version_selection}\\'"], startupinfo=info)
         logging.info("Created server files exclusion path")
         logging.info(f"Downloading server version {version_selection}")
+        f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
         try:
-            f = open(f"{cwd}\\ServerFiles-{version_selection}\\server.jar", 'wb')
             showwarning(title="Downloading Server File",
                         message="To create a new server version, the server files will need to be downloaded! This may take a minute!")
             logging.info("Downloading server jar file")
@@ -471,7 +534,56 @@ def start_server_event(event):
     else:
         logging.info("Server version already exists")
         pass
-    logging.info("Version Selected In start_server(): " + version_selection)
+    logging.info("Version Selected To Start: " + version_selection)
+
+    if custom_seed != "" and not custom_seed.isspace():
+        server_prop_file = open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", "r")
+        if "level-name" in str(server_prop_file.read()):
+            p = Properties()
+            p.load(open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", "rb"))
+            level_name = p.get("level-name").data
+            pass
+        else:
+            level_name = "world"
+            pass
+        server_prop_file.close()
+        if os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\{level_name}\\"):
+            confirm_custom_seed = askyesno(title="Server Custom Seed", message="There is current data in the server. Would you like to reset it and overwrite the current world with the new seed?")
+            if confirm_custom_seed:
+                back_name = askstring(title="Server Backup Name", prompt="What would you like to name the backup?")
+                try:
+                    copytree(f"{cwd}\\ServerFiles-{version_selection}\\", f"{user_dir}\\Documents\\EasyMinecraftServer\\Backups\\{version_selection}\\{back_name}\\")
+                    logging.info("Backup before seed injection successful")
+                    pass
+                except Exception as e:
+                    logging.error(f"Error backing up before seed injection: {e}")
+                    showerror(title="Server Custom Seed", message=f"There was an error backuing up the server: {e}")
+                    return
+                try:
+                    rmtree(f"{cwd}\\ServerFiles-{version_selection}\\{level_name}\\")
+                    logging.info("Reset before seed injection successful")
+                    pass
+                except Exception as e:
+                    logging.error(f"Error while resetting before seed injection: {e}")
+                    showerror(title="Server Custom Seed", message=f"There was an error while resetting the overworld to replace with seed: {e}")
+                    return
+                showinfo(title="Server Custom Seed", message="Server backup and overworld reset successful for custom seed usage!")
+                logging.info("Injecting custom seed")
+                custom_seed_injection(version=version_selection, seed=custom_seed)
+                pass
+            else:
+                logging.info("Custom seed injection cancelled")
+                pass
+            pass
+        else:
+            logging.info("Current world not found for seed overwrite")
+            logging.info("Injecting custom seed")
+            custom_seed_injection(version=version_selection, seed=custom_seed)
+            pass
+        pass
+    else:
+        logging.info("No custom seed entered")
+        pass
     if os.path.exists(f"{cwd}\\ServerFiles-{version_selection}\\server.properties"):
         server_prop_check = open(f"{cwd}\\ServerFiles-{version_selection}\\server.properties", 'r')
         if "port" in str(server_prop_check.read()):
@@ -556,6 +668,26 @@ def start_server_event(event):
         logging.info("Moving To exit_program_force()")
         exit_program_force()
         sys.exit(0)
+
+
+def custom_seed_injection(version, seed):
+    logging.info("Starting custom seed injection")
+    try:
+        p = Properties()
+        with open(f"{cwd}\\ServerFiles-{version}\\server.properties", "rb") as f:
+            p.load(f, "utf-8")
+            pass
+        p["level-seed"] = str(seed)
+        with open(f"{cwd}\\ServerFiles-{version}\\server.properties", "wb") as f:
+            p.store(f, "utf-8")
+            pass
+        logging.info("Custom seed injection succcessful")
+        pass
+    except Exception as e:
+        logging.error(f"Error during custom seed injection: {e}")
+        showerror(title="Custom Seed Injection", message=f"There was an error while trying to use the custom seed you input: {e}")
+        pass
+    return
 
 
 def create_server_backup():
@@ -2439,7 +2571,7 @@ def update():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2546,7 +2678,7 @@ def update_event(event):
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -2653,7 +2785,7 @@ def update_startup():
         showerror(title="Update Error", message=f"Error While Checking For Updates: {e}")
         logging.error(f"Error While Checking For Updates: {e}")
         return
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         new_url = str(redirected_url) + f"/EasyMinecraftServerInstaller-{str(new_version.replace('v', ''))}.exe"
@@ -3035,8 +3167,8 @@ def help_window():
         logging.error(f"Error While Checking For Updates: {e}")
         redirected_url = "ERROR"
         pass
-    help_text = "EasyMinecraftServer v2.16.1\n"
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    help_text = "EasyMinecraftServer v2.17.0\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         help_text += "Update available: " + new_version + "\n\n"
@@ -3069,7 +3201,7 @@ Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
         update_button.pack()
         pass
@@ -3106,8 +3238,8 @@ def help_window_event(event):
         logging.error(f"Error While Checking For Updates: {e}")
         redirected_url = "ERROR"
         pass
-    help_text = "EasyMinecraftServer v2.16.1\n"
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    help_text = "EasyMinecraftServer v2.17.0\n"
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
         logging.warning(f"Update available: {new_version}")
         help_text += "Update available: " + new_version + "\n\n"
@@ -3140,7 +3272,7 @@ Feel free to ask questions on the GitHub page using the button below!
     """
     help_label = ttk.Label(help_window, text=help_text)
     help_label.pack()
-    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+    if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
         update_button = ttk.Button(help_window, text="Update", command=update, style="Accent.TButton", width="50")
         update_button.pack()
         pass
@@ -3283,6 +3415,42 @@ def log_settings():
     return
 
 
+def sys_cleanup():
+    cleanup_confirm = askyesno(title="System Cleanup/Optimizer", message="""System Cleanup is intended to optimize your system for running a minecraft server by clearing up some resources!
+
+    This script does the following:
+    Clears the clipboard
+    Clears some RAM
+    Clears the pagefile
+    Clears the DNS cache
+    Clears the ARP cache
+
+    Would you like to proceed?""")
+    if cleanup_confirm:
+        logging.info("System Cleanup Started")
+        logging.info("clearing clipboard")
+        os.system("echo off | clip")
+        logging.info("clearing RAM")
+        os.system("wmic OS get FreePhysicalMemory /Value")
+        os.system("wmic OS get FreeVirtualMemory /Value")
+        logging.info("clearing pagefile")
+        os.system("powershell \"Stop-Service srv* -Force && Set-Service srv* -StartupType Disabled\"")
+        os.system("powershell \"Remove-Item C:\pagefile.sys /Force\"")
+        os.system("powershell \"New-Item -Type File C:\pagefile.sys\"")
+        os.system("powershell \"Set-Service srv* -StartupType Manual\"")
+        os.system("powershell \"Start-Service srv*\"")
+        logging.info("clearing DNS cache")
+        os.system("ipconfig /flushdns")
+        logging.info("clearing ARP cache")
+        os.system("arp -d")
+        showinfo(title="System Cleanup/Optimizer", message="System Cleanup Run Sucessfully!")
+        return
+    else:
+        logging.info("System cleanup cancelled")
+        showinfo("System Cleanup Cancelled")
+        return
+
+
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -3300,7 +3468,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     toaster = ToastNotifier()
-    cwd = which("EasyMinecraftServer").replace("\\EasyMinecraftServer.EXE", "")
+    cwd = str(which("EasyMinecraftServer")).replace("\\EasyMinecraftServer.EXE", "")
     if cwd == ".":
         cwd = os.getcwd()
         pass
@@ -3394,7 +3562,7 @@ if __name__ == "__main__":
         pass
     logging.basicConfig(filename=f'{user_dir}\\Documents\\EasyMinecraftServer\\Logs\\app.log', level="DEBUG",
                         format="%(asctime)s — %(name)s — %(levelname)s — %(funcName)s:%(lineno)d — %(message)s")
-    logging.info("EasyMinecraftServer v2.16.1 Started")
+    logging.info("EasyMinecraftServer v2.17.0 Started")
     logging.info(f"Current Working Directory: {cwd}")
     logging.info(f"User Directory: {user_dir}")
     log_settings()
@@ -3442,7 +3610,7 @@ if __name__ == "__main__":
         url = "https://github.com/teekar2023/EasyMinecraftServer/releases/latest"
         r = requests.get(url, allow_redirects=True)
         redirected_url = r.url
-        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.16.1":
+        if redirected_url != "https://github.com/teekar2023/EasyMinecraftServer/releases/tag/v2.17.0":
             new_version = redirected_url.replace("https://github.com/teekar2023/EasyMinecraftServer/releases/tag/", "")
             logging.warning(f"New version available: {new_version}")
             toaster.show_toast("EasyMinecraftServer", f"New update available: {new_version}",
@@ -3699,6 +3867,7 @@ if __name__ == "__main__":
     main_menu.add_command(label="Uninstall", command=uninstall_program)
     main_menu.add_command(label="Website", command=website, underline=0)
     main_menu.add_separator()
+    main_menu.add_command(label="Run System Cleanup Script", command=sys_cleanup)
     main_menu.add_command(label="Create Anti-Virus Exclusions", command=av_exclusions)
     main_menu.add_command(label="Remove Anti-Virus Exclusions", command=av_exclusions_remove)
     main_menu.add_separator()
@@ -3707,11 +3876,11 @@ if __name__ == "__main__":
     menubar.add_cascade(label="Menu", menu=main_menu)
     root.config(menu=menubar)
     root.update()
-    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.16.1\n"
+    main_text_label = ttk.Label(root, text="Easy Minecraft Server v2.17.0\n"
                                            "Github: https://github.com/teekar2023/EasyMinecraftServer\n"
                                            "Not In Any Way Affiliated With Minecraft, Mojang, Or Microsoft\n"
-                                           f"Installation Directory: {cwd}\n"
-                                           f"User Directory: {user_dir}\n"
+                                           f"Install Directory: {cwd}\n"
+                                           f"Data Directory: {user_dir}\Documents\EasyMinecraftServer\n"
                                            "Click Any Of The Following Buttons To Begin!")
     main_text_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
     start_button = ttk.Button(root, text="Start/Create Server", command=start_server, width="60",

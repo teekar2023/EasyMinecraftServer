@@ -16,14 +16,13 @@ This program has support for almost all minecraft versions 1.2.1 and newer!
    search how to bypass blocked downloads on your browser)
 3. When running the installer, windows smartscreen might block it as well. If it does, click on "learn more" and then
    click "run anyway".
-4. Follow the instructions in the installer and install EasyMinecraftServer.
+4. Follow the instructions in the installer to install EasyMinecraftServer.
 5. That is all. Just run the application, complete setup, and you are good to go!
 
 # TODO
 
 - Support modded servers
 - Add better bug reporting system
-- Add RAM cleanup option to get max amount of RAM possible in server
 - Add option to create bat script shortcuts to quickly do things in program using cli tool
 - Add logging in cli tool
 - Add icons for all windows

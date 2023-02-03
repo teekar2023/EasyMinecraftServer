@@ -1,5 +1,5 @@
 #define MyAppName "EasyMinecraftServer"
-#define MyAppVersion "2.16.1"
+#define MyAppVersion "2.17.0"
 #define MyAppPublisher "teekar2023"
 #define MyAppURL "https://github.com/teekar2023/EasyMinecraftServer"
 #define MyAppExeName "EasyMinecraftServer.exe"

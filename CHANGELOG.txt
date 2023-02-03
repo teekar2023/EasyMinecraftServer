@@ -1,3 +1,5 @@
-New in version 2.16.1:
-Bug fixes for auto backup data files!
-Other small bug fixes and changes!
+New in version 2.17.0:
+Added new custom seed input when starting/creating servers!
+Added new SystemOptimizer script that automatically runs on server launch!
+Added a new option in main dropdown menu to run SystemOptimizer script on demand!
+Other small changes and fixes!
